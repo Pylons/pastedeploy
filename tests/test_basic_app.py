@@ -1,6 +1,5 @@
 from paste.deploy import loadapp, loadfilter
 from fixture import *
-require('FakeApp')
 import fakeapp.apps
 
 here = os.path.dirname(__file__)
