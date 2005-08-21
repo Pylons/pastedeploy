@@ -1,173 +1,316 @@
 import os
+import urllib
 from ConfigParser import RawConfigParser
-from paste import server
-from paste.util import import_string
 import pkg_resources
 
-class ConfigError(Exception):
-
-    def __init__(self, deployment_config, *args):
-        self.deployment_config = deployment_config
-        Exception.__init__(self, *args)
-
-def make_paste_app(context, app_ops):
-    """
-    Create a WSGI application using Paste conventions.  app_ops
-    are options that are fixed for this application (i.e., don't
-    haveto be configured; things like 'framework' that Paste
-    treats specially).
-    """
-    ops = app_ops.copy()
-    ops.update(context.app_config)
-    return server.make_app(ops)
-
 ############################################################
-## Deployment utility functions
+## Object types
 ############################################################
 
+class _ObjectType(object):
 
-class DeploymentConfig(object):
+    def __init__(self, name, egg_protocols, config_prefixes):
+        self.name = name
+        self.egg_protocols = map(_aslist, _aslist(egg_protocols))
+        self.config_prefixes = map(_aslist, _aslist(config_prefixes))
+
+    def __repr__(self):
+        return '<%s protocols=%r prefixes=%r>' % (
+            self.name, self.egg_protocols, self.config_prefixees)
+
+def _aslist(obj):
+    if obj is None:
+        return []
+    elif isinstance(obj, (list, tuple)):
+        return obj
+    else:
+        return [obj]
+
+def _flatten(lst):
+    if not isinstance(lst, (list, tuple)):
+        return [lst]
+    result = []
+    for item in lst:
+        result.extend(_flatten(item))
+    return result
+
+APP = _ObjectType(
+    'application',
+    ['paste.app_factory1', 'paste.composit_factory1'],    
+    [['app', 'application'], 'composit'])
+
+def APP_invoke(context):
+    if context.protocol == 'paste.composit_factory1':
+        return context.object(context.loader, context.global_conf,
+                              **context.local_conf)
+    elif context.protocol == 'paste.app_factory1':
+        return context.object(context.global_conf, **context.local_conf)
+    else:
+        assert 0, "Protocol %r unknown" % context.protocol
+
+APP.invoke = APP_invoke
+
+FILTER = _ObjectType(
+    'filter',
+    ['paste.filter_factory1'],
+    ['filter'])
+
+def FILTER_invoke(context):
+    assert context.protocol == 'paste.filter_factory1'
+    return context.object(context.global_conf, **context.local_conf)
+
+FILTER.invoke = FILTER_invoke
+
+SERVER = _ObjectType(
+    'server',
+    ['paste.server_factory1'],
+    ['server'])
+
+def SERVER_invoke(context):
+    assert context.protocol == 'paste.server_factory1'
+    return context.object(context.global_conf, **context.local_conf)
+
+SERVER.invoke = SERVER_invoke
+
+def import_string(s):
+    return pkg_resources.EntryPoint.parse("x="+s).load(False)
+
+############################################################
+## Locators
+############################################################
+
+def find_egg_entry_point(object_type, egg_spec, name=None):
+    """
+    Returns the (entry_point, protocol) for the with the given
+    ``name`` and specification ``egg_spec``.
+    """
+    if name is None:
+        name = 'main'
+    possible = []
+    for protocol_options in object_type.egg_protocols:
+        for protocol in protocol_options:
+            entry = pkg_resources.get_entry_info(
+                egg_spec,
+                protocol,
+                name)
+            if entry is not None:
+                possible.append((entry.load(), protocol))
+                break
+    if not possible:
+        # Better exception
+        print pkg_resources.get_entry_map(egg_spec)
+        raise LookupError(
+            "Entry point %r not found in egg %r (protocols: %s)"
+            % (name, egg_spec,
+               ', '.join(_flatten(object_type.egg_protocols))))
+    if len(possible) > 1:
+        raise LookupError(
+            "Ambiguous entry points for %r in egg %r (protocols: %s)"
+            % (name, egg_spec, ', '.join(_flatten(protocol_list))))
+    return possible[0]
+
+def find_config_section(object_type, config_sections,
+                        name=None):
+    """
+    Return the section name with the given name prefix (following the
+    same pattern as ``protocol_desc`` in ``config``.  It must have the
+    given name, or for ``'main'`` an empty name is allowed.  The
+    prefix must be followed by a ``:``.
+
+    Case is *not* ignored.
+    """
+    possible = []
+    for name_options in object_type.config_prefixes:
+        for name_prefix in name_options:
+            found = _find_sections(config_sections, name_prefix, name)
+            if found:
+                possible.extend(found)
+                break
+    if not possible:
+        raise LookupError(
+            "No section %r (prefixed by %r) found in config"
+            % (name, _flatten(name_prefix_list)))
+    if len(possible) > 1:
+        raise LookupError(
+            "Ambiguous section names %r for section %r (prefixed by %r) "
+            "found in config"
+            % (possible, name, _flatten(name_prefix_list)))
+    return possible[0]
+
+def _find_sections(sections, name_prefix, name):
+    found = []
+    if name is None:
+        if name_prefix in sections:
+            found.append(name_prefix)
+        name = 'main'
+    for section in sections:
+        if section.startswith(name_prefix+':'):
+            if section[len(name_prefix)+1:].strip() == name:
+                found.append(section)
+    return found
+
+############################################################
+## Loaders
+############################################################
+
+def loadapp(uri, name=None, **kw):
+    return loadobj(APP, uri, name=name, **kw)
+
+def loadfilter(uri, name=None, **kw):
+    return loadobj(FILTER, uri, name=name, **kw)
+
+def loadserver(uri, name=None, **kw):
+    return loadobj(SERVER, uri, name=name, **kw)
+
+_loaders = {}
+
+def loadobj(object_type, uri, name=None, relative_to=None,
+            global_conf=None):
+    context = loadcontext(
+        object_type, uri, name=name, relative_to=relative_to,
+        global_conf=global_conf)
+    return object_type.invoke(context)
+
+def loadcontext(object_type, uri, name=None, relative_to=None,
+                global_conf=None):
+    if '#' in uri:
+        if name is None:
+            uri, name = uri.split('#', 1)
+        else:
+            # @@: Ignore fragment or error?
+            uri = uri.split('#', 1)[0]
+    scheme, path = uri.split(':', 1)
+    scheme = scheme.lower()
+    if scheme not in _loaders:
+        raise LookupError(
+            "URI scheme not known: %r (from %s)"
+            % (scheme, ', '.join(_loaders.keys())))
+    return _loaders[scheme](
+        object_type,
+        uri, path, name=name, relative_to=relative_to,
+        global_conf=global_conf)
+
+def _loadconfig(object_type, uri, path, name, relative_to,
+                global_conf):
+    # De-Windowsify the paths:
+    path = path.replace('\\', '/')
+    if not path.startswith('/'):
+        if not relative_to:
+            raise ValueError(
+                "Cannot resolve relative uri %r; no context keyword "
+                "argument given" % uri)
+        relative_to = relative_to.replace('\\', '/')
+        if relative_to.endswith('/'):
+            path = relative_to + path
+        else:
+            path = relative_to + '/' + path
+    if path.startswith('///'):
+        path = path[2:]
+    path = urllib.unquote(path)
+    loader = ConfigLoader(path)
+    return loader.get(object_type, name, global_conf)
+
+_loaders['config'] = _loadconfig
+
+def _loadegg(object_type, uri, spec, name, relative_to,
+             global_conf):
+    loader = EggLoader(spec)
+    return loader.get(object_type, name, global_conf)
+
+_loaders['egg'] = _loadegg
+
+############################################################
+## Loaders
+############################################################
+
+class _Loader(object):
+
+    def getapp(self, name=None, global_conf=None):
+        return self.get(APP, name=name, global_conf=global_conf)
+
+    def getfilter(self, name=None, global_conf=None):
+        return self.get(FILTER, name=name, global_conf=global_conf)
+
+    def getserver(self, name=None, global_conf=None):
+        return self.get(SERVER, name=name, global_conf=global_conf)
+
+class ConfigLoader(_Loader):
 
     def __init__(self, filename):
         self.filename = filename
-        parser = RawConfigParser()
-        parser.read([filename])
-        self.data = {}
-        # @@: DEFAULT?
-        for section in parser.sections():
-            self.data[section] = {}
-            for key in parser.options(section):
-                self.data[section][key] = parser.get(section, key)
+        self.parser = RawConfigParser()
+        # Don't lower-case keys:
+        self.parser.optionxform = str
+        self.parser.read(filename)
 
-    def make_app(self, name='main'):
-        """
-        Create a WSGI application with the given name.  The factories
-        are functions that are called like
-        ``factory(config_context)`` and
-        return a WSGI application.
-        """
-        factory, context = self.make_factory(
-            'application', 'wsgi.app_factory01', name)
-        return factory(context)
-
-    def make_filter(self, name):
-        """
-        Create a WSGI filter with the given name.  No default/'main'
-        name applies here.
-        
-        The factory is called like ``factory(config_context)`` and
-        returns a function that is called like ``filter(app)`` and
-        returns a WSGI application.
-        """
-        factory, context = self.make_factory(
-            'filter', 'wsgi.filter_factory01', name)
-        return factory(context)
-
-    def make_server(self, name='main'):
-        """
-        Creates a WSGI server.  The server is a factory that is called
-        like ``factory(options...)``, where all the settings in the
-        section are turned into keyword arguments (except 'use' and
-        'factory' which are special).  The server is called with a
-        single application to serve that application indefinitely.
-        """
-        factory, context = self.make_factory(
-            'server', 'wsgi.server_factory00', name)
-        ops = context.app_config.copy()
-        for key in 'factory', 'use', 'require':
-            if key in ops:
-                del ops[key]
-        return factory(**ops)
-
-    def make_deployment(self):
-        """
-        From a configuration, return both the server and main app, so
-        you can do::
-
-          conf = DeploymentConfig(...)
-          server, app = conf.make_deployment()
-          server(app)
-        """
-        server = self.make_server()
-        app = self.make_app()
-        return server, app
-
-    def make_factory(self, type, entry_point_type, name):
-        if name.startswith('file:'):
-            filename, app_name = self.split_filename(name[5:])
-            filename = self.normalize_filename(filename)
-            deploy = self.__class__(filename)
-            return deploy.make_factory(type, entry_point_type, app_name)
-        section = self.find_match(type, name, self.data.keys())
-        factory = self.make_factory_from_section(
-            type, entry_point_type, section)
-        context = self.make_context_from_section(section)
-        return factory, context
-
-    def make_factory_from_section(self, type, entry_point_type, section):
-        conf = self.data[section]
-        if 'require' in conf:
-            for spec in conf['require'].split():
-                pkg_resources.require(spec)
-        if 'config' in conf:
-            filename = conf['config']
-            filename, app_name = self.split_filename(filename)
-            filename = self.normalize_filename(filename)
-            deploy = self.__class__(filename)
-            return deploy.make_factory(
-                type, entry_point_type, app_name)
-        if 'factory' in conf:
-            return import_string.eval_import(conf['factory'])
-        if 'use' in conf:
-            spec, name = conf['use'].split()
-            return pkg_resources.load_entry_point(
-                spec, entry_point_type, name)
-        raise ConfigError(
-            self, "No way to create a factory from section [%s] "
-            "(no factory or use key)" % section)
-
-    def split_filename(self, filename):
-        """
-        Given a filename with an optional :appname part, return
-        the ``(filename, app_name)``
-        """
-        # Make sure we don't catch Windows drives:
-        if filename.find(':') > 1:
-            new_f, app_name = filename[2:].split(':')
-            return filename[:2] + new_f, app_name
+    def get(self, object_type, name=None, global_conf=None):
+        if global_conf is None:
+            global_conf = {}
         else:
-            return filename, 'main'
+            global_conf = global_conf.copy()
+        section = find_config_section(
+            object_type, self.parser.sections(), name=name)
+        global_conf.update(self.parser.defaults())
+        local_conf = {}
+        for option in self.parser.options(section):
+            if option.startswith('set '):
+                name = option[4:].strip()
+                global_conf[name] = self.parser.get(section, option)
+            else:
+                local_conf[option] = self.parser.get(section, option)
+        if 'use' in local_conf:
+            use = local_conf.pop('use')
+            context = loadcontext(
+                object_type, use,
+                relative_to=os.path.dirname(self.filename))
+            context.global_conf.update(global_conf)
+            context.local_conf.update(local_conf)
+            # @@: Should loader be overwritten?
+            context.loader = self
+            return context
+        possible = []
+        for protocol_options in object_type.egg_protocols:
+            for protocol in protocol_options:
+                if protocol in local_conf:
+                    possible.append((protocol, local_conf[protocol]))
+                    break
+        if len(possible) > 1:
+            raise LookupError(
+                "Multiple protocols given in section %r: %s"
+                % (section, possible))
+        if not possible:
+            raise LookupError(
+                "No loader given in section %r" % section)
+        value = import_string(possible[0][1])
+        context = LoaderContext(
+            value, object_type, possible[0][0],
+            global_conf, local_conf, self)
+        return context
 
-    def normalize_filename(self, filename):
-        return os.path.join(os.path.dirname(self.filename), filename)
+class EggLoader(_Loader):
 
-    def find_match(self, type, name, possible):
-        type = type.lower()
-        for section in possible:
-            section = section.strip()
-            if section.lower() == type and (not name or name == 'main'):
-                return section
-            if not section.lower().startswith(type + ':'):
-                continue
-            section_name = section[len(type)+1:].strip()
-            if section_name == name:
-                return section
-        raise ConfigError(
-            self, "No section like [%s: %s] found" % (type, name))
+    def __init__(self, spec):
+        self.spec = spec
 
-    def make_context_from_section(self, section):
-        conf = self.data[section]
-        return ConfigContext(self, conf)
+    def get(self, object_type, name=None, global_conf=None):
+        entry_point, protocol = find_egg_entry_point(
+            object_type, self.spec, name=name)
+        return LoaderContext(
+            entry_point,
+            object_type,
+            protocol,
+            global_conf or {}, {},
+            self)
 
-class ConfigContext(object):
+class LoaderContext(object):
 
-    def __init__(self, deployment_config, app_config):
-        self.deployment_config = deployment_config
-        self.app_config = app_config
+    def __init__(self, obj, object_type, protocol,
+                 global_conf, local_conf, loader):
+        self.object = obj
+        self.object_type = object_type
+        self.protocol = protocol
+        self.global_conf = global_conf
+        self.local_conf = local_conf
+        self.loader = loader
 
-if __name__ == '__main__':
-    import sys
-    conf = DeploymentConfig(sys.argv[1])
-    server, app = conf.make_deployment()
-    server(app)
     
