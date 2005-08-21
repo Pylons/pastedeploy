@@ -129,12 +129,12 @@ def find_config_section(object_type, config_sections,
     if not possible:
         raise LookupError(
             "No section %r (prefixed by %r) found in config"
-            % (name, _flatten(name_prefix_list)))
+            % (name, _flatten(object_type.config_prefixes)))
     if len(possible) > 1:
         raise LookupError(
             "Ambiguous section names %r for section %r (prefixed by %r) "
             "found in config"
-            % (possible, name, _flatten(name_prefix_list)))
+            % (possible, name, _flatten(object_type.config_prefixes)))
     return possible[0]
 
 def _find_sections(sections, name_prefix, name):
@@ -169,7 +169,7 @@ def loadobj(object_type, uri, name=None, relative_to=None,
     context = loadcontext(
         object_type, uri, name=name, relative_to=relative_to,
         global_conf=global_conf)
-    return object_type.invoke(context)
+    return context.create()
 
 def loadcontext(object_type, uri, name=None, relative_to=None,
                 global_conf=None):
@@ -208,14 +208,14 @@ def _loadconfig(object_type, uri, path, name, relative_to,
         path = path[2:]
     path = urllib.unquote(path)
     loader = ConfigLoader(path)
-    return loader.get(object_type, name, global_conf)
+    return loader.get_context(object_type, name, global_conf)
 
 _loaders['config'] = _loadconfig
 
 def _loadegg(object_type, uri, spec, name, relative_to,
              global_conf):
     loader = EggLoader(spec)
-    return loader.get(object_type, name, global_conf)
+    return loader.get_context(object_type, name, global_conf)
 
 _loaders['egg'] = _loadegg
 
@@ -225,14 +225,29 @@ _loaders['egg'] = _loadegg
 
 class _Loader(object):
 
-    def getapp(self, name=None, global_conf=None):
-        return self.get(APP, name=name, global_conf=global_conf)
+    def get_app(self, name=None, global_conf=None):
+        return self.app_context(
+            name=name, global_conf=global_conf).create()
 
-    def getfilter(self, name=None, global_conf=None):
-        return self.get(FILTER, name=name, global_conf=global_conf)
+    def get_filter(self, name=None, global_conf=None):
+        return self.filter_context(
+            name=naame, global_conf=global_conf).create()
 
-    def getserver(self, name=None, global_conf=None):
-        return self.get(SERVER, name=name, global_conf=global_conf)
+    def get_server(self, name=None, global_conf=None):
+        return self.server_context(
+            name=naame, global_conf=global_conf).create()
+
+    def app_context(self, name=None, global_conf=None):
+        return self.get_context(
+            APP, name=name, global_conf=global_conf)
+
+    def filter_context(self, name=None, global_conf=None):
+        return self.get_context(
+            FILTER, name=name, global_conf=global_conf)
+
+    def server_context(self, name=None, global_conf=None):
+        return self.get_context(
+            SERVER, name=name, global_conf=global_conf)
 
 class ConfigLoader(_Loader):
 
@@ -243,7 +258,7 @@ class ConfigLoader(_Loader):
         self.parser.optionxform = str
         self.parser.read(filename)
 
-    def get(self, object_type, name=None, global_conf=None):
+    def get_context(self, object_type, name=None, global_conf=None):
         if global_conf is None:
             global_conf = {}
         else:
@@ -292,7 +307,7 @@ class EggLoader(_Loader):
     def __init__(self, spec):
         self.spec = spec
 
-    def get(self, object_type, name=None, global_conf=None):
+    def get_context(self, object_type, name=None, global_conf=None):
         entry_point, protocol = find_egg_entry_point(
             object_type, self.spec, name=name)
         return LoaderContext(
@@ -313,4 +328,5 @@ class LoaderContext(object):
         self.local_conf = local_conf
         self.loader = loader
 
-    
+    def create(self):
+        return self.object_type.invoke(self)
