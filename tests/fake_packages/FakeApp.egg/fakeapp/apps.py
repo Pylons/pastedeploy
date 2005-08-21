@@ -1,3 +1,7 @@
+############################################################
+## Apps
+############################################################
+
 def simple_app(response, environ, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
     return [response]
@@ -13,6 +17,10 @@ def basic_app2(environ, start_response):
     
 def make_basic_app2(global_conf, **conf):
     return basic_app2
+
+############################################################
+## Composits
+############################################################
 
 def make_remote_addr(loader, global_conf, **conf):
     apps = {}
@@ -35,4 +43,3 @@ class RemoteAddrDispatch(object):
         addr = environ['REMOTE_ADDR']
         app = self.map.get(addr) or self.map['0.0.0.0']
         return app(environ, start_response)
-    
