@@ -58,7 +58,7 @@ class _ObjectType(object):
 APP = _ObjectType(
     'application',
     ['paste.app_factory1', 'paste.composit_factory1'],    
-    [['app', 'application'], 'composit'])
+    [['app', 'application'], 'composit', 'pipeline', 'filter-app'])
 
 def APP_invoke(context):
     if context.protocol == 'paste.composit_factory1':
@@ -80,6 +80,34 @@ SERVER = _ObjectType(
     'server',
     ['paste.server_factory1'],
     ['server'])
+
+# Virtual type: (@@: There's clearly something crufty here;
+# this probably could be more elegant)
+PIPELINE = _ObjectType(
+    'pipeline',
+    [], [])
+
+def PIPELINE_invoke(context):
+    app = context.app_context.create()
+    filters = [c.create() for c in context.filter_contexts]
+    filters.reverse()
+    for filter in filters:
+        app = filter(app)
+    return app
+
+PIPELINE.invoke = PIPELINE_invoke
+
+# Virtual type:
+FILTER_APP = _ObjectType(
+    'filter_app',
+    [], [])
+
+def FILTER_APP_invoke(context):
+    next_app = context.next_context.create()
+    filter = context.filter_context.create()
+    return filter(next_app)
+
+FILTER_APP.invoke = FILTER_APP_invoke
 
 ############################################################
 ## Loaders
@@ -209,12 +237,12 @@ class ConfigLoader(_Loader):
             return loadcontext(object_type, name,
                                relative_to=os.path.dirname(self.filename),
                                global_conf=global_conf)
+        section = self.find_config_section(
+            object_type, name=name)
         if global_conf is None:
             global_conf = {}
         else:
             global_conf = global_conf.copy()
-        section = self.find_config_section(
-            object_type, name=name)
         defaults = self.parser.defaults()
         global_conf.update(defaults)
         local_conf = {}
@@ -229,15 +257,36 @@ class ConfigLoader(_Loader):
                     # @@: It's a global option (?), so skip it
                     continue
                 local_conf[option] = self.parser.get(section, option)
+        if section.startswith('filter-app:'):
+            return self._filter_app_context(
+                object_type, section, name=name,
+                global_conf=global_conf, local_conf=local_conf,
+                global_additions=global_additions)
+        if section.startswith('pipeline:'):
+            return self._pipeline_app_context(
+                object_type, section, name=name,
+                global_conf=global_conf, local_conf=local_conf,
+                global_additions=global_additions)
         if 'use' in local_conf:
-            use = local_conf.pop('use')
-            context = self.get_context(
-                object_type, name=use, global_conf=global_conf)
-            context.global_conf.update(global_additions)
-            context.local_conf.update(local_conf)
-            # @@: Should loader be overwritten?
-            context.loader = self
-            return context
+            return self._context_from_use(
+                object_type, local_conf, global_conf, global_additions)
+        else:
+            return self._context_from_explicit(
+                object_type, local_conf, global_conf, global_additions)
+
+    def _context_from_use(self, object_type, local_conf, global_conf,
+                          global_additions):
+        use = local_conf.pop('use')
+        context = self.get_context(
+            object_type, name=use, global_conf=global_conf)
+        context.global_conf.update(global_additions)
+        context.local_conf.update(local_conf)
+        # @@: Should loader be overwritten?
+        context.loader = self
+        return context
+
+    def _context_from_explicit(self, object_type, local_conf, global_conf,
+                               global_addition):
         possible = []
         for protocol_options in object_type.egg_protocols:
             for protocol in protocol_options:
@@ -259,6 +308,46 @@ class ConfigLoader(_Loader):
             global_conf, local_conf, self)
         return context
 
+    def _filter_app_context(self, object_type, section, name,
+                            global_conf, local_conf, global_additions):
+        if 'next' not in local_conf:
+            raise LookupError(
+                "The [%s] section in %s is missing a 'next' setting"
+                % (section, self.filename))
+        next_name = local_conf.pop('next')
+        context = LoaderContext(None, FILTER_APP, None, global_conf,
+                                local_conf, self)
+        context.next_context = self.get_context(
+            APP, next_name, global_conf)
+        if 'use' in local_conf:
+            context.filter_context = self._context_from_use(
+                FILTER, local_conf, global_conf, global_additions)
+        else:
+            context.filter_context = self._context_from_explicit(
+                FILTER, local_conf, global_conf, global_additions)
+        return context
+
+    def _pipeline_app_context(self, object_type, section, name,
+                              global_conf, local_conf, global_additions):
+        if 'pipeline' not in local_conf:
+            raise LookupError(
+                "The [%s] section in %s is missing a 'pipeline' setting"
+                % (section, self.filename))
+        pipeline = local_conf.pop('pipeline').split()
+        if local_conf:
+            raise LookupError(
+                "The [%s] pipeline section in %s has extra "
+                "(disallowed) settings: %s"
+                % (', '.join(local_conf.keys())))
+        context = LoaderContext(None, PIPELINE, None, global_conf,
+                                local_conf, self)
+        context.app_context = self.get_context(
+            APP, pipeline[-1], global_conf)
+        context.filter_contexts = [
+            self.get_context(FILTER, name, global_conf)
+            for name in pipeline[:-1]]
+        return context
+
     def find_config_section(self, object_type, name=None):
         """
         Return the section name with the given name prefix (following the
@@ -278,7 +367,7 @@ class ConfigLoader(_Loader):
                     break
         if not possible:
             raise LookupError(
-                "No section %r (prefixed by %s) found in config %s from %s"
+                "No section %r (prefixed by %s) found in config %s"
                 % (name,
                    ' or '.join(map(repr, _flatten(object_type.config_prefixes))),
                    self.filename))

@@ -13,5 +13,8 @@ setup(
       'paste.composit_factory1': """
       remote_addr=fakeapp.apps:make_remote_addr
       """,
+      'paste.filter_factory1': """
+      caps=fakeapp.apps:make_cap_filter
+      """
       },
     )
