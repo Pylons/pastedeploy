@@ -1,0 +1,12 @@
+Paste Deployment News
+=====================
+
+Version 0.2 (svn trunk)
+-----------------------
+
+* Added ``filter-app:`` and ``pipeline:`` sections.
+
+Version 0.1
+-----------
+
+Initial version released.  It's all new.

@@ -4,7 +4,7 @@
 
 def simple_app(response, environ, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
-    return [response]
+    return ['This is ', response]
 
 def basic_app(environ, start_response):
     return simple_app('basic app', environ, start_response)
@@ -43,3 +43,26 @@ class RemoteAddrDispatch(object):
         addr = environ['REMOTE_ADDR']
         app = self.map.get(addr) or self.map['0.0.0.0']
         return app(environ, start_response)
+
+############################################################
+## Filters
+############################################################
+
+def make_cap_filter(global_conf, method_to_call='upper'):
+    def filter(app):
+        return CapFilter(app, method_to_call)
+    return filter
+
+class CapFilter(object):
+
+    def __init__(self, app, method_to_call):
+        self.app = app
+        self.method_to_call = method_to_call
+
+    def __call__(self, environ, start_response):
+        app_iter = self.app(environ, start_response)
+        for item in app_iter:
+            yield getattr(item, self.method_to_call)()
+        if hasattr(app_iter, 'close'):
+            app_iter.close()
+

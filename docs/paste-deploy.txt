@@ -11,10 +11,22 @@ Introduction
 ------------
 
 Paste Deployment is a system for finding and configuring WSGI
-applications and servers.
+applications and servers.  For WSGI application consumers it provides
+a single, simple function (``loadapp``) for loading a WSGI application
+from a configuration file or a Python Egg.  For WSGI application
+providers it only asks for a single, simple entry point to your
+application, so that application users don't need to be exposed to the
+implementation details of your application.
+
+The result is something a system administrator can install and manage
+without knowing any Python, or the details of the WSGI application or
+its container.
 
 Paste Deployment currently does not require other parts of `Paste
 <http://pythonpaste.org>`_, and is distributed as a separate package.
+
+To see updates that have been made to Paste Deploy see the `news file
+<news.html>`_.
 
 Installation
 ------------
@@ -211,6 +223,26 @@ servers in a configuration file, with ``server:`` and ``filter:``
 prefixes.  You load these with ``loadserver`` and ``loadfilter``.  The
 configuration works just the same; you just get back different kinds
 of objects.
+
+Filter Composition
+~~~~~~~~~~~~~~~~~~
+
+Two special section types exist to apply filters more easily to your
+applications: ``[filter-app:...]`` and ``[pipeline:...]``.  Both of these
+sections define applications, and so can be used wherever an
+application is needed.
+
+``filter-app`` defines a filter (just like you would in a
+``[filter:...]`` section), and then a special key ``next`` which
+points to the application to apply the filter to.
+
+``pipeline:`` is used when you need apply a number of filters.  It
+takes *one* configuration key ``pipeline`` (plus any global
+configuration overrides you want).  ``pipeline`` is a list of filters
+ended by an application, like::
+
+    [pipeline:main]
+    pipeline = filter1 egg:FilterEgg#filter2 filter3 app
 
 ``egg:`` URIs
 -------------

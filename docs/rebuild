@@ -5,7 +5,7 @@ parent=`dirname $here`
 echo "Adding $parent to \$PYTHONPATH"
 export PYTHONPATH=$parent:$PYTHONPATH
 
-NORMAL="paste-deploy"
+NORMAL="paste-deploy news"
 
 for NAME in $NORMAL ; do
     if [ -e "$NAME.html" -a ! "$NAME.html" -ot "$NAME.txt" ] ; then
