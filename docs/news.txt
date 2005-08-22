@@ -12,6 +12,9 @@ Version 0.2 (svn trunk)
   ``paste.server_runner1`` (`doc
   <paste-deploy.html#paste-server-runner1>`__) protocols.
 
+* Added ``paste.deploy.converters`` module for handling the
+  string values that are common with this system.
+
 Version 0.1
 -----------
 
