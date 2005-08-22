@@ -4,7 +4,13 @@ Paste Deployment News
 Version 0.2 (svn trunk)
 -----------------------
 
-* Added ``filter-app:`` and ``pipeline:`` sections.
+* Added ``filter-app:`` and ``pipeline:`` sections.  `Docs
+  <paste-deploy.html#filter-composition>`__.
+
+* Added ``paste.filter_app_factory1`` (`doc
+  <paste-deploy.html#paste-filter-app-factory1>`__) and
+  ``paste.server_runner1`` (`doc
+  <paste-deploy.html#paste-server-runner1>`__) protocols.
 
 Version 0.1
 -----------

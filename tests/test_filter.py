@@ -17,3 +17,17 @@ def test_pipeline():
     assert isinstance(app, fakeapp.apps.CapFilter)
     assert app.app is fakeapp.apps.basic_app
     assert app.method_to_call == 'upper'
+
+def test_filter_app2():
+    app = loadapp('config:sample_configs/test_filter.ini#filt2',
+                  relative_to=here)
+    assert isinstance(app, fakeapp.apps.CapFilter)
+    assert app.app is fakeapp.apps.basic_app
+    assert app.method_to_call == 'lower'
+
+def test_pipeline2():
+    app = loadapp('config:sample_configs/test_filter.ini#piped2',
+                  relative_to=here)
+    assert isinstance(app, fakeapp.apps.CapFilter)
+    assert app.app is fakeapp.apps.basic_app
+    assert app.method_to_call == 'upper'
