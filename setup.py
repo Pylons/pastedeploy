@@ -1,14 +1,18 @@
 from setuptools import setup, find_packages
 
+version = '0.1'
+
 setup(
     name="Paste-Deploy",
-    version="0.1",
+    version=version,
     description="Load, configure, and compose WSGI applications and servers",
     long_description="""\
 This tool provides code to load WSGI applications and servers from
 URIs; these URIs can refer to Python Eggs for INI-style configuration
-files.
-""",
+files.  
+
+See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/trunk#egg=Paste-Deploy-%sdev'
+""" % version,
     classifiers=["Development Status :: 3 - Alpha",
                  "Intended Audience :: Developers",
                  "License :: OSI Approved :: Python Software Foundation License",
@@ -20,7 +24,7 @@ files.
     keywords='web wsgi application server',
     author="Ian Bicking",
     author_email="ianb@colorstudy.com",
-    url="http://pythonpaste.org",
+    url="http://pythonpaste.org/deploy/paste-deploy.html",
     namespace_packages=['paste'],
     extras_require={'composit': ['Paste']},
     packages=find_packages(exclude='tests'),
