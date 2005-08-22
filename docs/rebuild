@@ -15,3 +15,6 @@ for NAME in $NORMAL ; do
     echo "Building $NAME."
     rst2html.py --no-toc-backlinks "$NAME.txt" > "$NAME.html"
 done
+
+source-highlight -f html ../paste/deploy/interfaces.py
+mv ../paste/deploy/interfaces.py.html .
