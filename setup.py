@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
-version = '0.1'
+version = '0.2'
 
 setup(
-    name="Paste-Deploy",
+    name="PasteDeploy",
     version=version,
     description="Load, configure, and compose WSGI applications and servers",
     long_description="""\
@@ -11,7 +11,7 @@ This tool provides code to load WSGI applications and servers from
 URIs; these URIs can refer to Python Eggs for INI-style configuration
 files.  
 
-See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/trunk#egg=Paste-Deploy-%sdev'
+See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/trunk#egg=Paste-Deploy-%sdev>`_
 """ % version,
     classifiers=["Development Status :: 3 - Alpha",
                  "Intended Audience :: Developers",
