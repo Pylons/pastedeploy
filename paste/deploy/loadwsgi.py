@@ -73,13 +73,41 @@ APP.invoke = APP_invoke
 
 FILTER = _ObjectType(
     'filter',
-    ['paste.filter_factory1'],
+    [['paste.filter_factory1', 'paste.filter_app_factory1']],
     ['filter'])
+
+def FILTER_invoke(context):
+    if context.protocol == 'paste.filter_factory1':
+        return context.object(context.global_conf, **context.local_conf)
+    elif context.protocol == 'paste.filter_app_factory1':
+        def filter_wrapper(wsgi_app):
+            # This should be an object, so it has a nicer __repr__
+            return context.object(wsgi_app, context.global_conf,
+                                  **context.local_conf)
+        return filter_wrapper
+    else:
+        assert 0, "Protocol %r unknown" % context.protocol
+
+FILTER.invoke = FILTER_invoke
 
 SERVER = _ObjectType(
     'server',
-    ['paste.server_factory1'],
+    [['paste.server_factory1', 'paste.server_runner1']],
     ['server'])
+
+def SERVER_invoke(context):
+    if context.protocol == 'paste.server_factory1':
+        return context.object(context.global_conf, **context.local_conf)
+    elif context.protocol == 'paste.server_runner1':
+        def server_wrapper(wsgi_app):
+            # This should be an object, so it has a nicer __repr__
+            return context.object(wsgi_app, context.global_conf,
+                                  **context.local_conf)
+        return server_wrapper
+    else:
+        assert 0, "Protocol %r unknown" % context.protocol
+
+SERVER.invoke = SERVER_invoke
 
 # Virtual type: (@@: There's clearly something crufty here;
 # this probably could be more elegant)

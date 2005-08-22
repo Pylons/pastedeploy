@@ -50,14 +50,15 @@ class RemoteAddrDispatch(object):
 
 def make_cap_filter(global_conf, method_to_call='upper'):
     def filter(app):
-        return CapFilter(app, method_to_call)
+        return CapFilter(app, global_conf, method_to_call)
     return filter
 
 class CapFilter(object):
 
-    def __init__(self, app, method_to_call):
+    def __init__(self, app, global_conf, method_to_call='upper'):
         self.app = app
         self.method_to_call = method_to_call
+        self.global_conf = global_conf
 
     def __call__(self, environ, start_response):
         app_iter = self.app(environ, start_response)

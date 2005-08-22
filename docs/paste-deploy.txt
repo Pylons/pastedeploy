@@ -394,6 +394,21 @@ variable is set, creating a really simple authentication filter::
                 '403 Forbidden', [('Content-type', 'text/html')])
             return ['You are forbidden to view this resource']
 
+``paste.filter_app_factory1``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This is very similar to ``paste.filter_factory1``, except that it also
+takes a ``wsgi_app`` argument, and returns a WSGI application.  So if
+you changed the above example to::
+
+    class AuthFilter(object):
+        def __init__(self, app, global_conf, req_usernames):
+            ....
+
+Then ``AuthFilter`` would serve as a filter_app_factory
+(``req_usernames`` is a required local configuration key in this
+case).
+
 ``paste.server_factory1``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -413,6 +428,12 @@ An example might look like::
         return serve
 
 An implementation of ``Server`` is left to the user.
+
+``paste.server_runner1``
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Like ``paste.server_factory1``, except ``wsgi_app`` is passed as the
+first argument, and the server should run immediately.
 
 Outstanding Issues
 ------------------

@@ -15,6 +15,9 @@ setup(
       """,
       'paste.filter_factory1': """
       caps=fakeapp.apps:make_cap_filter
-      """
+      """,
+      'paste.filter_app_factory1': """
+      caps2=fakeapp.apps:CapFilter
+      """,
       },
     )

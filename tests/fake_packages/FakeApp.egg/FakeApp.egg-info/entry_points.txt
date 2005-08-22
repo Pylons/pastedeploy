@@ -15,3 +15,8 @@
       remote_addr=fakeapp.apps:make_remote_addr
       
 
+[paste.filter_app_factory1]
+
+      caps2=fakeapp.apps:CapFilter
+      
+

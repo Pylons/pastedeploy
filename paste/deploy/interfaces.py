@@ -81,6 +81,21 @@ class IPasteFilterFactory1:
         Returns a IFilter object.
         """
 
+class IPasteFilterAppFactory1:
+
+    """
+    This is the spec for the ``paste.filter_app_factory1``
+    protocol/entry_point.
+    """
+    
+    def __call__(wsgi_app, global_conf, **local_conf):
+        """
+        Returns a WSGI application that wraps ``wsgi_app``.
+
+        Note that paste.deploy creates a wrapper for these
+        objects that implement the IFilter interface.
+        """
+
 class IPasteServerFactory1:
 
     """
@@ -91,6 +106,23 @@ class IPasteServerFactory1:
     def __call__(global_conf, **local_conf):
         """
         Returns a IServer object.
+        """
+
+class IPasteServerRunner1:
+
+    """
+    This is the spec for the ``paste.server_runner1``
+    protocol/entry_point.
+    """
+
+    def __call__(wsgi_app, global_conf, **local_conf):
+        """
+        Serves the given WSGI application.  May serve once, many
+        times, forever; nothing about how the server works is
+        specified here.
+
+        Note that paste.deploy creates a wrapper for these
+        objects that implement the IServer interface.
         """
 
 class ILoader:
