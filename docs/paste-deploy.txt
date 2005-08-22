@@ -382,3 +382,29 @@ An example might look like::
 
 An implementation of ``Server`` is left to the user.
 
+Outstanding Issues
+------------------
+
+* Should add a ``python:`` scheme for loading objects out of modules
+  directly.  It has to include the protocol somehow...?
+
+* Should there be a "default" protocol for each type of object?  Since
+  there's currently only one protocol, it seems like it makes sense
+  (in the future there could be multiple).  Except that
+  ``paste.app_factory1`` and ``paste.composit_factory1`` overlap
+  considerably.
+
+* ConfigParser's INI parsing is kind of annoying.  I'd like it both
+  more constrained and less constrained.  Some parts are sloppy (like
+  the way it interprets ``[DEFAULT]``).
+
+* ``config:`` URLs should be potentially relative to other locations,
+  e.g., ``config:$docroot/...``.  Maybe using variables from
+  ``global_conf``?
+
+* Should other variables have access to ``global_conf``?
+
+* Should objects be Python-syntax, instead of always strings?  Lots of
+  code isn't usable with Python strings without a thin wrapper to
+  translate objects into their proper types.
+
