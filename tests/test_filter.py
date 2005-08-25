@@ -31,3 +31,9 @@ def test_pipeline2():
     assert isinstance(app, fakeapp.apps.CapFilter)
     assert app.app is fakeapp.apps.basic_app
     assert app.method_to_call == 'upper'
+
+def test_filter_app_inverted():
+    app = loadapp('config:sample_configs/test_filter.ini#inv',
+                  relative_to=here)
+    assert isinstance(app, fakeapp.apps.CapFilter)
+    assert app.app is fakeapp.apps.basic_app

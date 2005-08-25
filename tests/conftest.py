@@ -14,7 +14,3 @@ import pkg_resources
 sys.path.insert(0, base)
 #pkg_resources.require('Paste-Deploy')
 
-# This is where applications we test go; these applications
-# are only used for testing, they aren't "real".
-sys.path.append(os.path.join(here, 'fake_packages'))
-
