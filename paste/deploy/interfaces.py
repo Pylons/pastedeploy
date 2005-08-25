@@ -35,10 +35,10 @@ def loadserver(uri, name=None, relative_to=None, global_conf=None):
 ## Factories
 ############################################################
 
-class IPasteAppFactory1:
+class IPasteAppFactory:
 
     """
-    This is the spec for the ``paste.app_factory1``
+    This is the spec for the ``paste.app_factory``
     protocol/entry_point.
     """
 
@@ -51,28 +51,28 @@ class IPasteAppFactory1:
         capture these values).
         """
 
-class IPasteCompositFactory1:
+class IPasteCompositFactory:
 
     """
-    This is the spec for the ``paste.composit_factory1``
+    This is the spec for the ``paste.composit_factory``
     protocol/entry_point.
 
-    This also produces WSGI applications, like ``paste.app_factory1``,
+    This also produces WSGI applications, like ``paste.app_factory``,
     but is given more access to the context in which it is loaded.
     """
 
     def __call__(loader, global_conf, **local_conf):
         """
-        Like IPasteAppFactory1 this returns a WSGI application
+        Like IPasteAppFactory this returns a WSGI application
         (IWSGIApp).  The ``loader`` value conforms to the ``ILoader``
         interface, and can be used to load (contextually) more
         applications.
         """
 
-class IPasteFilterFactory1:
+class IPasteFilterFactory:
 
     """
-    This is the spec for the ``paste.filter_factory1``
+    This is the spec for the ``paste.filter_factory``
     protocol/entry_point.
     """
 
@@ -81,10 +81,10 @@ class IPasteFilterFactory1:
         Returns a IFilter object.
         """
 
-class IPasteFilterAppFactory1:
+class IPasteFilterAppFactory:
 
     """
-    This is the spec for the ``paste.filter_app_factory1``
+    This is the spec for the ``paste.filter_app_factory``
     protocol/entry_point.
     """
     
@@ -96,10 +96,10 @@ class IPasteFilterAppFactory1:
         objects that implement the IFilter interface.
         """
 
-class IPasteServerFactory1:
+class IPasteServerFactory:
 
     """
-    This is the spec for the ``paste.server_factory1``
+    This is the spec for the ``paste.server_factory``
     protocol/entry_point.
     """
 
@@ -108,10 +108,10 @@ class IPasteServerFactory1:
         Returns a IServer object.
         """
 
-class IPasteServerRunner1:
+class IPasteServerRunner:
 
     """
-    This is the spec for the ``paste.server_runner1``
+    This is the spec for the ``paste.server_runner``
     protocol/entry_point.
     """
 

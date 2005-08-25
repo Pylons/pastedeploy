@@ -4,6 +4,11 @@ Paste Deployment News
 Version 0.2 (svn trunk)
 -----------------------
 
+* Added a ``filter-with`` setting to applications.
+
+* Removed the ``1`` from all the protocol names (e.g.,
+  ``paste.app_factory1`` is not ``paste.app_factory``).
+
 * Added ``filter-app:`` and ``pipeline:`` sections.  `Docs
   <paste-deploy.html#filter-composition>`__.
 

@@ -132,10 +132,10 @@ The other way to define an application is to point exactly to some
 Python code::
 
     [app:myapp]
-    paste.app_factory1 = myapp.modulename:app_factory
+    paste.app_factory = myapp.modulename:app_factory
 
 You must give an explicit *protocol* (in this case
-``paste.app_factory1``), and the value is something to import.  In
+``paste.app_factory``), and the value is something to import.  In
 this case the module ``myapp.modulename`` is loaded, and the
 ``app_factory`` object retrieved from it.
 
@@ -227,9 +227,21 @@ of objects.
 Filter Composition
 ~~~~~~~~~~~~~~~~~~
 
-Two special section types exist to apply filters more easily to your
-applications: ``[filter-app:...]`` and ``[pipeline:...]``.  Both of these
-sections define applications, and so can be used wherever an
+There are several ways to apply filters to applications.  It mostly
+depends on how many filters, and in what order you want to apply them.
+
+The first way is to use the ``filter-with`` setting, like::
+
+    [app:main]
+    use = egg:MyEgg
+    filter-with = printdebug
+
+    [filter:printdebug]
+    use = egg:Paste#printdebug
+
+Also, two special section types exist to apply filters to your
+applications: ``[filter-app:...]`` and ``[pipeline:...]``.  Both of
+these sections define applications, and so can be used wherever an
 application is needed.
 
 ``filter-app`` defines a filter (just like you would in a
@@ -243,6 +255,9 @@ ended by an application, like::
 
     [pipeline:main]
     pipeline = filter1 egg:FilterEgg#filter2 filter3 app
+
+    [filter:filter1]
+    ...
 
 ``egg:`` URIs
 -------------
@@ -286,7 +301,7 @@ argument to ``setup()`` like::
         name='MyApp',
         ...
         entry_points={
-            'paste.app_factory1': [
+            'paste.app_factory': [
                 'main=myapp.mymodule:app_factory',
                 'ob2=myapp.mymodule:ob_factory'],
             },
@@ -309,12 +324,12 @@ This lets you point to factories (that obey the specific protocols we
 mentioned).  But that's not much use unless you can create factories
 for your applications.
 
-There's a few protocols: ``paste.app_factory1``,
-``paste.composit_factory1``, ``paste.filter_factory1``, and lastly
-``paste.server_factory1``.  Each of these expects a callable (like a
+There's a few protocols: ``paste.app_factory``,
+``paste.composit_factory``, ``paste.filter_factory``, and lastly
+``paste.server_factory``.  Each of these expects a callable (like a
 function, method, or class).
 
-``paste.app_factory1``
+``paste.app_factory``
 ~~~~~~~~~~~~~~~~~~~~~~
 
 The application is the most common.  You define one like::
@@ -325,7 +340,7 @@ The application is the most common.  You define one like::
 The ``global_config`` is a dictionary, and local configuration is
 passed as keyword arguments.  The function returns a WSGI application.
 
-``paste.composit_factory1``
+``paste.composit_factory``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Composits are just slightly more complex::
@@ -364,7 +379,7 @@ Then we use it like::
     [app:myapp]
     use = egg:MyApp
 
-``paste.filter_factory1``
+``paste.filter_factory``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Filter factories are just like app factories (same signature), except
@@ -394,10 +409,10 @@ variable is set, creating a really simple authentication filter::
                 '403 Forbidden', [('Content-type', 'text/html')])
             return ['You are forbidden to view this resource']
 
-``paste.filter_app_factory1``
+``paste.filter_app_factory``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is very similar to ``paste.filter_factory1``, except that it also
+This is very similar to ``paste.filter_factory``, except that it also
 takes a ``wsgi_app`` argument, and returns a WSGI application.  So if
 you changed the above example to::
 
@@ -409,7 +424,7 @@ Then ``AuthFilter`` would serve as a filter_app_factory
 (``req_usernames`` is a required local configuration key in this
 case).
 
-``paste.server_factory1``
+``paste.server_factory``
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This takes the same signature as applications and filters, but returns
@@ -429,10 +444,10 @@ An example might look like::
 
 An implementation of ``Server`` is left to the user.
 
-``paste.server_runner1``
+``paste.server_runner``
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Like ``paste.server_factory1``, except ``wsgi_app`` is passed as the
+Like ``paste.server_factory``, except ``wsgi_app`` is passed as the
 first argument, and the server should run immediately.
 
 Outstanding Issues
@@ -444,7 +459,7 @@ Outstanding Issues
 * Should there be a "default" protocol for each type of object?  Since
   there's currently only one protocol, it seems like it makes sense
   (in the future there could be multiple).  Except that
-  ``paste.app_factory1`` and ``paste.composit_factory1`` overlap
+  ``paste.app_factory`` and ``paste.composit_factory`` overlap
   considerably.
 
 * ConfigParser's INI parsing is kind of annoying.  I'd like it both

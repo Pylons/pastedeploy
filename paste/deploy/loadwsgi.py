@@ -57,14 +57,14 @@ class _ObjectType(object):
 
 APP = _ObjectType(
     'application',
-    ['paste.app_factory1', 'paste.composit_factory1'],    
+    ['paste.app_factory', 'paste.composit_factory'],    
     [['app', 'application'], 'composit', 'pipeline', 'filter-app'])
 
 def APP_invoke(context):
-    if context.protocol == 'paste.composit_factory1':
+    if context.protocol == 'paste.composit_factory':
         return context.object(context.loader, context.global_conf,
                               **context.local_conf)
-    elif context.protocol == 'paste.app_factory1':
+    elif context.protocol == 'paste.app_factory':
         return context.object(context.global_conf, **context.local_conf)
     else:
         assert 0, "Protocol %r unknown" % context.protocol
@@ -73,13 +73,13 @@ APP.invoke = APP_invoke
 
 FILTER = _ObjectType(
     'filter',
-    [['paste.filter_factory1', 'paste.filter_app_factory1']],
+    [['paste.filter_factory', 'paste.filter_app_factory']],
     ['filter'])
 
 def FILTER_invoke(context):
-    if context.protocol == 'paste.filter_factory1':
+    if context.protocol == 'paste.filter_factory':
         return context.object(context.global_conf, **context.local_conf)
-    elif context.protocol == 'paste.filter_app_factory1':
+    elif context.protocol == 'paste.filter_app_factory':
         def filter_wrapper(wsgi_app):
             # This should be an object, so it has a nicer __repr__
             return context.object(wsgi_app, context.global_conf,
@@ -92,13 +92,13 @@ FILTER.invoke = FILTER_invoke
 
 SERVER = _ObjectType(
     'server',
-    [['paste.server_factory1', 'paste.server_runner1']],
+    [['paste.server_factory', 'paste.server_runner']],
     ['server'])
 
 def SERVER_invoke(context):
-    if context.protocol == 'paste.server_factory1':
+    if context.protocol == 'paste.server_factory':
         return context.object(context.global_conf, **context.local_conf)
-    elif context.protocol == 'paste.server_runner1':
+    elif context.protocol == 'paste.server_runner':
         def server_wrapper(wsgi_app):
             # This should be an object, so it has a nicer __repr__
             return context.object(wsgi_app, context.global_conf,
@@ -136,6 +136,16 @@ def FILTER_APP_invoke(context):
     return filter(next_app)
 
 FILTER_APP.invoke = FILTER_APP_invoke
+
+FILTER_WITH = _ObjectType(
+    'filtered_app', [], [])
+
+def FILTER_WITH_invoke(context):
+    filter = context.filter_context.create()
+    app = APP_invoke(context)
+    return filter(app)
+
+FILTER_WITH.invoke = FILTER_WITH_invoke
 
 ############################################################
 ## Loaders
@@ -285,25 +295,37 @@ class ConfigLoader(_Loader):
                     # @@: It's a global option (?), so skip it
                     continue
                 local_conf[option] = self.parser.get(section, option)
-        if section.startswith('filter-app:'):
-            return self._filter_app_context(
-                object_type, section, name=name,
-                global_conf=global_conf, local_conf=local_conf,
-                global_additions=global_additions)
-        if section.startswith('pipeline:'):
-            return self._pipeline_app_context(
-                object_type, section, name=name,
-                global_conf=global_conf, local_conf=local_conf,
-                global_additions=global_additions)
-        if 'use' in local_conf:
-            return self._context_from_use(
-                object_type, local_conf, global_conf, global_additions)
+        if object_type is APP and 'filter-with' in local_conf:
+            filter_with = local_conf.pop('filter-with')
         else:
-            return self._context_from_explicit(
-                object_type, local_conf, global_conf, global_additions)
+            filter_with = None
+        if section.startswith('filter-app:'):
+            context = self._filter_app_context(
+                object_type, section, name=name,
+                global_conf=global_conf, local_conf=local_conf,
+                global_additions=global_additions)
+        elif section.startswith('pipeline:'):
+            context = self._pipeline_app_context(
+                object_type, section, name=name,
+                global_conf=global_conf, local_conf=local_conf,
+                global_additions=global_additions)
+        elif 'use' in local_conf:
+            context = self._context_from_use(
+                object_type, local_conf, global_conf, global_additions,
+                section)
+        else:
+            context = self._context_from_explicit(
+                object_type, local_conf, global_conf, global_additions,
+                section)
+        if filter_with is not None:
+            filter_context = self.filter_context(
+                name=filter_with, global_conf=global_conf)
+            context.object_type = FILTER_WITH
+            context.filter_context = filter_context
+        return context
 
     def _context_from_use(self, object_type, local_conf, global_conf,
-                          global_additions):
+                          global_additions, section):
         use = local_conf.pop('use')
         context = self.get_context(
             object_type, name=use, global_conf=global_conf)
@@ -314,7 +336,7 @@ class ConfigLoader(_Loader):
         return context
 
     def _context_from_explicit(self, object_type, local_conf, global_conf,
-                               global_addition):
+                               global_addition, section):
         possible = []
         for protocol_options in object_type.egg_protocols:
             for protocol in protocol_options:
@@ -349,10 +371,12 @@ class ConfigLoader(_Loader):
             APP, next_name, global_conf)
         if 'use' in local_conf:
             context.filter_context = self._context_from_use(
-                FILTER, local_conf, global_conf, global_additions)
+                FILTER, local_conf, global_conf, global_additions,
+                section)
         else:
             context.filter_context = self._context_from_explicit(
-                FILTER, local_conf, global_conf, global_additions)
+                FILTER, local_conf, global_conf, global_additions,
+                section)
         return context
 
     def _pipeline_app_context(self, object_type, section, name,
