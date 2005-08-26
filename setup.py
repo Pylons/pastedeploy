@@ -26,11 +26,13 @@ See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/tru
     author_email="ianb@colorstudy.com",
     url="http://pythonpaste.org/deploy/paste-deploy.html",
     namespace_packages=['paste'],
-    extras_require={'composit': ['Paste']},
     packages=find_packages(exclude='tests'),
     zip_safe=True,
     entry_points={
     'distutils.commands': """
     tag = paste.deploy.tag:tag
+    """,
+    'paste.filter_app_factory': """
+    config = paste.deploy.config:make_config_filter
     """},
     )
