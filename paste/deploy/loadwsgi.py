@@ -285,16 +285,22 @@ class ConfigLoader(_Loader):
         global_conf.update(defaults)
         local_conf = {}
         global_additions = {}
+        get_from_globals = {}
         for option in self.parser.options(section):
             if option.startswith('set '):
                 name = option[4:].strip()
                 global_additions[name] = global_conf[name] = (
                     self.parser.get(section, option))
+            elif option.startswith('get '):
+                name = option[4:].strip()
+                get_from_globals[name] = self.parser.get(section, option)
             else:
                 if option in defaults:
                     # @@: It's a global option (?), so skip it
                     continue
                 local_conf[option] = self.parser.get(section, option)
+        for local_var, glob_var in get_from_globals.items():
+            local_conf[local_var] = global_conf[glob_var]
         if object_type is APP and 'filter-with' in local_conf:
             filter_with = local_conf.pop('filter-with')
         else:

@@ -1,6 +1,15 @@
 Paste Deployment News
 =====================
 
+Version 0.3 (svn trunk)
+-----------------------
+
+* Allow variable setting like::
+
+    get local_var = global_var_name
+
+  To bring in global variables to the local scope.
+
 Version 0.2
 -----------
 

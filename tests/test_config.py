@@ -53,3 +53,13 @@ def test_foreign_config():
         'def3': 'c',
         'glob': 'override'}
     
+def test_config_get():
+    app = loadapp(ini_file, relative_to=here, name='test_get')
+    assert isinstance(app, fc.SimpleApp)
+    assert app.local_conf == {
+        'def1': 'a',
+        'foo': 'TEST'}
+    assert app.global_conf == {
+        'def1': 'a',
+        'def2': 'TEST'}
+
