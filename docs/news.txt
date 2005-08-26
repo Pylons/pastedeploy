@@ -1,8 +1,10 @@
 Paste Deployment News
 =====================
 
-Version 0.2 (svn trunk)
------------------------
+Version 0.2
+-----------
+
+Released 26 August 2004
 
 * Added a ``filter-with`` setting to applications.
 
@@ -22,5 +24,7 @@ Version 0.2 (svn trunk)
 
 Version 0.1
 -----------
+
+Released 22 August 2004
 
 Initial version released.  It's all new.
