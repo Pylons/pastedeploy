@@ -37,7 +37,7 @@ First install `setuptools
 You can install Paste Deployment by installing `easy_install
 <http://peak.telecommunity.com/DevCenter/EasyInstall>`_ and running::
 
-    $ sudo easy_install.py http://svn.pythonpaste.org/Paste/Deploy/trunk
+    $ sudo easy_install.py PasteDeploy
 
 If you want to track development, do::
 
@@ -47,6 +47,9 @@ If you want to track development, do::
 
 This will install the package globally, but will load the files in the
 checkout.
+
+For downloads and other information see the `Cheese Shop PasteDeploy
+page <http://cheeseshop.python.org/pypi/PasteDeploy>`_.
 
 Basic Usage
 -----------
