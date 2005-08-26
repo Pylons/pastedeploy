@@ -29,4 +29,8 @@ See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/tru
     extras_require={'composit': ['Paste']},
     packages=find_packages(exclude='tests'),
     zip_safe=True,
+    entry_points={
+    'distutils.commands': """
+    tag = paste.deploy.tag:tag
+    """},
     )
