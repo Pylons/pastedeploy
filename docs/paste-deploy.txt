@@ -479,3 +479,13 @@ Outstanding Issues
   code isn't usable with Python strings without a thin wrapper to
   translate objects into their proper types.
 
+* Some short-form for a filter/app, where the filter refers to the
+  "next app".  Maybe like::
+
+    [app-filter:app_name]
+    use = egg:...
+    next = next_app
+
+    [app:next_app]
+    ...
+
