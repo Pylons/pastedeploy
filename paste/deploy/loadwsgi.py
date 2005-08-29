@@ -488,10 +488,16 @@ class EggLoader(_Loader):
                     break
         if not possible:
             # Better exception
+            dist = pkg_resources.get_distribution(self.spec)
             raise LookupError(
-                "Entry point %r not found in egg %r (protocols: %s)"
+                "Entry point %r not found in egg %r (dir: %s; protocols: %s; "
+                "entry_points: %s)"
                 % (name, self.spec,
-                   ', '.join(_flatten(object_type.egg_protocols))))
+                   dist.location,
+                   ', '.join(_flatten(object_type.egg_protocols)),
+                   ', '.join(_flatten([
+                (pkg_resources.get_entry_info(self.spec, prot, name) or {}).keys()
+                for prot in protocol_options] or '(no entry points)'))))
         if len(possible) > 1:
             raise LookupError(
                 "Ambiguous entry points for %r in egg %r (protocols: %s)"
