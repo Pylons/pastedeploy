@@ -28,11 +28,14 @@ See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/tru
     namespace_packages=['paste'],
     packages=find_packages(exclude='tests'),
     zip_safe=True,
-    entry_points={
-    'distutils.commands': """
+    entry_points="""
+    [distutils.commands]
     tag = paste.deploy.tag:tag
-    """,
-    'paste.filter_app_factory': """
+
+    [paste.filter_app_factory]
     config = paste.deploy.config:make_config_filter
-    """},
+
+    [paste.paster_create_template]
+    paste_deploy=paste.deploy.paster_templates:PasteDeploy
+    """,
     )
