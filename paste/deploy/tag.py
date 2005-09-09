@@ -131,7 +131,7 @@ def run_command(command_list, stdin=None):
             returncode, format_command(command_list))
         if stderr:
             error += '; stderr output:\n' + stderr
-        raise Distutils.ExecError(error)
+        raise DistutilsExecError(error)
     return stdout
 
 def format_command(lst):
