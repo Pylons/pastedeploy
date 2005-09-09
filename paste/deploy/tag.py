@@ -34,11 +34,11 @@ class tag(Command):
                 "You must specify a version")
         if self.message is None:
             self.message = "Tagging %s version" % self.version
-        if self.build is None:
-            self.build = tempfile.mkdtemp(prefix='tag_checkout_')
-        if os.path.exists(self.build):
+        if self.build and os.path.exists(self.build):
             raise DistutilsOptionError(
                 "The build directory %s already exists" % self.build)
+        if self.build is None:
+            self.build = tempfile.mkdtemp(prefix='tag_checkout_')
             
     _svn_url_re = re.compile(r'\bURL: (.*)')
     _setup_version_re = re.compile(r'(version\s+=\s+)([^ \n\r,)]*)')
