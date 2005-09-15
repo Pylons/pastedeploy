@@ -4,7 +4,11 @@ from ConfigParser import NoSectionError
 from distutils.errors import *
 from distutils import log
 from pkg_resources import *
-import subprocess
+try:
+    import subprocess
+except ImportError:
+    # pre-Python 2.4
+    pass
 import re
 import sys
 import os
