@@ -10,7 +10,6 @@ package_name = ${package}
 # @@: This should be moved into a SQLObject template:
 database = postgres://pgsql@/${package}
 debug = true
-database_module = ${package}.db
 get client_name = client_name
 get email_errors = email_errors
 
@@ -21,5 +20,3 @@ email_errors =
 
 # @@: This should be moved into a SQLObject template:
 database = postgres://pgsql@/${package}_test
-# @@: sqlobject-admin can't pick this up from the use :(
-database_module = ${package}.db
