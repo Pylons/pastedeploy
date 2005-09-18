@@ -7,3 +7,4 @@ class PasteDeploy(Template):
     
     egg_plugins = ['PasteDeploy']
     
+    required_templates = ['PasteScript#basic_package']
