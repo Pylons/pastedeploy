@@ -305,6 +305,10 @@ class ConfigLoader(_Loader):
             filter_with = local_conf.pop('filter-with')
         else:
             filter_with = None
+        if 'require' in local_conf:
+            for spec in local_conf['require'].split():
+                pkg_resources.require(spec)
+            del local_conf['require']
         if section.startswith('filter-app:'):
             context = self._filter_app_context(
                 object_type, section, name=name,
