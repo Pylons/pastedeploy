@@ -27,13 +27,21 @@ See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/tru
     url="http://pythonpaste.org/deploy/paste-deploy.html",
     namespace_packages=['paste'],
     packages=find_packages(exclude='tests'),
-    zip_safe=True,
+    package_data={
+      'paste.deploy': ['paster_templates/paste_deploy/docs/*_tmpl',
+                       'paster_templates/paste_deploy/docs/*.txt'],
+      },
+    zip_safe=False,
+    extras_require={
+      'Config': ['Paste'],
+      'Paste': ['Paste'],
+      },
     entry_points="""
     [distutils.commands]
     tag = paste.deploy.tag:tag
 
     [paste.filter_app_factory]
-    config = paste.deploy.config:make_config_filter
+    config = paste.deploy.config:make_config_filter [Config]
 
     [paste.paster_create_template]
     paste_deploy=paste.deploy.paster_templates:PasteDeploy

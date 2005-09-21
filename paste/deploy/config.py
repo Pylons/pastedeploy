@@ -1,15 +1,21 @@
-from paste.util.threadinglocal import local
 import threading
 # Loaded lazily
 wsgilib = None
+local = None
 
 __all__ = ['DispatchingConfig', 'CONFIG', 'ConfigMiddleware']
 
-config_local = local()
-
 def local_dict():
+    global config_local, local
     try:
         return config_local.wsgi_dict
+    except NameError:
+        import pkg_resources
+        pkg_resources.require('Paste')
+        from paste.util.threadinglocal import local
+        config_local = local()
+        config_local.wsgi_dict = result = {}
+        return result
     except AttributeError:
         config_local.wsgi_dict = result = {}
         return result
@@ -134,6 +140,8 @@ class ConfigMiddleware(object):
     def __call__(self, environ, start_response):
         global wsgilib
         if wsgilib is None:
+            import pkg_resources
+            pkg_resources.require('Paste')
             from paste import wsgilib
         conf = environ['paste.config'] = self.config.copy()
         app_iter = None
