@@ -72,6 +72,7 @@ class tag(Command):
         self.update_setup_cfg()
         run_command(['svn', 'commit', '--message',
                      'Auto-update of version strings', self.build])
+        self.checkout_tag(tag_url)
 
     def update_setup_py(self):
         setup_py = os.path.join(self.build, 'setup.py')
@@ -118,6 +119,24 @@ class tag(Command):
         if not content.strip():
             log.info('%s empty; deleting' % setup_cfg)
             run_command(['svn', 'rm', '--force', setup_cfg])
+
+    def checkout_tag(self, tag_url):
+        # Put it in the parent directory:
+        ext = ''
+        while 1:
+            base = os.path.join(os.path.dirname(os.getcwd()),
+                                '%s-%s%s' % (self.distribution.metadata.name, self.version, ext))
+            if os.path.exists(base):
+                log.warn('Directory %s exists' % base)
+                if ext:
+                    ext += 1
+                else:
+                    ext = 0
+            else:
+                break
+        run_command(['svn', 'checkout', tag_url, base])
+        log.info('Checked out tag into %s' % base)
+
                     
 def run_command(command_list, stdin=None):
     log.info('Running %s', format_command(command_list))
