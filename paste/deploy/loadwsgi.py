@@ -229,11 +229,11 @@ class _Loader(object):
 
     def get_filter(self, name=None, global_conf=None):
         return self.filter_context(
-            name=naame, global_conf=global_conf).create()
+            name=name, global_conf=global_conf).create()
 
     def get_server(self, name=None, global_conf=None):
         return self.server_context(
-            name=naame, global_conf=global_conf).create()
+            name=name, global_conf=global_conf).create()
 
     def app_context(self, name=None, global_conf=None):
         return self.get_context(
@@ -505,7 +505,7 @@ class EggLoader(_Loader):
         if len(possible) > 1:
             raise LookupError(
                 "Ambiguous entry points for %r in egg %r (protocols: %s)"
-                % (name, self.spec, ', '.join(_flatten(protocol_list))))
+                % (name, self.spec, ', '.join(_flatten(protocol_options))))
         return possible[0]
 
 class LoaderContext(object):

@@ -12,7 +12,6 @@ except ImportError:
 import re
 import sys
 import os
-import shutil
 import tempfile
 
 class tag(Command):
