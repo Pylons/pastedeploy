@@ -269,7 +269,8 @@ class ConfigLoader(_Loader):
             raise OSError(
                 "File %s not found" % filename)
         self.parser.read(filename)
-        self.parser._defaults['here'] = os.path.dirname(filename)
+        self.parser._defaults.setdefault(
+            'here', os.path.dirname(os.path.abspath(filename)))
 
     def get_context(self, object_type, name=None, global_conf=None):
         if self.absolute_name(name):
