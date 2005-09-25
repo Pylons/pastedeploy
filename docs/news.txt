@@ -10,6 +10,11 @@ Version 0.3 (svn trunk)
 
   To bring in global variables to the local scope.
 
+* Allow interpolation in files, like ``%(here)s``.  Anything in the
+  ``[DEFAULTS]`` section will be available to substitute into a value,
+  as will variables in the same section.  Also, the special value
+  ``here`` will be the directory the configuration file is located in.
+
 Version 0.2
 -----------
 

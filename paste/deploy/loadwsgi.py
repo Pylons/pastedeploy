@@ -1,7 +1,7 @@
 import os
 import re
 import urllib
-from ConfigParser import RawConfigParser
+from ConfigParser import ConfigParser
 import pkg_resources
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter']
@@ -260,7 +260,7 @@ class ConfigLoader(_Loader):
 
     def __init__(self, filename):
         self.filename = filename
-        self.parser = RawConfigParser()
+        self.parser = ConfigParser()
         # Don't lower-case keys:
         self.parser.optionxform = str
         # Stupid ConfigParser ignores files that aren't found, so
@@ -269,6 +269,7 @@ class ConfigLoader(_Loader):
             raise OSError(
                 "File %s not found" % filename)
         self.parser.read(filename)
+        self.parser._defaults['here'] = os.path.dirname(filename)
 
     def get_context(self, object_type, name=None, global_conf=None):
         if self.absolute_name(name):
