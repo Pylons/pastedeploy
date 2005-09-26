@@ -36,6 +36,23 @@ def _flatten(lst):
         result.extend(_flatten(item))
     return result
 
+class NicerConfigParser(ConfigParser):
+
+    def __init__(self, filename, *args, **kw):
+        ConfigParser.__init__(self, *args, **kw)
+        self.filename = filename
+
+    def _interpolate(self, section, option, rawval, vars):
+        try:
+            return ConfigParser._interpolate(
+                self, section, option, rawval, vars)
+        except Exception, e:
+            args = list(e.args)
+            args[0] = 'Error in file %s, [%s] %s=%r: %s' % (
+                self.filename, section, option, rawval)
+            e.args = tuple(args)
+            raise
+
 ############################################################
 ## Object types
 ############################################################
@@ -260,7 +277,7 @@ class ConfigLoader(_Loader):
 
     def __init__(self, filename):
         self.filename = filename
-        self.parser = ConfigParser()
+        self.parser = ConfigParser(self.filename)
         # Don't lower-case keys:
         self.parser.optionxform = str
         # Stupid ConfigParser ignores files that aren't found, so
