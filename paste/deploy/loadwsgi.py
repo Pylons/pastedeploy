@@ -277,7 +277,7 @@ class ConfigLoader(_Loader):
 
     def __init__(self, filename):
         self.filename = filename
-        self.parser = ConfigParser(self.filename)
+        self.parser = NicerConfigParser(self.filename)
         # Don't lower-case keys:
         self.parser.optionxform = str
         # Stupid ConfigParser ignores files that aren't found, so
