@@ -11,7 +11,7 @@ def local_dict():
         return config_local.wsgi_dict
     except NameError:
         import pkg_resources
-        pkg_resources.require('Paste')
+        pkg_resources.require('Paste>=0.1')
         from paste.util.threadinglocal import local
         config_local = local()
         config_local.wsgi_dict = result = {}
