@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.3'
+version = '0.4'
 
 setup(
     name="PasteDeploy",
@@ -13,7 +13,7 @@ files.
 
 See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/trunk#egg=Paste-Deploy-%sdev>`_
 """ % version,
-    classifiers=["Development Status :: 3 - Alpha",
+    classifiers=["Development Status :: 4 - Beta",
                  "Intended Audience :: Developers",
                  "License :: OSI Approved :: Python Software Foundation License",
                  "Programming Language :: Python",
@@ -24,7 +24,7 @@ See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/tru
     keywords='web wsgi application server',
     author="Ian Bicking",
     author_email="ianb@colorstudy.com",
-    url="http://pythonpaste.org/deploy/paste-deploy.html",
+    url="http://pythonpaste.org/deploy/",
     namespace_packages=['paste'],
     packages=find_packages(exclude='tests'),
     package_data={
