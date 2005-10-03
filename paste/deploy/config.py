@@ -95,7 +95,7 @@ class DispatchingConfig(object):
             
     def __getattr__(self, attr):
         conf = self.current_conf()
-        if not conf:
+        if conf is None:
             raise AttributeError(
                 "No configuration has been registered for this process "
                 "or thread")
@@ -113,7 +113,7 @@ class DispatchingConfig(object):
     def __getitem__(self, key):
         # I thought __getattr__ would catch this, but apparently not
         conf = self.current_conf()
-        if not conf:
+        if conf is None:
             raise TypeError(
                 "No configuration has been registered for this process "
                 "or thread")
