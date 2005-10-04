@@ -10,8 +10,6 @@ setup(
 This tool provides code to load WSGI applications and servers from
 URIs; these URIs can refer to Python Eggs for INI-style configuration
 files.  
-
-See also the `Subversion repository <http://svn.pythonpaste.org/Paste/Deploy/trunk#egg=Paste-Deploy-%sdev>`_
 """ % version,
     classifiers=["Development Status :: 4 - Beta",
                  "Intended Audience :: Developers",
