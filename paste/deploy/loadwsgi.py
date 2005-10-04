@@ -49,7 +49,7 @@ class NicerConfigParser(ConfigParser):
         except Exception, e:
             args = list(e.args)
             args[0] = 'Error in file %s, [%s] %s=%r: %s' % (
-                self.filename, section, option, rawval)
+                self.filename, section, option, rawval, e)
             e.args = tuple(args)
             raise
 
