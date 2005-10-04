@@ -31,7 +31,7 @@ files.
       },
     zip_safe=False,
     extras_require={
-      'Config': ['Paste'],
+      'Config': [],
       'Paste': ['Paste'],
       },
     entry_points="""
