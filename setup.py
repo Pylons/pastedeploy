@@ -10,7 +10,7 @@ setup(
 This tool provides code to load WSGI applications and servers from
 URIs; these URIs can refer to Python Eggs for INI-style configuration
 files.  
-""" % version,
+""",
     classifiers=["Development Status :: 4 - Beta",
                  "Intended Audience :: Developers",
                  "License :: OSI Approved :: Python Software Foundation License",
