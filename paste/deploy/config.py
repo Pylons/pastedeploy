@@ -10,9 +10,7 @@ def local_dict():
     try:
         return config_local.wsgi_dict
     except NameError:
-        import pkg_resources
-        pkg_resources.require('Paste>=0.1')
-        from paste.util.threadinglocal import local
+        from paste.deploy.util.threadinglocal import local
         config_local = local()
         config_local.wsgi_dict = result = {}
         return result
