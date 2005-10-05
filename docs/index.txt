@@ -204,6 +204,7 @@ where you mount applications at different URL paths.  This might look
 like::
 
     [composit:main]
+    use = egg:Paste#urlmap
     / = mainapp
     /files = staticapp
 
