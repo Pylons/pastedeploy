@@ -117,6 +117,15 @@ class DispatchingConfig(object):
                 "or thread")
         return conf[key]
 
+    def __contains__(self, key):
+        # I thought __getattr__ would catch this, but apparently not
+        return self.has_key(key)
+
+    def __setitem__(self, key, value):
+        # I thought __getattr__ would catch this, but apparently not
+        conf = self.current_conf()
+        conf[key] = value
+
 CONFIG = DispatchingConfig()
 
 class ConfigMiddleware(object):
