@@ -1,8 +1,20 @@
 Paste Deployment News
 =====================
 
-Version 0.3 (svn trunk)
+Version 0.4 (svn trunk)
 -----------------------
+
+* Allow filters to have ``filter-with`` values, just like
+  applications.
+
+* Renamed ``composit`` to ``composite`` (old names still work, but
+  aren't documented).
+
+* Added ``appconfig()`` to load along with ``loadapp()``, but return
+  the configuration without invoking the application.
+
+Version 0.3
+-----------
 
 * Allow variable setting like::
 

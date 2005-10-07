@@ -1,4 +1,4 @@
-from paste.deploy import loadapp, loadfilter
+from paste.deploy import loadapp, loadfilter, appconfig
 from fixture import *
 import fakeapp.apps
 

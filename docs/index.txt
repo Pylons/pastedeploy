@@ -195,15 +195,15 @@ global configuration locally like::
 
 That is, by using ``set`` in front of the key.
 
-Composit Applications
-~~~~~~~~~~~~~~~~~~~~~
+Composite Applications
+~~~~~~~~~~~~~~~~~~~~~~
 
-"Composit" applications are things that act like applications, but
+"Composite" applications are things that act like applications, but
 are made up of other applications.  One example would be a URL mapper,
 where you mount applications at different URL paths.  This might look
 like::
 
-    [composit:main]
+    [composite:main]
     use = egg:Paste#urlmap
     / = mainapp
     /files = staticapp
@@ -215,7 +215,7 @@ like::
     use = egg:Paste#static
     document_root = /path/to/docroot
 
-The composit application "main" is just like any other application
+The composite application "main" is just like any other application
 from the outside (you load it with ``loadapp`` for instance), but it
 has access to other applications defined in the configuration file.
 
@@ -242,6 +242,7 @@ The first way is to use the ``filter-with`` setting, like::
 
     [filter:printdebug]
     use = egg:Paste#printdebug
+    # and you could have another filter-with here, and so on...
 
 Also, two special section types exist to apply filters to your
 applications: ``[filter-app:...]`` and ``[pipeline:...]``.  Both of
@@ -262,6 +263,16 @@ ended by an application, like::
 
     [filter:filter1]
     ...
+
+Getting Configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+If you want to get the configuration without creating the application,
+you can use the ``appconfig(uri)`` function, which is just like the
+``loadapp()`` function except it returns the configuration that would
+be used, as a dictionary.  Both global and local configuration is
+combined into a single dictionary, but you can look at just one or the
+other with the attributes ``.local_conf`` and ``.global_conf``.
 
 ``egg:`` URIs
 -------------
@@ -329,7 +340,7 @@ mentioned).  But that's not much use unless you can create factories
 for your applications.
 
 There's a few protocols: ``paste.app_factory``,
-``paste.composit_factory``, ``paste.filter_factory``, and lastly
+``paste.composite_factory``, ``paste.filter_factory``, and lastly
 ``paste.server_factory``.  Each of these expects a callable (like a
 function, method, or class).
 
