@@ -3,6 +3,7 @@ import re
 import urllib
 from ConfigParser import ConfigParser
 import pkg_resources
+from UserDict import UserDict
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter']
 
@@ -59,110 +60,119 @@ class NicerConfigParser(ConfigParser):
 
 class _ObjectType(object):
 
-    def __init__(self, name, egg_protocols, config_prefixes):
-        self.name = name
-        self.egg_protocols = map(_aslist, _aslist(egg_protocols))
-        self.config_prefixes = map(_aslist, _aslist(config_prefixes))
+    name = None
+    egg_protocols = None
+    config_prefixes = None
+
+    def __init__(self):
+        # Normalize these variables:
+        self.egg_protocols = map(_aslist, _aslist(self.egg_protocols))
+        self.config_prefixes = map(_aslist, _aslist(self.config_prefixes))
 
     def __repr__(self):
         return '<%s protocols=%r prefixes=%r>' % (
-            self.name, self.egg_protocols, self.config_prefixees)
+            self.name, self.egg_protocols, self.config_prefixes)
 
     def invoke(self, context):
         assert context.protocol in _flatten(self.egg_protocols)
         return context.object(context.global_conf, **context.local_conf)
 
-APP = _ObjectType(
-    'application',
-    ['paste.app_factory', 'paste.composit_factory'],    
-    [['app', 'application'], 'composit', 'pipeline', 'filter-app'])
+class _App(_ObjectType):
 
-def APP_invoke(context):
-    if context.protocol == 'paste.composit_factory':
-        return context.object(context.loader, context.global_conf,
-                              **context.local_conf)
-    elif context.protocol == 'paste.app_factory':
-        return context.object(context.global_conf, **context.local_conf)
-    else:
-        assert 0, "Protocol %r unknown" % context.protocol
+    name = 'application'
+    egg_protocols = ['paste.app_factory', 'paste.composit_factory']
+    config_prefixes = [['app', 'application'], ['composite', 'composit'],
+                       'pipeline', 'filter-app']
 
-APP.invoke = APP_invoke
-
-FILTER = _ObjectType(
-    'filter',
-    [['paste.filter_factory', 'paste.filter_app_factory']],
-    ['filter'])
-
-def FILTER_invoke(context):
-    if context.protocol == 'paste.filter_factory':
-        return context.object(context.global_conf, **context.local_conf)
-    elif context.protocol == 'paste.filter_app_factory':
-        def filter_wrapper(wsgi_app):
-            # This should be an object, so it has a nicer __repr__
-            return context.object(wsgi_app, context.global_conf,
+    def invoke(self, context):
+        if context.protocol == 'paste.composit_factory':
+            return context.object(context.loader, context.global_conf,
                                   **context.local_conf)
-        return filter_wrapper
-    else:
-        assert 0, "Protocol %r unknown" % context.protocol
+        elif context.protocol == 'paste.app_factory':
+            return context.object(context.global_conf, **context.local_conf)
+        else:
+            assert 0, "Protocol %r unknown" % context.protocol
 
-FILTER.invoke = FILTER_invoke
+APP = _App()
 
-SERVER = _ObjectType(
-    'server',
-    [['paste.server_factory', 'paste.server_runner']],
-    ['server'])
+class _Filter(_ObjectType):
+    name = 'filter'
+    egg_protocols = [['paste.filter_factory', 'paste.filter_app_factory']]
+    config_prefixes = ['filter']
 
-def SERVER_invoke(context):
-    if context.protocol == 'paste.server_factory':
-        return context.object(context.global_conf, **context.local_conf)
-    elif context.protocol == 'paste.server_runner':
-        def server_wrapper(wsgi_app):
-            # This should be an object, so it has a nicer __repr__
-            return context.object(wsgi_app, context.global_conf,
-                                  **context.local_conf)
-        return server_wrapper
-    else:
-        assert 0, "Protocol %r unknown" % context.protocol
+    def invoke(self, context):
+        if context.protocol == 'paste.filter_factory':
+            return context.object(context.global_conf, **context.local_conf)
+        elif context.protocol == 'paste.filter_app_factory':
+            def filter_wrapper(wsgi_app):
+                # This should be an object, so it has a nicer __repr__
+                return context.object(wsgi_app, context.global_conf,
+                                      **context.local_conf)
+            return filter_wrapper
+        else:
+            assert 0, "Protocol %r unknown" % context.protocol
 
-SERVER.invoke = SERVER_invoke
+FILTER = _Filter()
+
+class _Server(_ObjectType):
+    name = 'server'
+    egg_protocols = [['paste.server_factory', 'paste.server_runner']]
+    config_prefixes = ['server']
+
+    def invoke(self, context):
+        if context.protocol == 'paste.server_factory':
+            return context.object(context.global_conf, **context.local_conf)
+        elif context.protocol == 'paste.server_runner':
+            def server_wrapper(wsgi_app):
+                # This should be an object, so it has a nicer __repr__
+                return context.object(wsgi_app, context.global_conf,
+                                      **context.local_conf)
+            return server_wrapper
+        else:
+            assert 0, "Protocol %r unknown" % context.protocol
+
+SERVER = _Server()
 
 # Virtual type: (@@: There's clearly something crufty here;
 # this probably could be more elegant)
-PIPELINE = _ObjectType(
-    'pipeline',
-    [], [])
+class _PipeLine(_ObjectType):
+    name = 'pipeline'
 
-def PIPELINE_invoke(context):
-    app = context.app_context.create()
-    filters = [c.create() for c in context.filter_contexts]
-    filters.reverse()
-    for filter in filters:
-        app = filter(app)
-    return app
+    def invoke(self, context):
+        app = context.app_context.create()
+        filters = [c.create() for c in context.filter_contexts]
+        filters.reverse()
+        for filter in filters:
+            app = filter(app)
+        return app
 
-PIPELINE.invoke = PIPELINE_invoke
+PIPELINE = _PipeLine()
 
-# Virtual type:
-FILTER_APP = _ObjectType(
-    'filter_app',
-    [], [])
+class _FilterApp(_ObjectType):
+    name = 'filter_app'
 
-def FILTER_APP_invoke(context):
-    next_app = context.next_context.create()
-    filter = context.filter_context.create()
-    return filter(next_app)
+    def invoke(self, context):
+        next_app = context.next_context.create()
+        filter = context.filter_context.create()
+        return filter(next_app)
 
-FILTER_APP.invoke = FILTER_APP_invoke
+FILTER_APP = _FilterApp()
 
-FILTER_WITH = _ObjectType(
-    'filtered_app', [], [])
+class _FilterWith(_App):
+    name = 'filtered_with'
 
-def FILTER_WITH_invoke(context):
-    filter = context.filter_context.create()
-    app = APP_invoke(context)
-    return filter(app)
+    def invoke(self, context):
+        filter = context.filter_context.create()
+        filtered = context.next_context.create()
+        if context.next_context.object_type is APP:
+            return filter(filtered)
+        else:
+            # filtering a filter
+            def composed(app):
+                return filter(filtered(app))
+            return composed
 
-FILTER_WITH.invoke = FILTER_WITH_invoke
+FILTER_WITH = _FilterWith()
 
 ############################################################
 ## Loaders
@@ -176,6 +186,12 @@ def loadfilter(uri, name=None, **kw):
 
 def loadserver(uri, name=None, **kw):
     return loadobj(SERVER, uri, name=name, **kw)
+
+def appconfig(uri, name=None, relative_to=None, global_conf=None):
+    context = loadcontext(APP, uri, name=name,
+                          relative_to=relative_to,
+                          global_conf=global_conf)
+    return context
 
 _loaders = {}
 
@@ -320,7 +336,7 @@ class ConfigLoader(_Loader):
                 local_conf[option] = self.parser.get(section, option)
         for local_var, glob_var in get_from_globals.items():
             local_conf[local_var] = global_conf[glob_var]
-        if object_type is APP and 'filter-with' in local_conf:
+        if object_type in (APP, FILTER) and 'filter-with' in local_conf:
             filter_with = local_conf.pop('filter-with')
         else:
             filter_with = None
@@ -347,10 +363,16 @@ class ConfigLoader(_Loader):
                 object_type, local_conf, global_conf, global_additions,
                 section)
         if filter_with is not None:
-            filter_context = self.filter_context(
+            filter_with_context = LoaderContext(
+                obj=None,
+                object_type=FILTER_WITH,
+                protocol=None,
+                global_conf=None, local_conf=None,
+                loader=self)
+            filter_with_context.filter_context = self.filter_context(
                 name=filter_with, global_conf=global_conf)
-            context.object_type = FILTER_WITH
-            context.filter_context = filter_context
+            filter_with_context.next_context = context
+            return filter_with_context
         return context
 
     def _context_from_use(self, object_type, local_conf, global_conf,
@@ -540,3 +562,16 @@ class LoaderContext(object):
 
     def create(self):
         return self.object_type.invoke(self)
+
+    def config(self):
+        conf = AttrDict(self.global_conf)
+        AttrDict.update(self.local_conf)
+        AttrDict.local_conf = local_conf
+        AttrDict.global_conf = global_conf
+        return AttrDict
+
+class AttrDict(dict):
+    """
+    A dictionary that can be assigned to.
+    """
+    pass

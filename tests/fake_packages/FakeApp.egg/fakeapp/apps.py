@@ -49,9 +49,9 @@ class RemoteAddrDispatch(object):
 ############################################################
 
 def make_cap_filter(global_conf, method_to_call='upper'):
-    def filter(app):
+    def cap_filter(app):
         return CapFilter(app, global_conf, method_to_call)
-    return filter
+    return cap_filter
 
 class CapFilter(object):
 

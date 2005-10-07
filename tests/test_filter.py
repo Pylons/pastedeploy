@@ -37,3 +37,10 @@ def test_filter_app_inverted():
                   relative_to=here)
     assert isinstance(app, fakeapp.apps.CapFilter)
     assert app.app is fakeapp.apps.basic_app
+
+def test_filter_with_filter_with():
+    app = loadapp('config:sample_configs/test_filter_with.ini',
+                  relative_to=here)
+    assert isinstance(app, fakeapp.apps.CapFilter)
+    assert isinstance(app.app, fakeapp.apps.CapFilter)
+    assert app.app.app is fakeapp.apps.basic_app
