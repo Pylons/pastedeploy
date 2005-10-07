@@ -46,8 +46,10 @@ class IPasteAppFactory:
         """
         Returns a WSGI application (IWSGIAPP) given the global
         configuration and the local configuration passed in as keyword
-        arguments.  All keys are strings, but values in local_conf may
-        not be valid Python identifiers (if you use **kw you can still
+        arguments.
+
+        All keys are strings, but values in local_conf may not be
+        valid Python identifiers (if you use ``**kw`` you can still
         capture these values).
         """
 
