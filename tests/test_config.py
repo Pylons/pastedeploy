@@ -1,5 +1,5 @@
 import os
-from paste.deploy import loadapp, loadfilter
+from paste.deploy import loadapp, loadfilter, appconfig
 from fixture import *
 import fakeapp.configapps as fc
 
@@ -69,3 +69,17 @@ def test_config_get():
         'def2': 'TEST',
         'here': config_path}
 
+def test_appconfig():
+    conf = appconfig(ini_file, relative_to=here, name='test_get')
+    assert conf == {
+        'def1': 'a',
+        'def2': 'TEST',
+        'here': config_path,
+        'foo': 'TEST'}
+    assert conf.local_conf == {
+        'def1': 'a',
+        'foo': 'TEST'}
+    assert conf.global_conf == {
+        'def1': 'a',
+        'def2': 'TEST',
+        'here': config_path}

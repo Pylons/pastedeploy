@@ -5,7 +5,7 @@ from ConfigParser import ConfigParser
 import pkg_resources
 from UserDict import UserDict
 
-__all__ = ['loadapp', 'loadserver', 'loadfilter']
+__all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
 ############################################################
 ## Utility functions
@@ -80,12 +80,14 @@ class _ObjectType(object):
 class _App(_ObjectType):
 
     name = 'application'
-    egg_protocols = ['paste.app_factory', 'paste.composit_factory']
+    egg_protocols = ['paste.app_factory', 'paste.composite_factory',
+                     'paste.composit_factory']
     config_prefixes = [['app', 'application'], ['composite', 'composit'],
                        'pipeline', 'filter-app']
 
     def invoke(self, context):
-        if context.protocol == 'paste.composit_factory':
+        if context.protocol in ('paste.composit_factory',
+                                'paste.composite_factory'):
             return context.object(context.loader, context.global_conf,
                                   **context.local_conf)
         elif context.protocol == 'paste.app_factory':
@@ -191,7 +193,7 @@ def appconfig(uri, name=None, relative_to=None, global_conf=None):
     context = loadcontext(APP, uri, name=name,
                           relative_to=relative_to,
                           global_conf=global_conf)
-    return context
+    return context.config()
 
 _loaders = {}
 
@@ -565,10 +567,10 @@ class LoaderContext(object):
 
     def config(self):
         conf = AttrDict(self.global_conf)
-        AttrDict.update(self.local_conf)
-        AttrDict.local_conf = local_conf
-        AttrDict.global_conf = global_conf
-        return AttrDict
+        conf.update(self.local_conf)
+        conf.local_conf = self.local_conf
+        conf.global_conf = self.global_conf
+        return conf
 
 class AttrDict(dict):
     """

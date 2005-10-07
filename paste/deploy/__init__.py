@@ -1,4 +1,4 @@
-from loadwsgi import loadapp, loadfilter, loadserver
+from loadwsgi import *
 try:
     from config import CONFIG
 except ImportError:
