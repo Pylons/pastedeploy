@@ -3,7 +3,6 @@ import re
 import urllib
 from ConfigParser import ConfigParser
 import pkg_resources
-from UserDict import UserDict
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
