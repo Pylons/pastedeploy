@@ -35,9 +35,6 @@ files.
       'Paste': ['Paste'],
       },
     entry_points="""
-    [distutils.commands]
-    tag = paste.deploy.tag:tag
-
     [paste.filter_app_factory]
     config = paste.deploy.config:make_config_filter [Config]
 
