@@ -1,6 +1,6 @@
 [DEFAULT]
 client_name = test_client
-email_errors = ${author_email|empty}
+error_email = ${author_email|empty}
 config_root = <docs>
 
 [app:main]
