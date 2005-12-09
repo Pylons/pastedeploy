@@ -1,25 +1,17 @@
-[DEFAULT]
-client_name = test_client
-error_email = ${author_email|empty}
-config_root = <docs>
+[filter-app:main]
+# This puts the interactive debugger in place:
+use = egg:Paste#evalerror
+next = devel
 
-[app:main]
-use = egg:PasteWebKit
-app_name = ${package}
-package_name = ${package}
-# @@: This should be moved into a SQLObject template:
-database = postgres://pgsql@/${package}
+[app:devel]
+# This application is meant for interactive development
+use = egg:${project}
 debug = true
-get client_name = client_name
-get email_errors = email_errors
 
 [app:test]
-use = main
-# Disable emailing of errors:
-email_errors =
-
-# @@: This should be moved into a SQLObject template:
-database = postgres://pgsql@/${package}_test
+# While this version of the configuration is for non-iteractive
+# tests (unit tests)
+use = devel
 
 [server:main]
 use = egg:PasteScript#wsgiutils

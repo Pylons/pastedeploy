@@ -525,6 +525,7 @@ class EggLoader(_Loader):
         possible = []
         for protocol_options in object_type.egg_protocols:
             for protocol in protocol_options:
+                pkg_resources.require(self.spec)
                 entry = pkg_resources.get_entry_info(
                     self.spec,
                     protocol,
