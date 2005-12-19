@@ -506,14 +506,16 @@ class EggLoader(_Loader):
         if self.absolute_name(name):
             return loadcontext(object_type, name,
                                global_conf=global_conf)
-        entry_point, protocol = self.find_egg_entry_point(
+        entry_point, protocol, ep_name = self.find_egg_entry_point(
             object_type, name=name)
         return LoaderContext(
             entry_point,
             object_type,
             protocol,
             global_conf or {}, {},
-            self)
+            self,
+            distribution=pkg_resources.get_distribution(self.spec),
+            entry_point_name=ep_name)
 
     def find_egg_entry_point(self, object_type, name=None):
         """
@@ -531,7 +533,7 @@ class EggLoader(_Loader):
                     protocol,
                     name)
                 if entry is not None:
-                    possible.append((entry.load(), protocol))
+                    possible.append((entry.load(), protocol, entry.name))
                     break
         if not possible:
             # Better exception
@@ -554,13 +556,19 @@ class EggLoader(_Loader):
 class LoaderContext(object):
 
     def __init__(self, obj, object_type, protocol,
-                 global_conf, local_conf, loader):
+                 global_conf, local_conf, loader,
+                 distribution=None, entry_point_name=None):
         self.object = obj
         self.object_type = object_type
         self.protocol = protocol
+        #assert protocol in _flatten(object_type.egg_protocols), (
+        #    "Bad protocol %r; should be one of %s"
+        #    % (protocol, ', '.join(map(repr, _flatten(object_type.egg_protocols)))))
         self.global_conf = global_conf
         self.local_conf = local_conf
         self.loader = loader
+        self.distribution = distribution
+        self.entry_point_name = entry_point_name
 
     def create(self):
         return self.object_type.invoke(self)
@@ -570,6 +578,7 @@ class LoaderContext(object):
         conf.update(self.local_conf)
         conf.local_conf = self.local_conf
         conf.global_conf = self.global_conf
+        conf.context = self
         return conf
 
 class AttrDict(dict):
