@@ -13,7 +13,7 @@ files.  `Paste Script <http://pythonpaste.org/script>`_ provides
 commands to serve applications based on this configuration file.
 
 The latest version is available in a `Subversion repository
-<http://svn.pythonpaste.org/Paste/Deploy/trunk#egg=PasteDeploy==dev>`_.
+<http://svn.pythonpaste.org/Paste/Deploy/trunk#egg=PasteDeploy-dev>`_.
 
 For the latest changes see the `news file
 <http://pythonpaste.org/deploy/news.html>`_.
