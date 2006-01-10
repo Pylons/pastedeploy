@@ -1,8 +1,15 @@
 Paste Deployment News
 =====================
 
-Version 0.4 (svn trunk)
------------------------
+svn trunk
+---------
+
+* Made the ``paste_deploy`` template (used with ``paster create
+  --template=paste_deploy``) more useful, with an example application
+  and entry point.
+
+Version 0.4
+-----------
 
 * Allow filters to have ``filter-with`` values, just like
   applications.

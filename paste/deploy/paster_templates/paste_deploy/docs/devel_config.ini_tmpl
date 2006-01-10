@@ -7,6 +7,8 @@ next = devel
 # This application is meant for interactive development
 use = egg:${project}
 debug = true
+# You can add other configuration values:
+greeting = Aloha!
 
 [app:test]
 # While this version of the configuration is for non-iteractive
