@@ -355,12 +355,12 @@ The application is the most common.  You define one like::
 The ``global_config`` is a dictionary, and local configuration is
 passed as keyword arguments.  The function returns a WSGI application.
 
-``paste.composit_factory``
+``paste.composite_factory``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Composits are just slightly more complex::
+Composites are just slightly more complex::
 
-    def composit_factory(loader, global_config, **local_conf):
+    def composite_factory(loader, global_config, **local_conf):
         return wsgi_app
 
 The ``loader`` argument is an object that has a couple interesting
@@ -368,7 +368,7 @@ methods.  ``get_app(name_or_uri, global_conf=None)`` return a WSGI
 application with the given name.  ``get_filter`` and ``get_server``
 work the same way.
 
-A more interesting example might be a composit factory that does
+A more interesting example might be a composite factory that does
 something.  For instance, consider a "pipeline" application::
 
     def pipeline_factory(loader, global_config, pipeline):
@@ -383,7 +383,7 @@ something.  For instance, consider a "pipeline" application::
 
 Then we use it like::
 
-    [composit:main]
+    [composite:main]
     use = <pipeline_factory_uri>
     pipeline = egg:Paste#printdebug session myapp
 
@@ -474,7 +474,7 @@ Outstanding Issues
 * Should there be a "default" protocol for each type of object?  Since
   there's currently only one protocol, it seems like it makes sense
   (in the future there could be multiple).  Except that
-  ``paste.app_factory`` and ``paste.composit_factory`` overlap
+  ``paste.app_factory`` and ``paste.composite_factory`` overlap
   considerably.
 
 * ConfigParser's INI parsing is kind of annoying.  I'd like it both
