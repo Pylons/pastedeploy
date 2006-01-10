@@ -12,9 +12,11 @@ def application(environ, start_response):
         '<body><h1>%s!</h1>\n' % greeting,
         '<table border=1>\n',
         ]
-    for key in sorted(environ):
+    items = environ.items()
+    items.sort()
+    for key, value in items:
         content.append('<tr><td>%s</td><td>%s</td></tr>\n'
-                        % (key, cgi.escape(repr(environ[key]))))
+                        % (key, cgi.escape(repr(value))))
     content.append('</table></body></html>')
     return content
 

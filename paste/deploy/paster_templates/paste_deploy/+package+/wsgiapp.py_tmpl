@@ -13,7 +13,7 @@ def make_app(
     # dictionary; you don't have to do this, but this
     # can be convenient later to add ad hoc configuration:
     conf = global_conf.copy()
-    conf.update(**kw)
+    conf.update(kw)
     conf['greeting'] = greeting
     # ConfigMiddleware means that paste.deploy.CONFIG will,
     # during this request (threadsafe) represent the
