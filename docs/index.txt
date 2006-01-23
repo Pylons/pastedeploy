@@ -46,10 +46,123 @@ If you want to track development, do::
     $ sudo python setup.py develop
 
 This will install the package globally, but will load the files in the
-checkout.
+checkout.  You can also simply install ``PasteDeploy==dev``.
 
 For downloads and other information see the `Cheese Shop PasteDeploy
 page <http://cheeseshop.python.org/pypi/PasteDeploy>`_.
+
+A complimentary package is `Paste Script </script/>`_.  To install
+that use ``easy_install PasteScript`` (or ``easy_install
+PasteScript==dev``).
+
+From the User Perspective
+-------------------------
+
+In the following sections, the Python API for using Paste Deploy is
+given.  This isn't what users will be using (but it is useful for
+Python developers and useful for setting up tests fixtures).
+
+The primary interaction with Paste Deploy is through its configuration
+files.  The primary thing you want to do with a configuration file is
+serve it.  To learn about serving configuration files, see `the
+``paster serve`` command
+<http://pythonpaste.org/script/#paster-serve>`_.
+
+The Config File
+~~~~~~~~~~~~~~~
+
+A config file has different sections.  The only sections Paste Deploy
+cares about have prefixes, like ``app:main`` or ``filter:errors`` --
+the part after the ``:`` is the "name" of the section, and the part
+before gives the "type".  Other sections are ignored.  
+
+The format is a simple `INI format
+<http://en.wikipedia.org/wiki/INI_file>`_: ``name = value``.  You can
+extend the value by indenting subsequent lines.  ``#`` is a comment.
+
+Typically you have one or two sections, named "main": an application
+section (``[app:main]``) and a server section (``[server:main]``).
+``[composite:...]`` signifies something that dispatches to multiple
+applications (example below).
+
+Here's a typical configuration file that also shows off mounting
+multiple applications using `paste.urlmap
+<http://pythonpaste.org/module-paste.urlmap.html>`_::
+
+    [composite:main]
+    use = egg:Paste#urlmap
+    / = home
+    /blog = blog
+    /cms = config:cms.ini
+
+    [app:home]
+    use = egg:Paste#static
+    document_root = %(here)s/htdocs
+
+    [filter-app:blog]
+    use = egg:Authentication#auth
+    next = blogapp    
+    roles = admin
+    htpasswd = /home/me/users.htpasswd
+
+    [app:blogapp]
+    use = egg:BlogApp
+    database = sqlite:/home/me/blog.db
+
+I'll explain each section in detail now::
+
+    [composite:main]
+    use = egg:Paste#urlmap
+    / = home
+    /blog = blog
+    /cms = config:cms.ini
+
+That this is a ``composite`` section means it dispatches the request
+to other applications.  ``use = egg:Paste#urlmap`` means to use the
+composite application named ``urlmap`` from the ``Paste`` package.
+``urlmap`` is a particularly common composite application -- it uses a
+path prefix to map your request to another application.  These are
+the applications like "home", "blog" and "config:cms.ini".  The last
+one just refers to another file ``cms.ini`` in the same directory.
+
+Next up::
+
+    [app:home]
+    use = egg:Paste#static
+    document_root = %(here)s/htdocs
+
+``egg:Paste#static`` is another simple application, in this case it
+just serves up non-dynamic files.  It takes one bit of configuration:
+``document_root``.  You can use variable substitution, which will pull
+variables from the section ``[DEFAULT]`` (case sensitive!) with
+markers like ``%(var_name)s``.  The special variable ``%(here)s`` is
+the directory containing the configuration file; you should use that
+in lieu of relative filenames (which depend on the current directory,
+which can change depending how the server is run).
+
+Lastly::
+
+    [filter-app:blog]
+    use = egg:Authentication#auth
+    next = blogapp    
+    roles = admin
+    htpasswd = /home/me/users.htpasswd
+
+    [app:blogapp]
+    use = egg:BlogApp
+    database = sqlite:/home/me/blog.db
+
+The ``[filter-app:blog]`` section means that you want an application
+with a filter applied.  The application being filtered is indicated
+with ``next`` (which refers to the next section).  The
+``egg:Authentication#auth`` filter doesn't actually exist, but one
+could imagine it logs people in and checks permissions.
+
+That last section is just a reference to an application that you
+probably installed with ``easy_install BlogApp``, and one bit of
+configuration you passed to it (``database``).
+
+So, that's most of the features you'll use.
 
 Basic Usage
 -----------
