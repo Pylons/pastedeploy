@@ -211,6 +211,8 @@ def loadcontext(object_type, uri, name=None, relative_to=None,
         else:
             # @@: Ignore fragment or error?
             uri = uri.split('#', 1)[0]
+    if name is None:
+        name = 'main'
     scheme, path = uri.split(':', 1)
     scheme = scheme.lower()
     if scheme not in _loaders:
