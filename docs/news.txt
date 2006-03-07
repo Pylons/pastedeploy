@@ -1,8 +1,8 @@
 Paste Deployment News
 =====================
 
-svn trunk
----------
+Version 0.5
+-----------
 
 * Made the ``paste_deploy`` template (used with ``paster create
   --template=paste_deploy``) more useful, with an example application

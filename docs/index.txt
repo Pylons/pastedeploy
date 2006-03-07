@@ -7,6 +7,10 @@ Paste Deployment
 
 .. contents::
 
+.. comment:
+   The names used in sections should be more concrete, and it should
+   be clearer that they are just arbitrary names.
+
 Introduction
 ------------
 
