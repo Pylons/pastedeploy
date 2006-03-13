@@ -3,6 +3,7 @@ import re
 import urllib
 from ConfigParser import ConfigParser
 import pkg_resources
+from paste.deploy.util.fixtypeerror import fix_call
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
@@ -74,7 +75,8 @@ class _ObjectType(object):
 
     def invoke(self, context):
         assert context.protocol in _flatten(self.egg_protocols)
-        return context.object(context.global_conf, **context.local_conf)
+        return fix_call(context.object,
+                        context.global_conf, **context.local_conf)
 
 class _App(_ObjectType):
 
@@ -87,10 +89,11 @@ class _App(_ObjectType):
     def invoke(self, context):
         if context.protocol in ('paste.composit_factory',
                                 'paste.composite_factory'):
-            return context.object(context.loader, context.global_conf,
-                                  **context.local_conf)
+            return fix_call(context.object,
+                            context.loader, context.global_conf,
+                            **context.local_conf)
         elif context.protocol == 'paste.app_factory':
-            return context.object(context.global_conf, **context.local_conf)
+            return fix_call(context.object, context.global_conf, **context.local_conf)
         else:
             assert 0, "Protocol %r unknown" % context.protocol
 
@@ -103,12 +106,14 @@ class _Filter(_ObjectType):
 
     def invoke(self, context):
         if context.protocol == 'paste.filter_factory':
-            return context.object(context.global_conf, **context.local_conf)
+            return fix_call(context.object,
+                            context.global_conf, **context.local_conf)
         elif context.protocol == 'paste.filter_app_factory':
             def filter_wrapper(wsgi_app):
                 # This should be an object, so it has a nicer __repr__
-                return context.object(wsgi_app, context.global_conf,
-                                      **context.local_conf)
+                return fix_call(context.object,
+                                wsgi_app, context.global_conf,
+                                **context.local_conf)
             return filter_wrapper
         else:
             assert 0, "Protocol %r unknown" % context.protocol
@@ -122,12 +127,14 @@ class _Server(_ObjectType):
 
     def invoke(self, context):
         if context.protocol == 'paste.server_factory':
-            return context.object(context.global_conf, **context.local_conf)
+            return fix_call(context.object,
+                            context.global_conf, **context.local_conf)
         elif context.protocol == 'paste.server_runner':
             def server_wrapper(wsgi_app):
                 # This should be an object, so it has a nicer __repr__
-                return context.object(wsgi_app, context.global_conf,
-                                      **context.local_conf)
+                return fix_call(context.object,
+                                wsgi_app, context.global_conf,
+                                **context.local_conf)
             return server_wrapper
         else:
             assert 0, "Protocol %r unknown" % context.protocol
