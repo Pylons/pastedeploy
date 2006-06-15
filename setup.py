@@ -30,6 +30,7 @@ For the latest changes see the `news file
     author="Ian Bicking",
     author_email="ianb@colorstudy.com",
     url="http://pythonpaste.org/deploy/",
+    license='MIT',
     namespace_packages=['paste'],
     packages=find_packages(exclude='tests'),
     package_data={
