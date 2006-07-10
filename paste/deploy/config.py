@@ -1,11 +1,12 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 import threading
+import re
 # Loaded lazily
 wsgilib = None
 local = None
 
-__all__ = ['DispatchingConfig', 'CONFIG', 'ConfigMiddleware']
+__all__ = ['DispatchingConfig', 'CONFIG', 'ConfigMiddleware', 'PrefixMiddleware']
 
 def local_dict():
     global config_local, local
@@ -178,3 +179,18 @@ def make_config_filter(app, global_conf, **local_conf):
     conf.update(local_conf)
     return ConfigMiddleware(app, conf)
 
+class PrefixMiddleware(object):
+    """Translate a given prefix into a SCRIPT_NAME for the filtered
+    application."""
+    def __init__(self, app, global_conf=None, prefix='/'):
+        self.app = app
+        self.prefix = prefix
+        self.regprefix = re.compile("^%s(.*)$" % self.prefix)
+    
+    def __call__(self, environ, start_response):
+        url = environ['PATH_INFO']
+        url = re.sub(self.regprefix, r'\1', url)
+        if not url: url = '/'
+        environ['PATH_INFO'] = url
+        environ['SCRIPT_NAME'] = self.prefix
+        return self.app(environ, start_response)
