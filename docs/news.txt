@@ -1,15 +1,27 @@
 Paste Deployment News
 =====================
 
-Version 0.5
------------
+0.9.6
+-----
+
+* Added ``PrefixMiddleware`` which compensates for cases where the
+  wsgi app is behind a proxy of some sort that isn't moving the prefix
+  into the SCRIPT_NAME in advance.
+
+* Changed _loadconfig() so that it works with Windows absolute paths.
+
+* Make the error messages prettier when you call a function and fail
+to give an argument, like a required function argument.
+
+0.5
+---
 
 * Made the ``paste_deploy`` template (used with ``paster create
   --template=paste_deploy``) more useful, with an example application
   and entry point.
 
-Version 0.4
------------
+0.4
+---
 
 * Allow filters to have ``filter-with`` values, just like
   applications.
@@ -20,8 +32,8 @@ Version 0.4
 * Added ``appconfig()`` to load along with ``loadapp()``, but return
   the configuration without invoking the application.
 
-Version 0.3
------------
+0.3
+---
 
 * Allow variable setting like::
 
@@ -34,8 +46,8 @@ Version 0.3
   as will variables in the same section.  Also, the special value
   ``here`` will be the directory the configuration file is located in.
 
-Version 0.2
------------
+0.2
+---
 
 Released 26 August 2004
 
@@ -55,8 +67,8 @@ Released 26 August 2004
 * Added ``paste.deploy.converters`` module for handling the
   string values that are common with this system.
 
-Version 0.1
------------
+0.1
+---
 
 Released 22 August 2004
 
