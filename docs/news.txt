@@ -1,12 +1,6 @@
 Paste Deployment News
 =====================
 
-0.9.7
------
-
-* Fixed a bug where ``ConfigMiddleware`` would attempt to pop the
-  thread's config twice.
-
 0.9.6
 -----
 
