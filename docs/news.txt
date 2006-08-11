@@ -1,6 +1,12 @@
 Paste Deployment News
 =====================
 
+0.9.7
+-----
+
+* Fixed a bug where ``ConfigMiddleware`` would attempt to pop the
+  thread's config twice.
+
 0.9.6
 -----
 
@@ -11,7 +17,7 @@ Paste Deployment News
 * Changed _loadconfig() so that it works with Windows absolute paths.
 
 * Make the error messages prettier when you call a function and fail
-to give an argument, like a required function argument.
+  to give an argument, like a required function argument.
 
 0.5
 ---
