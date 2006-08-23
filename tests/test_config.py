@@ -6,6 +6,7 @@ import fakeapp.configapps as fc
 ini_file = 'config:sample_configs/test_config.ini'
 here = os.path.dirname(__file__)
 config_path = os.path.join(here, 'sample_configs')
+config_filename = os.path.join(config_path, 'test_config.ini')
 
 def test_config_egg():
     app = loadapp('egg:FakeApp#configed')
@@ -17,7 +18,8 @@ def test_config1():
         'setting1': 'foo', 'setting2': 'bar'}
     assert app.global_conf == {
         'def1': 'a', 'def2': 'b',
-        'here': config_path}
+        'here': config_path,
+        '__file__': config_filename}
 
 def test_config2():
     app = loadapp(ini_file, relative_to=here, name='test2')
@@ -27,7 +29,8 @@ def test_config2():
         'def1': 'test2',
         'def2': 'b',
         'another': 'TEST',
-        'here': config_path}
+        'here': config_path,
+        '__file__': config_filename}
     # Run this to make sure the global-conf-modified test2
     # didn't mess up the general global conf
     test_config1()
@@ -42,7 +45,8 @@ def test_config3():
         'def1': 'test3',
         'def2': 'b',
         'another': 'TEST',
-        'here': config_path}
+        'here': config_path,
+        '__file__': config_filename}
     test_config2()
     
 def test_foreign_config():
@@ -56,7 +60,8 @@ def test_foreign_config():
         'def2': 'from include',
         'def3': 'c',
         'glob': 'override',
-        'here': config_path}
+        'here': config_path,
+        '__file__': os.path.join(config_path, 'test_config_included.ini')}
     
 def test_config_get():
     app = loadapp(ini_file, relative_to=here, name='test_get')
@@ -67,7 +72,8 @@ def test_config_get():
     assert app.global_conf == {
         'def1': 'a',
         'def2': 'TEST',
-        'here': config_path}
+        'here': config_path,
+        '__file__': config_filename}
 
 def test_appconfig():
     conf = appconfig(ini_file, relative_to=here, name='test_get')
@@ -75,6 +81,7 @@ def test_appconfig():
         'def1': 'a',
         'def2': 'TEST',
         'here': config_path,
+        '__file__': config_filename,
         'foo': 'TEST'}
     assert conf.local_conf == {
         'def1': 'a',
@@ -82,4 +89,5 @@ def test_appconfig():
     assert conf.global_conf == {
         'def1': 'a',
         'def2': 'TEST',
-        'here': config_path}
+        'here': config_path,
+        '__file__': config_filename,}
