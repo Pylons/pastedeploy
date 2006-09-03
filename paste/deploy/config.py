@@ -1,5 +1,6 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+"""Paste Configuration Middleware and Objects"""
 import threading
 import re
 # Loaded lazily
@@ -181,7 +182,42 @@ def make_config_filter(app, global_conf, **local_conf):
 
 class PrefixMiddleware(object):
     """Translate a given prefix into a SCRIPT_NAME for the filtered
-    application."""
+    application.
+    
+    PrefixMiddleware provides a way to manually override the root prefix 
+    (SCRIPT_NAME) of your application for certain, rare situations.
+
+    When running an application under a prefix (such as '/james') in 
+    FastCGI/apache, the SCRIPT_NAME environment variable is automatically
+    set to to the appropriate value: '/james'. Pylons' URL generating 
+    functions, such as url_for, always take the SCRIPT_NAME value into account.
+
+    One situation where PrefixMiddleware is required is when an application
+    is accessed via a reverse proxy with a prefix. The application is accessed
+    through the reverse proxy via the the URL prefix '/james', whereas the
+    reverse proxy forwards those requests to the application at the prefix '/'.
+
+    The reverse proxy, being an entirely separate web server, has no way of
+    specifying the SCRIPT_NAME variable; it must be manually set by a
+    PrefixMiddleware instance. Without setting SCRIPT_NAME, url_for will
+    generate URLs such as: '/purchase_orders/1', when it should be
+    generating: '/james/purchase_orders/1'.
+
+    To filter your application through a PrefixMiddleware instance, add the
+    following to the '[app:main]' section of your .ini file:
+    
+    .. code-block:: PasteIni
+        
+        filter-with = proxy-prefix
+
+        [filter:proxy-prefix]
+        use = egg:PasteDeploy#prefix
+        prefix = /james
+
+    The name ``proxy-prefix`` simply acts as an identifier of the filter
+    section; feel free to rename it.
+    
+    """
     def __init__(self, app, global_conf=None, prefix='/'):
         self.app = app
         self.prefix = prefix
