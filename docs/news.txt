@@ -1,6 +1,12 @@
 Paste Deployment News
 =====================
 
+svn trunk
+---------
+
+* Added some documentation for the different kinds of entry points
+  Paste Deploy uses.
+
 0.9.6
 -----
 
