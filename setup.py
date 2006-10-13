@@ -49,5 +49,14 @@ For the latest changes see the `news file
 
     [paste.paster_create_template]
     paste_deploy=paste.deploy.paster_templates:PasteDeploy
+
+    [paste.entry_point_description]
+    paste.app_factory = paste.deploy.epdesc:AppFactoryDescription
+    paste.composit_factory = paste.deploy.epdesc:CompositeFactoryDescription
+    paste.composite_factory = paste.deploy.epdesc:CompositeFactoryDescription
+    paste.filter_app_factory = paste.deploy.epdesc:FilterAppFactoryDescription
+    paste.filter_factory = paste.deploy.epdesc:FilterFactoryDescription
+    paste.server_factory = paste.deploy.epdesc:ServerFactoryDescription
+    paste.server_runner = paste.deploy.epdesc:ServerRunnerDescription
     """,
     )
