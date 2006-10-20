@@ -180,6 +180,8 @@ def make_config_filter(app, global_conf, **local_conf):
     conf.update(local_conf)
     return ConfigMiddleware(app, conf)
 
+make_config_middleware = ConfigMiddleware.__doc__
+
 class PrefixMiddleware(object):
     """Translate a given prefix into a SCRIPT_NAME for the filtered
     application.
