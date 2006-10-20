@@ -218,11 +218,17 @@ class PrefixMiddleware(object):
 
     The name ``proxy-prefix`` simply acts as an identifier of the filter
     section; feel free to rename it.
+
+    Also, unless disabled, the ``X-Forwarded-Server`` header will be
+    translated to the ``Host`` header, for cases when that header is
+    lost in the proxying.
     
     """
-    def __init__(self, app, global_conf=None, prefix='/'):
+    def __init__(self, app, global_conf=None, prefix='/',
+                 translate_forwarded_server=True):
         self.app = app
         self.prefix = prefix
+        self.translate_forwarded_server = translate_forwarded_server
         self.regprefix = re.compile("^%s(.*)$" % self.prefix)
     
     def __call__(self, environ, start_response):
@@ -231,4 +237,18 @@ class PrefixMiddleware(object):
         if not url: url = '/'
         environ['PATH_INFO'] = url
         environ['SCRIPT_NAME'] = self.prefix
+        if (self.translate_forwarded_server and
+            'HTTP_X_FORWARDED_SERVER' in environ):
+            environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_SERVER')
         return self.app(environ, start_response)
+
+def make_prefix_middleware(
+    app, global_conf, prefix='/',
+    translate_forwarded_server=True):
+    from paste.deploy.converters import asbool
+    translate_forwarded_server = asbool(translate_forwarded_server)
+    return PrefixMiddleware(
+        app, prefix=prefix,
+        translate_forwarded_server=translate_forwarded_server)
+
+make_prefix_middleware.__doc__ = PrefixMiddleware.__doc__

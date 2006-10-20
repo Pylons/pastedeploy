@@ -45,7 +45,7 @@ For the latest changes see the `news file
     entry_points="""
     [paste.filter_app_factory]
     config = paste.deploy.config:make_config_filter [Config]
-    prefix = paste.deploy.config:PrefixMiddleware
+    prefix = paste.deploy.config:make_prefix_middleware
 
     [paste.paster_create_template]
     paste_deploy=paste.deploy.paster_templates:PasteDeploy

@@ -7,6 +7,9 @@ svn trunk
 * Added some documentation for the different kinds of entry points
   Paste Deploy uses.
 
+* Added a feature to ``PrefixMiddleware`` that translates the
+  ``X-Forwarded-Server`` header to ``Host``.
+
 0.9.6
 -----
 
