@@ -35,6 +35,23 @@ To see updates that have been made to Paste Deploy see the `news file
 Paste Deploy is released under the `MIT license
 <http://www.opensource.org/licenses/mit-license.php>`_.
 
+Status
+------
+
+Paste Deploy has passed version 1.0.  Paste Script is an actively
+maintained project.  As of 1.0, we'll make a strong effort to maintain
+backward compatibility (this actually started happening long before
+1.0, but now it is explicit).  This will include deprecation warnings
+when necessary.  Major changes will take place under new functions or
+with new entry points.
+
+Note that the most key aspect of Paste Deploy is the entry points it
+defines (such as ``paste.app_factory``).  Paste Deploy is not the only
+consumer of these entry points, and many extensions can best take
+place by utilizing the entry points instead of using Paste Deploy
+directly.  The entry points will not change; if changes are necessary,
+new entry points will be defined.
+
 Installation
 ------------
 
