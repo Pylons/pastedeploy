@@ -260,6 +260,8 @@ def _loadconfig(object_type, uri, path, name, relative_to,
         path = path[2:]
     path = urllib.unquote(path)
     loader = ConfigLoader(path)
+    if global_conf:
+        loader.update_defaults(global_conf, overwrite=False)
     return loader.get_context(object_type, name, global_conf)
 
 _loaders['config'] = _loadconfig
@@ -327,6 +329,12 @@ class ConfigLoader(_Loader):
             'here', os.path.dirname(os.path.abspath(filename)))
         self.parser._defaults.setdefault(
             '__file__', os.path.abspath(filename))
+
+    def update_defaults(self, new_defaults, overwrite=True):
+        for key, value in new_defaults.items():
+            if not overwrite and key in self.parser._defaults:
+                continue
+            self.parser._defaults[key] = value
 
     def get_context(self, object_type, name=None, global_conf=None):
         if self.absolute_name(name):

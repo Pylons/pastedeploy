@@ -2,6 +2,7 @@ import os
 from paste.deploy import loadapp, loadfilter, appconfig
 from fixture import *
 import fakeapp.configapps as fc
+from pprint import pprint
 
 ini_file = 'config:sample_configs/test_config.ini'
 here = os.path.dirname(__file__)
@@ -55,6 +56,7 @@ def test_foreign_config():
     assert app.local_conf == {
         'another': 'FOO',
         'bob': 'your uncle'}
+    pprint(app.global_conf)
     assert app.global_conf == {
         'def1': 'a',
         'def2': 'from include',
@@ -91,3 +93,20 @@ def test_appconfig():
         'def2': 'TEST',
         'here': config_path,
         '__file__': config_filename,}
+
+def test_global_conf():
+    conf = appconfig(ini_file, relative_to=here, name='test_global_conf', global_conf={'def2': 'TEST DEF 2', 'inherit': 'bazbar'})
+    pprint(conf)
+    assert conf == {
+        'def1': 'a',
+        # Note that this gets overwritten:
+        'def2': 'b',
+        'here': config_path,
+        'inherit': 'bazbar',
+        '__file__': config_filename,
+        'test_interp': 'this:bazbar',
+        }
+    assert conf.local_conf == {
+        'test_interp': 'this:bazbar',
+        }
+    

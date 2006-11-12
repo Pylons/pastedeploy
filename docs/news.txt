@@ -1,6 +1,14 @@
 Paste Deployment News
 =====================
 
+svn trunk
+---------
+
+* Any ``global_conf`` extra keys you pass to ``loadapp`` (or the other
+  loaders) will show up as though they were in ``[DEFAULT]``, so they
+  can be used in variable interpolation.  Note: this won't overwrite
+  any existing values in ``[DEFAULT]``.
+
 1.0
 ---
 
