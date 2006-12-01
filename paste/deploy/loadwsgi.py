@@ -223,6 +223,8 @@ def loadcontext(object_type, uri, name=None, relative_to=None,
             uri = uri.split('#', 1)[0]
     if name is None:
         name = 'main'
+    if ':' not in uri:
+        raise LookupError("URI has no scheme: %r" % uri)
     scheme, path = uri.split(':', 1)
     scheme = scheme.lower()
     if scheme not in _loaders:
