@@ -9,6 +9,9 @@ svn trunk
   can be used in variable interpolation.  Note: this won't overwrite
   any existing values in ``[DEFAULT]``.
 
+* Added ``force_port`` option to
+  ``paste.deploy.config.PrefixMiddleware``
+
 1.0
 ---
 

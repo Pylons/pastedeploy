@@ -222,14 +222,23 @@ class PrefixMiddleware(object):
     Also, unless disabled, the ``X-Forwarded-Server`` header will be
     translated to the ``Host`` header, for cases when that header is
     lost in the proxying.
+
+    If ``force_port`` is set, SERVER_PORT and HTTP_HOST will be
+    rewritten with the given port.  You can use a number, string (like
+    '80') or the empty string (whatever is the default port for the
+    scheme).  This is useful in situations where there is port
+    forwarding going on, and the server believes itself to be on a
+    different port than what the outside world sees.
     
     """
     def __init__(self, app, global_conf=None, prefix='/',
-                 translate_forwarded_server=True):
+                 translate_forwarded_server=True,
+                 force_port=None):
         self.app = app
         self.prefix = prefix
         self.translate_forwarded_server = translate_forwarded_server
         self.regprefix = re.compile("^%s(.*)$" % self.prefix)
+        self.force_port = force_port
     
     def __call__(self, environ, start_response):
         url = environ['PATH_INFO']
@@ -240,15 +249,29 @@ class PrefixMiddleware(object):
         if (self.translate_forwarded_server and
             'HTTP_X_FORWARDED_SERVER' in environ):
             environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_SERVER')
+        if self.force_port is not None:
+            host = environ.get('HTTP_HOST', '').split(':', 1)[0]
+            if self.force_port:
+                host = '%s:%s' % (host, self.force_port)
+                environ['SERVER_PORT'] = str(self.force_port)
+            else:
+                if environ['wsgi.url_scheme'] == 'http':
+                    port = '80'
+                else:
+                    port = '443'
+                environ['SERVER_PORT'] = port
+            environ['HTTP_HOST'] = host
         return self.app(environ, start_response)
 
 def make_prefix_middleware(
     app, global_conf, prefix='/',
-    translate_forwarded_server=True):
+    translate_forwarded_server=True,
+    force_port=None):
     from paste.deploy.converters import asbool
     translate_forwarded_server = asbool(translate_forwarded_server)
     return PrefixMiddleware(
         app, prefix=prefix,
-        translate_forwarded_server=translate_forwarded_server)
+        translate_forwarded_server=translate_forwarded_server,
+        force_port=force_port)
 
 make_prefix_middleware.__doc__ = PrefixMiddleware.__doc__
