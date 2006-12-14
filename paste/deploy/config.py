@@ -235,7 +235,7 @@ class PrefixMiddleware(object):
                  translate_forwarded_server=True,
                  force_port=None):
         self.app = app
-        self.prefix = prefix
+        self.prefix = prefix.rstrip('/')
         self.translate_forwarded_server = translate_forwarded_server
         self.regprefix = re.compile("^%s(.*)$" % self.prefix)
         self.force_port = force_port

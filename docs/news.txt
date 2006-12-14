@@ -10,7 +10,9 @@ svn trunk
   any existing values in ``[DEFAULT]``.
 
 * Added ``force_port`` option to
-  ``paste.deploy.config.PrefixMiddleware``
+  ``paste.deploy.config.PrefixMiddleware``.  Also the ``prefix``
+  argument is stripped of any trailing ``/``, which can't be valid in
+  that position.
 
 1.0
 ---
