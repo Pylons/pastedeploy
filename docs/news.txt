@@ -1,8 +1,8 @@
 Paste Deployment News
 =====================
 
-svn trunk
----------
+1.1
+---
 
 * Any ``global_conf`` extra keys you pass to ``loadapp`` (or the other
   loaders) will show up as though they were in ``[DEFAULT]``, so they
