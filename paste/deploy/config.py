@@ -154,6 +154,9 @@ class ConfigMiddleware(object):
             import pkg_resources
             pkg_resources.require('Paste')
             from paste import wsgilib
+        popped_config = None
+        if 'paste.config' in environ:
+            popped_config = environ['paste.config']        
         conf = environ['paste.config'] = self.config.copy()
         app_iter = None
         CONFIG.push_thread_config(conf)
@@ -163,11 +166,15 @@ class ConfigMiddleware(object):
             if app_iter is None:
                 # An error occurred...
                 CONFIG.pop_thread_config(conf)
+                if popped_config is not None:
+                    environ['paste.config'] = popped_config
         if type(app_iter) in (list, tuple):
             # Because it is a concrete iterator (not a generator) we
             # know the configuration for this thread is no longer
             # needed:
             CONFIG.pop_thread_config(conf)
+            if popped_config is not None:
+                environ['paste.config'] = popped_config
             return app_iter
         else:
             def close_config():
