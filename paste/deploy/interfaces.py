@@ -37,7 +37,7 @@ def loadserver(uri, name=None, relative_to=None, global_conf=None):
 ## Factories
 ############################################################
 
-class IPasteAppFactory:
+class IPasteAppFactory(object):
 
     """
     This is the spec for the ``paste.app_factory``
@@ -55,7 +55,7 @@ class IPasteAppFactory:
         capture these values).
         """
 
-class IPasteCompositFactory:
+class IPasteCompositFactory(object):
 
     """
     This is the spec for the ``paste.composit_factory``
@@ -73,7 +73,7 @@ class IPasteCompositFactory:
         applications.
         """
 
-class IPasteFilterFactory:
+class IPasteFilterFactory(object):
 
     """
     This is the spec for the ``paste.filter_factory``
@@ -85,7 +85,7 @@ class IPasteFilterFactory:
         Returns a IFilter object.
         """
 
-class IPasteFilterAppFactory:
+class IPasteFilterAppFactory(object):
 
     """
     This is the spec for the ``paste.filter_app_factory``
@@ -100,7 +100,7 @@ class IPasteFilterAppFactory:
         objects that implement the IFilter interface.
         """
 
-class IPasteServerFactory:
+class IPasteServerFactory(object):
 
     """
     This is the spec for the ``paste.server_factory``
@@ -112,7 +112,7 @@ class IPasteServerFactory:
         Returns a IServer object.
         """
 
-class IPasteServerRunner:
+class IPasteServerRunner(object):
 
     """
     This is the spec for the ``paste.server_runner``
@@ -129,7 +129,7 @@ class IPasteServerRunner:
         objects that implement the IServer interface.
         """
 
-class ILoader:
+class ILoader(object):
 
     """
     This is an object passed into ``IPasteCompositFactory``.  It is
@@ -161,7 +161,7 @@ class ILoader:
 ## Objects
 ############################################################
 
-class IWSGIApp:
+class IWSGIApp(object):
 
     """
     This is an application that conforms to `PEP 333
@@ -175,7 +175,7 @@ class IWSGIApp:
         an iterator for the body of the response.
         """
 
-class IFilter:
+class IFilter(object):
 
     """
     A filter is a simple case of middleware, where an object
@@ -188,7 +188,7 @@ class IFilter:
         ``wsgi_app`` passed in.
         """
 
-class IServer:
+class IServer(object):
 
     """
     A simple server interface.
