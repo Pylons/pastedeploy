@@ -236,16 +236,19 @@ class PrefixMiddleware(object):
     scheme).  This is useful in situations where there is port
     forwarding going on, and the server believes itself to be on a
     different port than what the outside world sees.
-    
+
+    You can also use ``scheme`` to explicitly set the scheme (like
+    ``scheme = https``).
     """
     def __init__(self, app, global_conf=None, prefix='/',
                  translate_forwarded_server=True,
-                 force_port=None):
+                 force_port=None, scheme=None):
         self.app = app
         self.prefix = prefix.rstrip('/')
         self.translate_forwarded_server = translate_forwarded_server
         self.regprefix = re.compile("^%s(.*)$" % self.prefix)
         self.force_port = force_port
+        self.scheme = scheme
     
     def __call__(self, environ, start_response):
         url = environ['PATH_INFO']
@@ -268,17 +271,19 @@ class PrefixMiddleware(object):
                     port = '443'
                 environ['SERVER_PORT'] = port
             environ['HTTP_HOST'] = host
+        if self.scheme is not None:
+            environ['wsgi.url_scheme'] = self.scheme
         return self.app(environ, start_response)
 
 def make_prefix_middleware(
     app, global_conf, prefix='/',
     translate_forwarded_server=True,
-    force_port=None):
+    force_port=None, scheme=None):
     from paste.deploy.converters import asbool
     translate_forwarded_server = asbool(translate_forwarded_server)
     return PrefixMiddleware(
         app, prefix=prefix,
         translate_forwarded_server=translate_forwarded_server,
-        force_port=force_port)
+        force_port=force_port, scheme=scheme)
 
 make_prefix_middleware.__doc__ = PrefixMiddleware.__doc__
