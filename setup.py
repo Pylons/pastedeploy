@@ -37,10 +37,7 @@ For the latest changes see the `news file
     license='MIT',
     namespace_packages=['paste'],
     packages=find_packages(exclude='tests'),
-    package_data={
-      'paste.deploy': ['paster_templates/paste_deploy/docs/*_tmpl',
-                       'paster_templates/paste_deploy/docs/*.txt'],
-      },
+    include_package_data=True,
     zip_safe=False,
     extras_require={
       'Config': [],
