@@ -1,8 +1,8 @@
 Paste Deployment News
 =====================
 
-svn trunk
----------
+1.3
+---
 
 * Added ``scheme`` option to ``PrefixMiddleware``, so you can force a
   scheme (E.g., when proxying an HTTPS connection over HTTP).
