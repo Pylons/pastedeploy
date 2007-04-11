@@ -7,6 +7,9 @@ svn trunk
 * Added ``scheme`` option to ``PrefixMiddleware``, so you can force a
   scheme (E.g., when proxying an HTTPS connection over HTTP).
 
+* Pop proper values into ``environ['paste.config']`` in
+  ``ConfigMiddleware``.
+
 1.1
 ---
 
