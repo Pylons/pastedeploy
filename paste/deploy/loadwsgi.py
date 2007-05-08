@@ -317,7 +317,7 @@ class _Loader(object):
 class ConfigLoader(_Loader):
 
     def __init__(self, filename):
-        self.filename = filename
+        self.filename = filename = filename.strip()
         self.parser = NicerConfigParser(self.filename)
         # Don't lower-case keys:
         self.parser.optionxform = str
@@ -325,7 +325,7 @@ class ConfigLoader(_Loader):
         # we have to add an extra check:
         if not os.path.exists(filename):
             raise OSError(
-                "File %s not found" % filename)
+                "File %r not found" % filename)
         self.parser.read(filename)
         self.parser._defaults.setdefault(
             'here', os.path.dirname(os.path.abspath(filename)))
