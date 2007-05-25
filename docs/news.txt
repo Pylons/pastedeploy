@@ -1,6 +1,13 @@
 Paste Deployment News
 =====================
 
+svn trunk
+---------
+
+* Fix ``appconfig`` config loading when using a config file with
+  ``filter-with`` in it (previously you'd get TypeError: iteration
+  over non-sequence)
+
 1.3
 ---
 

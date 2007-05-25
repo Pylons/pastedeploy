@@ -94,6 +94,10 @@ def test_appconfig():
         'here': config_path,
         '__file__': config_filename,}
 
+def test_appconfig_filter_with():
+    conf = appconfig('config:test_filter_with.ini', relative_to=config_path)
+    assert conf['example'] == 'test'
+
 def test_global_conf():
     conf = appconfig(ini_file, relative_to=here, name='test_global_conf', global_conf={'def2': 'TEST DEF 2', 'inherit': 'bazbar'})
     pprint(conf)
