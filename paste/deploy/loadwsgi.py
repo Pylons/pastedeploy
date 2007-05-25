@@ -400,7 +400,7 @@ class ConfigLoader(_Loader):
                 obj=None,
                 object_type=FILTER_WITH,
                 protocol=None,
-                global_conf=None, local_conf=None,
+                global_conf=global_conf, local_conf=local_conf,
                 loader=self)
             filter_with_context.filter_context = self.filter_context(
                 name=filter_with, global_conf=global_conf)
