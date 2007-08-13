@@ -256,9 +256,11 @@ class PrefixMiddleware(object):
         if not url: url = '/'
         environ['PATH_INFO'] = url
         environ['SCRIPT_NAME'] = self.prefix
-        if (self.translate_forwarded_server and
-            'HTTP_X_FORWARDED_SERVER' in environ):
-            environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_SERVER')
+        if self.translate_forwarded_server:
+            if 'HTTP_X_FORWARDED_SERVER' in environ:
+                environ['SERVER_NAME'] = environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_SERVER')
+            if 'HTTP_X_FORWARDED_HOST' in environ:
+                environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_HOST')
         if self.force_port is not None:
             host = environ.get('HTTP_HOST', '').split(':', 1)[0]
             if self.force_port:
