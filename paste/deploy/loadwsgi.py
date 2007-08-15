@@ -324,6 +324,11 @@ class ConfigLoader(_Loader):
         # Stupid ConfigParser ignores files that aren't found, so
         # we have to add an extra check:
         if not os.path.exists(filename):
+            if filename.strip() != filename:
+                raise OSError(
+                    "File %r not found; trailing whitespace: "
+                    "did you try to use a # on the same line as a filename? "
+                    "(comments must be on their own line)" % filename)
             raise OSError(
                 "File %r not found" % filename)
         self.parser.read(filename)
