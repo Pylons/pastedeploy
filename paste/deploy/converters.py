@@ -12,6 +12,13 @@ def asbool(obj):
                 "String is not true/false: %r" % obj)
     return bool(obj)
 
+def asint(obj):
+    try:
+        return int(obj)
+    except (TypeError, ValueError), e:
+        raise ValueError(
+            "Bad integer value: %r" % obj)
+
 def aslist(obj, sep=None, strip=True):
     if isinstance(obj, (str, unicode)):
         lst = obj.split(sep)
