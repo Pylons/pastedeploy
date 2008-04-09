@@ -8,7 +8,11 @@ except ImportError:
     from pkgutil import extend_path
     __path__ = extend_path(__path__, __name__) 
 
-import modulefinder
-for p in __path__:
-    modulefinder.AddPackagePath(__name__, p)
+try:
+    import modulefinder
+except ImportError:
+    pass
+else:
+    for p in __path__:
+        modulefinder.AddPackagePath(__name__, p)
 
