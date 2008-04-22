@@ -63,7 +63,7 @@ def test_foreign_config():
         'def3': 'c',
         'glob': 'override',
         'here': config_path,
-        '__file__': os.path.join(config_path, 'test_config_included.ini')}
+        '__file__': os.path.join(config_path, 'test_config.ini')}
     
 def test_config_get():
     app = loadapp(ini_file, relative_to=here, name='test_get')

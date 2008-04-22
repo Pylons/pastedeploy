@@ -5,6 +5,8 @@ svn trunk
 ---------
 
 * Added ``paste.deploy.converters.asint()``.
+* fixed use sections overwriting the config's __file__ value with the
+  use'd filename.
 
 1.3.1
 -----
