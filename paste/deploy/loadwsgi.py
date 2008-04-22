@@ -420,6 +420,9 @@ class ConfigLoader(_Loader):
             object_type, name=use, global_conf=global_conf)
         context.global_conf.update(global_additions)
         context.local_conf.update(local_conf)
+        if '__file__' in global_conf:
+            # use sections shouldn't overwrite the original __file__
+            context.global_conf['__file__'] = global_conf['__file__']
         # @@: Should loader be overwritten?
         context.loader = self
         return context
