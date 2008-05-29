@@ -5,6 +5,14 @@ Paste Deployment
 :revision: $Rev$
 :date: $LastChangedDate$
 
+Contents:
+
+.. toctree::
+   :maxdepth: 1
+
+   news
+   license
+
 .. contents::
 
 .. comment:
