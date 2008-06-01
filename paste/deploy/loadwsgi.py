@@ -46,6 +46,17 @@ class NicerConfigParser(ConfigParser):
         ConfigParser.__init__(self, *args, **kw)
         self.filename = filename
 
+    def defaults(self):
+        """Return the defaults, with their values interpolated (with the
+        defaults dict itself)
+
+        Mainly to support defaults using values such as %(here)s
+        """
+        defaults = ConfigParser.defaults(self).copy()
+        for key, val in defaults.iteritems():
+            defaults[key] = self._interpolate('DEFAULT', key, val, defaults)
+        return defaults
+
     def _interpolate(self, section, option, rawval, vars):
         try:
             return ConfigParser._interpolate(
