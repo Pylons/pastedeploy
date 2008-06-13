@@ -2,18 +2,19 @@ Paste Deployment
 ================
 
 :author: Ian Bicking <ianb@colorstudy.com>
-:revision: $Rev$
-:date: $LastChangedDate$
 
-Contents:
+.. contents::
+
+Documents:
 
 .. toctree::
    :maxdepth: 1
 
    news
+   modules/loadwsgi
+   modules/config
+   modules/converters
    license
-
-.. contents::
 
 .. comment:
    The names used in sections should be more concrete, and it should
