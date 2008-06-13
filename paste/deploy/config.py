@@ -215,7 +215,7 @@ class PrefixMiddleware(object):
     To filter your application through a PrefixMiddleware instance, add the
     following to the '[app:main]' section of your .ini file:
     
-    .. code-block:: PasteIni
+    .. code-block:: ini
         
         filter-with = proxy-prefix
 
