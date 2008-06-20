@@ -228,8 +228,8 @@ class PrefixMiddleware(object):
 
     Also, unless disabled, the ``X-Forwarded-Server`` header will be
     translated to the ``Host`` header, for cases when that header is
-    lost in the proxying.  Also ``X-Forwarded-Host`` and
-    ``X-Forwarded-Scheme`` are translated.
+    lost in the proxying.  Also ``X-Forwarded-Host``, 
+    ``X-Forwarded-Scheme``, and ``X-Forwarded-Proto`` are translated.
 
     If ``force_port`` is set, SERVER_PORT and HTTP_HOST will be
     rewritten with the given port.  You can use a number, string (like
@@ -264,6 +264,8 @@ class PrefixMiddleware(object):
                 environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_HOST')
             if 'HTTP_X_FORWARDED_SCHEME' in environ:
                 environ['wsgi.url_scheme'] = environ.pop('HTTP_X_FORWARDED_SCHEME')
+            elif 'HTTP_X_FORWARDED_PROTO' in environ:
+                environ['wsgi.url_scheme'] = environ.pop('HTTP_X_FORWARDED_PROTO')
         if self.force_port is not None:
             host = environ.get('HTTP_HOST', '').split(':', 1)[0]
             if self.force_port:
