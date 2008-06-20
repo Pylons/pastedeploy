@@ -1,6 +1,13 @@
 Paste Deployment News
 =====================
 
+svn trunk
+---------
+
+* In :class:`paste.deploy.config.PrefixMiddleware` the header
+  ``X-Forwarded-Scheme`` is now translated to the key
+  ``environ['wsgi.url_scheme']``.
+
 1.3.2
 -----
 
