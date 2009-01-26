@@ -21,7 +21,7 @@ For the latest changes see the `news file
     classifiers=[
       "Development Status :: 5 - Production/Stable",
       "Intended Audience :: Developers",
-      "License :: OSI Approved :: Python Software Foundation License",
+      "License :: OSI Approved :: MIT License",
       "Programming Language :: Python",
       "Topic :: Internet :: WWW/HTTP",
       "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
