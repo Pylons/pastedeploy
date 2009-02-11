@@ -9,6 +9,9 @@ svn trunk
   to the key ``environ['wsgi.url_scheme']``.  Also ``X-Forwarded-For``
   is translated to ``environ['REMOTE_ADDR']``
 
+* Also in PrefixMiddleware, if X-Forwarded-Host has multiple
+  (comma-separated) values, use only the first value.
+
 1.3.2
 -----
 

@@ -259,9 +259,9 @@ class PrefixMiddleware(object):
         environ['SCRIPT_NAME'] = self.prefix
         if self.translate_forwarded_server:
             if 'HTTP_X_FORWARDED_SERVER' in environ:
-                environ['SERVER_NAME'] = environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_SERVER')
+                environ['SERVER_NAME'] = environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_SERVER').split(',')[0]
             if 'HTTP_X_FORWARDED_HOST' in environ:
-                environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_HOST')
+                environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_HOST').split(',')[0]
             if 'HTTP_X_FORWARDED_FOR' in environ:
                 environ['REMOTE_ADDR'] = environ.pop('HTTP_X_FORWARDED_FOR')
             if 'HTTP_X_FORWARDED_SCHEME' in environ:
