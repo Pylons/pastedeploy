@@ -1,8 +1,8 @@
 Paste Deployment News
 =====================
 
-svn trunk
----------
+1.3.3
+-----
 
 * In :class:`paste.deploy.config.PrefixMiddleware` the headers
   ``X-Forwarded-Scheme`` and ``X-Forwarded-Proto`` are now translated
