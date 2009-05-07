@@ -39,6 +39,8 @@ For the latest changes see the `news file
     packages=find_packages(exclude='tests'),
     include_package_data=True,
     zip_safe=False,
+    test_suite='nose.collector',
+    tests_require=['nose>=0.11'],
     extras_require={
       'Config': [],
       'Paste': ['Paste'],
