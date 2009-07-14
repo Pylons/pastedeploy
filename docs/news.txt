@@ -1,6 +1,11 @@
 Paste Deployment News
 =====================
 
+svn trunk
+---------
+
+* Fix loadconfig path handling on Jython on Windows.
+
 1.3.3
 -----
 
