@@ -2,7 +2,6 @@
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 import os
 import re
-import sys
 import urllib
 from ConfigParser import ConfigParser
 import pkg_resources
@@ -249,17 +248,10 @@ def loadcontext(object_type, uri, name=None, relative_to=None,
 
 def _loadconfig(object_type, uri, path, name, relative_to,
                 global_conf):
+    isabs = os.path.isabs(path)
     # De-Windowsify the paths:
     path = path.replace('\\', '/')
-    absolute_path = True
-    if sys.platform == 'win32':
-        _absolute_re = re.compile(r'^[a-zA-Z]:')
-        if not _absolute_re.search(path):
-            absolute_path = False
-    else:
-        if not path.startswith('/'):
-            absolute_path = False
-    if not absolute_path:
+    if not isabs:
         if not relative_to:
             raise ValueError(
                 "Cannot resolve relative uri %r; no context keyword "
