@@ -254,7 +254,7 @@ def _loadconfig(object_type, uri, path, name, relative_to,
     if not isabs:
         if not relative_to:
             raise ValueError(
-                "Cannot resolve relative uri %r; no context keyword "
+                "Cannot resolve relative uri %r; no relative_to keyword "
                 "argument given" % uri)
         relative_to = relative_to.replace('\\', '/')
         if relative_to.endswith('/'):
