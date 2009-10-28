@@ -74,8 +74,8 @@ You can install Paste Deployment by installing `easy_install
 
 If you want to track development, do::
 
-    $ svn co http://svn.pythonpaste.org/Paste/Deploy/trunk Paste-Deploy
-    $ cd Paste-Deploy
+    $ hg clone http://bitbucket.org/ianb/pastedeploy
+    $ cd pastedeploy
     $ sudo python setup.py develop
 
 This will install the package globally, but will load the files in the
