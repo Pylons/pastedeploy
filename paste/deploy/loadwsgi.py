@@ -315,7 +315,7 @@ class _Loader(object):
         """
         if name is None:
             return False
-        return self._absolute_re.search(name)        
+        return self._absolute_re.search(name)
 
 class ConfigLoader(_Loader):
 
@@ -328,11 +328,11 @@ class ConfigLoader(_Loader):
         # we have to add an extra check:
         if not os.path.exists(filename):
             if filename.strip() != filename:
-                raise OSError(
+                raise IOError(
                     "File %r not found; trailing whitespace: "
                     "did you try to use a # on the same line as a filename? "
                     "(comments must be on their own line)" % filename)
-            raise OSError(
+            raise IOError(
                 "File %r not found" % filename)
         self.parser.read(filename)
         self.parser._defaults.setdefault(
