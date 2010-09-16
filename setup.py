@@ -2,6 +2,12 @@ from setuptools import setup, find_packages
 
 version = '1.3.4'
 
+import os
+
+here = os.path.dirname(os.path.abspath(__file__))
+finddata_py = os.path.join(here, 'tests', 'finddata.py')
+execfile(finddata_py)
+
 setup(
     name="PasteDeploy",
     version=version,
@@ -38,7 +44,8 @@ For the latest changes see the `news file
     license='MIT',
     namespace_packages=['paste'],
     packages=find_packages(exclude='tests'),
-    include_package_data=True,
+    package_data=find_package_data(
+        exclude_directories=standard_exclude_directories + ('tests',)),
     zip_safe=False,
     test_suite='nose.collector',
     tests_require=['nose>=0.11'],
