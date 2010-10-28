@@ -1,6 +1,11 @@
 Paste Deployment News
 =====================
 
+hg tip
+------
+
+* Was printing extraneous data when calling setup.py
+
 1.3.4
 -----
 
