@@ -93,7 +93,3 @@ def find_package_data(
                 out.setdefault(package, []).append(prefix+name)
     return out
 
-if __name__ == '__main__':
-    import pprint
-    pprint.pprint(
-        find_package_data(show_ignored=True))
