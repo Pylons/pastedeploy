@@ -278,6 +278,14 @@ def _loadegg(object_type, uri, spec, name, relative_to,
 
 _loaders['egg'] = _loadegg
 
+def _loadfunc(object_type, uri, spec, name, relative_to,
+             global_conf):
+             
+    loader = FuncLoader(spec)
+    return loader.get_context(object_type, name, global_conf)
+    
+_loaders['call'] = _loadfunc
+
 ############################################################
 ## Loaders
 ############################################################
@@ -428,6 +436,20 @@ class ConfigLoader(_Loader):
             context.global_conf['__file__'] = global_conf['__file__']
         # @@: Should loader be overwritten?
         context.loader = self
+        
+        if context.protocol is None:
+            # Determine protocol from section type
+            section_protocol = section.split(':', 1)[0]
+            if section_protocol in ('application','app'):
+                context.protocol = 'paste.app_factory'
+            elif section_protocol in ('composit','composite'):
+                context.protocol = 'paste.composit_factory'
+            else:
+                # This will work with 'server' and 'filter', otherwise it
+                # could fail but there is an error message already for
+                # bad protocols
+                context.protocol = 'paste.%s_factory' % context_protocol
+        
         return context
 
     def _context_from_explicit(self, object_type, local_conf, global_conf,
@@ -595,6 +617,38 @@ class EggLoader(_Loader):
                 "Ambiguous entry points for %r in egg %r (protocols: %s)"
                 % (name, self.spec, ', '.join(_flatten(protocol_options))))
         return possible[0]
+
+
+class FuncLoader(_Loader):
+    """ Loader that supports specifying functions inside modules, without
+    using eggs at all. Configuration should be in the format:
+        use = call:my.module.path:function_name
+        
+    Dot notation is supported in both the module and function name, e.g.:
+        use = call:my.module.path:object.method
+    """
+    def __init__(self, spec):
+        self.spec = spec
+        try:
+            self.module_path, self.func_name = self.spec.split(':')
+        except ValueError:
+            raise LookupError("Configuration not in format module:function")
+        self.module_name = self.module_path.split('.', 1)[-1]
+
+    def get_context(self, object_type, name=None, global_conf=None):
+        module = __import__(self.module_path, {}, {}, [self.module_name], 0)
+        obj = module
+        for part in self.func_name.split('.'):
+            obj = getattr(obj, part)
+        return LoaderContext(
+            obj,
+            object_type,
+            None, # determine protocol from section type
+            global_conf or {},
+            {},
+            self,
+            )
+
 
 class LoaderContext(object):
 
