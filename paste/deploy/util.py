@@ -1,11 +1,8 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
-"""
-Fixes the vague error message that you get when calling a function
-with the wrong arguments.
-"""
 import inspect
 import sys
+
 
 def fix_type_error(exc_info, callable, varargs, kwargs):
     """
@@ -28,7 +25,6 @@ def fix_type_error(exc_info, callable, varargs, kwargs):
         or getattr(exc_info[1], '_type_error_fixed', False)):
         return exc_info
     exc_info[1]._type_error_fixed = True
-    import inspect
     argspec = inspect.formatargspec(*inspect.getargspec(callable))
     args = ', '.join(map(_short_repr, varargs))
     if kwargs and args:
@@ -42,16 +38,17 @@ def fix_type_error(exc_info, callable, varargs, kwargs):
     exc_info[1].args = (msg,)
     return exc_info
 
+
 def _short_repr(v):
     v = repr(v)
     if len(v) > 12:
         v = v[:8]+'...'+v[-4:]
     return v
 
+
 def fix_call(callable, *args, **kw):
     """
-    Call ``callable(*args, **kw)`` fixing any type errors that come
-    out.
+    Call ``callable(*args, **kw)`` fixing any type errors that come out.
     """
     try:
         val = callable(*args, **kw)

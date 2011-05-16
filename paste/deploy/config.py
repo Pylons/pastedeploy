@@ -14,8 +14,7 @@ def local_dict():
     try:
         return config_local.wsgi_dict
     except NameError:
-        from paste.deploy.util.threadinglocal import local
-        config_local = local()
+        config_local = threading.local()
         config_local.wsgi_dict = result = {}
         return result
     except AttributeError:
