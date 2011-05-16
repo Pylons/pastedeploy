@@ -1,3 +1,2 @@
-include docs/*.html
 include docs/*.txt
-exclude docs/rebuild
+recursive-include paste/deploy/paster_templates *
