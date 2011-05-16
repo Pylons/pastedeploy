@@ -1,16 +1,9 @@
 from setuptools import setup, find_packages
 
-version = '1.3.4'
-
-import os
-
-here = os.path.dirname(os.path.abspath(__file__))
-finddata_py = os.path.join(here, 'tests', 'finddata.py')
-execfile(finddata_py)
 
 setup(
     name="PasteDeploy",
-    version=version,
+    version='1.5.0dev',
     description="Load, configure, and compose WSGI applications and servers",
     long_description="""\
 This tool provides code to load WSGI applications and servers from
@@ -40,12 +33,13 @@ For the latest changes see the `news file
     keywords='web wsgi application server',
     author="Ian Bicking",
     author_email="ianb@colorstudy.com",
+    maintainer="Alex Gronholm",
+    maintainer_email="alex.gronholm@nextday.fi",
     url="http://pythonpaste.org/deploy/",
     license='MIT',
     namespace_packages=['paste'],
-    packages=find_packages(exclude='tests'),
-    package_data=find_package_data(
-        exclude_directories=standard_exclude_directories + ('tests',)),
+    packages=find_packages(exclude=['tests']),
+    include_package_data=True,
     zip_safe=False,
     test_suite='nose.collector',
     tests_require=['nose>=0.11'],
@@ -70,4 +64,4 @@ For the latest changes see the `news file
     paste.server_factory = paste.deploy.epdesc:ServerFactoryDescription
     paste.server_runner = paste.deploy.epdesc:ServerRunnerDescription
     """,
-    )
+)
