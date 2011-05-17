@@ -11,12 +11,15 @@ from paste.deploy.util import fix_call
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
+
 ############################################################
 ## Utility functions
 ############################################################
 
+
 def import_string(s):
-    return pkg_resources.EntryPoint.parse("x="+s).load(False)
+    return pkg_resources.EntryPoint.parse("x=" + s).load(False)
+
 
 def _aslist(obj):
     """
@@ -30,6 +33,7 @@ def _aslist(obj):
     else:
         return [obj]
 
+
 def _flatten(lst):
     """
     Flatten a nested list.
@@ -40,6 +44,7 @@ def _flatten(lst):
     for item in lst:
         result.extend(_flatten(item))
     return result
+
 
 class NicerConfigParser(ConfigParser):
 
@@ -69,9 +74,11 @@ class NicerConfigParser(ConfigParser):
             e.args = tuple(args)
             raise
 
+
 ############################################################
 ## Object types
 ############################################################
+
 
 class _ObjectType(object):
 
@@ -92,6 +99,7 @@ class _ObjectType(object):
         assert context.protocol in _flatten(self.egg_protocols)
         return fix_call(context.object,
                         context.global_conf, **context.local_conf)
+
 
 class _App(_ObjectType):
 
@@ -114,6 +122,7 @@ class _App(_ObjectType):
 
 APP = _App()
 
+
 class _Filter(_ObjectType):
     name = 'filter'
     egg_protocols = [['paste.filter_factory', 'paste.filter_app_factory']]
@@ -134,6 +143,7 @@ class _Filter(_ObjectType):
             assert 0, "Protocol %r unknown" % context.protocol
 
 FILTER = _Filter()
+
 
 class _Server(_ObjectType):
     name = 'server'
@@ -156,6 +166,7 @@ class _Server(_ObjectType):
 
 SERVER = _Server()
 
+
 # Virtual type: (@@: There's clearly something crufty here;
 # this probably could be more elegant)
 class _PipeLine(_ObjectType):
@@ -171,6 +182,7 @@ class _PipeLine(_ObjectType):
 
 PIPELINE = _PipeLine()
 
+
 class _FilterApp(_ObjectType):
     name = 'filter_app'
 
@@ -180,6 +192,7 @@ class _FilterApp(_ObjectType):
         return filter(next_app)
 
 FILTER_APP = _FilterApp()
+
 
 class _FilterWith(_App):
     name = 'filtered_with'
@@ -197,18 +210,23 @@ class _FilterWith(_App):
 
 FILTER_WITH = _FilterWith()
 
+
 ############################################################
 ## Loaders
 ############################################################
 
+
 def loadapp(uri, name=None, **kw):
     return loadobj(APP, uri, name=name, **kw)
+
 
 def loadfilter(uri, name=None, **kw):
     return loadobj(FILTER, uri, name=name, **kw)
 
+
 def loadserver(uri, name=None, **kw):
     return loadobj(SERVER, uri, name=name, **kw)
+
 
 def appconfig(uri, name=None, relative_to=None, global_conf=None):
     context = loadcontext(APP, uri, name=name,
@@ -218,12 +236,14 @@ def appconfig(uri, name=None, relative_to=None, global_conf=None):
 
 _loaders = {}
 
+
 def loadobj(object_type, uri, name=None, relative_to=None,
             global_conf=None):
     context = loadcontext(
         object_type, uri, name=name, relative_to=relative_to,
         global_conf=global_conf)
     return context.create()
+
 
 def loadcontext(object_type, uri, name=None, relative_to=None,
                 global_conf=None):
@@ -247,6 +267,7 @@ def loadcontext(object_type, uri, name=None, relative_to=None,
         object_type,
         uri, path, name=name, relative_to=relative_to,
         global_conf=global_conf)
+
 
 def _loadconfig(object_type, uri, path, name, relative_to,
                 global_conf):
@@ -273,6 +294,7 @@ def _loadconfig(object_type, uri, path, name, relative_to,
 
 _loaders['config'] = _loadconfig
 
+
 def _loadegg(object_type, uri, spec, name, relative_to,
              global_conf):
     loader = EggLoader(spec)
@@ -280,9 +302,11 @@ def _loadegg(object_type, uri, spec, name, relative_to,
 
 _loaders['egg'] = _loadegg
 
+
 ############################################################
 ## Loaders
 ############################################################
+
 
 class _Loader(object):
 
@@ -311,6 +335,7 @@ class _Loader(object):
             SERVER, name=name, global_conf=global_conf)
 
     _absolute_re = re.compile(r'^[a-zA-Z]+:')
+
     def absolute_name(self, name):
         """
         Returns true if the name includes a scheme
@@ -318,6 +343,7 @@ class _Loader(object):
         if name is None:
             return False
         return self._absolute_re.search(name)
+
 
 class ConfigLoader(_Loader):
 
@@ -536,8 +562,8 @@ class ConfigLoader(_Loader):
                 found.append(name_prefix)
             name = 'main'
         for section in sections:
-            if section.startswith(name_prefix+':'):
-                if section[len(name_prefix)+1:].strip() == name:
+            if section.startswith(name_prefix + ':'):
+                if section[len(name_prefix) + 1:].strip() == name:
                     found.append(section)
         return found
 
@@ -598,6 +624,7 @@ class EggLoader(_Loader):
                 % (name, self.spec, ', '.join(_flatten(protocol_options))))
         return possible[0]
 
+
 class LoaderContext(object):
 
     def __init__(self, obj, object_type, protocol,
@@ -625,6 +652,7 @@ class LoaderContext(object):
         conf.global_conf = self.global_conf
         conf.context = self
         return conf
+
 
 class AttrDict(dict):
     """

@@ -9,7 +9,7 @@ def fix_type_error(exc_info, callable, varargs, kwargs):
     Given an exception, this will test if the exception was due to a
     signature error, and annotate the error with better information if
     so.
-    
+
     Usage::
 
       try:
@@ -42,7 +42,7 @@ def fix_type_error(exc_info, callable, varargs, kwargs):
 def _short_repr(v):
     v = repr(v)
     if len(v) > 12:
-        v = v[:8]+'...'+v[-4:]
+        v = v[:8] + '...' + v[-4:]
     return v
 
 

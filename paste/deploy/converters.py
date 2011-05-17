@@ -1,5 +1,7 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+
+
 def asbool(obj):
     if isinstance(obj, (str, unicode)):
         obj = obj.strip().lower()
@@ -12,12 +14,14 @@ def asbool(obj):
                 "String is not true/false: %r" % obj)
     return bool(obj)
 
+
 def asint(obj):
     try:
         return int(obj)
-    except (TypeError, ValueError), e:
+    except (TypeError, ValueError):
         raise ValueError(
             "Bad integer value: %r" % obj)
+
 
 def aslist(obj, sep=None, strip=True):
     if isinstance(obj, (str, unicode)):

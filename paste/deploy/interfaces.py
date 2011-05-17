@@ -1,13 +1,15 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+
 ############################################################
 ## Functions
 ############################################################
 
+
 def loadapp(uri, name=None, relative_to=None, global_conf=None):
     """
     Provided by ``paste.deploy.loadapp``.
-    
+
     Load the specified URI as a WSGI application (returning IWSGIApp).
     The ``name`` can be in the URI (typically as ``#name``).  If it is
     and ``name`` is given, the keyword argument overrides the URI.
@@ -19,12 +21,14 @@ def loadapp(uri, name=None, relative_to=None, global_conf=None):
     override the values).  ``global_conf`` is copied before modifying.
     """
 
+
 def loadfilter(uri, name=None, relative_to=None, global_conf=None):
     """
     Provided by ``paste.deploy.loadfilter``.
 
     Like ``loadapp()``, except returns in IFilter object.
     """
+
 
 def loadserver(uri, name=None, relative_to=None, global_conf=None):
     """
@@ -33,9 +37,11 @@ def loadserver(uri, name=None, relative_to=None, global_conf=None):
     Like ``loadapp()``, except returns in IServer object.
     """
 
+
 ############################################################
 ## Factories
 ############################################################
+
 
 class IPasteAppFactory(object):
 
@@ -55,6 +61,7 @@ class IPasteAppFactory(object):
         capture these values).
         """
 
+
 class IPasteCompositFactory(object):
 
     """
@@ -73,6 +80,7 @@ class IPasteCompositFactory(object):
         applications.
         """
 
+
 class IPasteFilterFactory(object):
 
     """
@@ -85,13 +93,14 @@ class IPasteFilterFactory(object):
         Returns a IFilter object.
         """
 
+
 class IPasteFilterAppFactory(object):
 
     """
     This is the spec for the ``paste.filter_app_factory``
     protocol/entry_point.
     """
-    
+
     def __call__(wsgi_app, global_conf, **local_conf):
         """
         Returns a WSGI application that wraps ``wsgi_app``.
@@ -99,6 +108,7 @@ class IPasteFilterAppFactory(object):
         Note that paste.deploy creates a wrapper for these
         objects that implement the IFilter interface.
         """
+
 
 class IPasteServerFactory(object):
 
@@ -111,6 +121,7 @@ class IPasteServerFactory(object):
         """
         Returns a IServer object.
         """
+
 
 class IPasteServerRunner(object):
 
@@ -128,6 +139,7 @@ class IPasteServerRunner(object):
         Note that paste.deploy creates a wrapper for these
         objects that implement the IServer interface.
         """
+
 
 class ILoader(object):
 
@@ -151,15 +163,17 @@ class ILoader(object):
         """
         Return an IFilter object, like ``get_app``.
         """
-                   
+
     def get_server(name_or_uri, global_conf=None):
         """
         Return an IServer object, like ``get_app``.
         """
 
+
 ############################################################
 ## Objects
 ############################################################
+
 
 class IWSGIApp(object):
 
@@ -175,6 +189,7 @@ class IWSGIApp(object):
         an iterator for the body of the response.
         """
 
+
 class IFilter(object):
 
     """
@@ -187,6 +202,7 @@ class IFilter(object):
         Returns an IWSGIApp object, typically one that wraps the
         ``wsgi_app`` passed in.
         """
+
 
 class IServer(object):
 

@@ -3,11 +3,13 @@
 """Paste Configuration Middleware and Objects"""
 import threading
 import re
+
 # Loaded lazily
 wsgilib = None
 local = None
 
 __all__ = ['DispatchingConfig', 'CONFIG', 'ConfigMiddleware', 'PrefixMiddleware']
+
 
 def local_dict():
     global config_local, local
@@ -20,6 +22,7 @@ def local_dict():
     except AttributeError:
         config_local.wsgi_dict = result = {}
         return result
+
 
 class DispatchingConfig(object):
 
@@ -44,7 +47,7 @@ class DispatchingConfig(object):
             self.dispatching_id = 0
             while 1:
                 self._local_key = 'paste.processconfig_%i' % self.dispatching_id
-                if not local_dict().has_key(self._local_key):
+                if not self._local_key in local_dict():
                     break
                 self.dispatching_id += 1
         finally:
@@ -93,7 +96,7 @@ class DispatchingConfig(object):
 
     def pop_process_config(self, conf=None):
         self._pop_from(self._process_configs, conf)
-            
+
     def __getattr__(self, attr):
         conf = self.current_conf()
         if conf is None:
@@ -122,7 +125,7 @@ class DispatchingConfig(object):
 
     def __contains__(self, key):
         # I thought __getattr__ would catch this, but apparently not
-        return self.has_key(key)
+        return key in self
 
     def __setitem__(self, key, value):
         # I thought __getattr__ would catch this, but apparently not
@@ -130,6 +133,7 @@ class DispatchingConfig(object):
         conf[key] = value
 
 CONFIG = DispatchingConfig()
+
 
 class ConfigMiddleware(object):
 
@@ -155,7 +159,7 @@ class ConfigMiddleware(object):
             from paste import wsgilib
         popped_config = None
         if 'paste.config' in environ:
-            popped_config = environ['paste.config']        
+            popped_config = environ['paste.config']
         conf = environ['paste.config'] = self.config.copy()
         app_iter = None
         CONFIG.push_thread_config(conf)
@@ -181,6 +185,7 @@ class ConfigMiddleware(object):
             new_app_iter = wsgilib.add_close(app_iter, close_config)
             return new_app_iter
 
+
 def make_config_filter(app, global_conf, **local_conf):
     conf = global_conf.copy()
     conf.update(local_conf)
@@ -188,16 +193,17 @@ def make_config_filter(app, global_conf, **local_conf):
 
 make_config_middleware = ConfigMiddleware.__doc__
 
+
 class PrefixMiddleware(object):
     """Translate a given prefix into a SCRIPT_NAME for the filtered
     application.
-    
-    PrefixMiddleware provides a way to manually override the root prefix 
+
+    PrefixMiddleware provides a way to manually override the root prefix
     (SCRIPT_NAME) of your application for certain, rare situations.
 
-    When running an application under a prefix (such as '/james') in 
+    When running an application under a prefix (such as '/james') in
     FastCGI/apache, the SCRIPT_NAME environment variable is automatically
-    set to to the appropriate value: '/james'. Pylons' URL generating 
+    set to to the appropriate value: '/james'. Pylons' URL generating
     functions, such as url_for, always take the SCRIPT_NAME value into account.
 
     One situation where PrefixMiddleware is required is when an application
@@ -213,9 +219,9 @@ class PrefixMiddleware(object):
 
     To filter your application through a PrefixMiddleware instance, add the
     following to the '[app:main]' section of your .ini file:
-    
+
     .. code-block:: ini
-        
+
         filter-with = proxy-prefix
 
         [filter:proxy-prefix]
@@ -227,7 +233,7 @@ class PrefixMiddleware(object):
 
     Also, unless disabled, the ``X-Forwarded-Server`` header will be
     translated to the ``Host`` header, for cases when that header is
-    lost in the proxying.  Also ``X-Forwarded-Host``, 
+    lost in the proxying.  Also ``X-Forwarded-Host``,
     ``X-Forwarded-Scheme``, and ``X-Forwarded-Proto`` are translated.
 
     If ``force_port`` is set, SERVER_PORT and HTTP_HOST will be
@@ -249,11 +255,12 @@ class PrefixMiddleware(object):
         self.regprefix = re.compile("^%s(.*)$" % self.prefix)
         self.force_port = force_port
         self.scheme = scheme
-    
+
     def __call__(self, environ, start_response):
         url = environ['PATH_INFO']
         url = re.sub(self.regprefix, r'\1', url)
-        if not url: url = '/'
+        if not url:
+            url = '/'
         environ['PATH_INFO'] = url
         environ['SCRIPT_NAME'] = self.prefix
         if self.translate_forwarded_server:
@@ -282,6 +289,7 @@ class PrefixMiddleware(object):
         if self.scheme is not None:
             environ['wsgi.url_scheme'] = self.scheme
         return self.app(environ, start_response)
+
 
 def make_prefix_middleware(
     app, global_conf, prefix='/',
