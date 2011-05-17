@@ -1,11 +1,13 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+from ConfigParser import ConfigParser
 import os
 import re
 import urllib
-from ConfigParser import ConfigParser
+
 import pkg_resources
-from paste.deploy.util.fixtypeerror import fix_call
+
+from paste.deploy.util import fix_call
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
