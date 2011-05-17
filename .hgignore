@@ -3,3 +3,10 @@ syntax: glob
 dist/
 build/
 docs/_build/
+
+syntax: glob
+.tox
+syntax: glob
+.project
+syntax: glob
+.pydevproject
