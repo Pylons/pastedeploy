@@ -3,6 +3,8 @@
 import inspect
 import sys
 
+from paste.deploy.compat import reraise
+
 
 def fix_type_error(exc_info, callable, varargs, kwargs):
     """
@@ -54,5 +56,5 @@ def fix_call(callable, *args, **kw):
         val = callable(*args, **kw)
     except TypeError:
         exc_info = fix_type_error(None, callable, args, kw)
-        raise exc_info[0], exc_info[1], exc_info[2]
+        reraise(*exc_info)
     return val

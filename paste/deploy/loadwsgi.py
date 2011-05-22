@@ -1,12 +1,13 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
-from ConfigParser import ConfigParser
+from __future__ import with_statement
 import os
+import sys
 import re
-import urllib
 
 import pkg_resources
 
+from paste.deploy.compat import ConfigParser, unquote, iteritems
 from paste.deploy.util import fix_call
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
@@ -51,6 +52,10 @@ class NicerConfigParser(ConfigParser):
     def __init__(self, filename, *args, **kw):
         ConfigParser.__init__(self, *args, **kw)
         self.filename = filename
+        if hasattr(self, '_interpolation'):
+            self._interpolation = self.InterpolateWrapper(self._interpolation)
+
+    read_file = getattr(ConfigParser, 'read_file', ConfigParser.readfp)
 
     def defaults(self):
         """Return the defaults, with their values interpolated (with the
@@ -59,20 +64,44 @@ class NicerConfigParser(ConfigParser):
         Mainly to support defaults using values such as %(here)s
         """
         defaults = ConfigParser.defaults(self).copy()
-        for key, val in defaults.iteritems():
-            defaults[key] = self._interpolate('DEFAULT', key, val, defaults)
+        for key, val in iteritems(defaults):
+            defaults[key] = self.get('DEFAULT', key) or val
         return defaults
 
     def _interpolate(self, section, option, rawval, vars):
+        # Python < 3.2
         try:
             return ConfigParser._interpolate(
                 self, section, option, rawval, vars)
-        except Exception, e:
+        except Exception:
+            e = sys.exc_info()[1]
             args = list(e.args)
             args[0] = 'Error in file %s, [%s] %s=%r: %s' % (
                 self.filename, section, option, rawval, e)
             e.args = tuple(args)
+            e.message = args[0]
             raise
+
+    class InterpolateWrapper(object):
+        # Python >= 3.2
+        def __init__(self, original):
+            self._original = original
+
+        def __getattr__(self, name):
+            return getattr(self._original, name)
+
+        def before_get(self, parser, section, option, value, defaults):
+            try:
+                return self._original.before_get(parser, section, option,
+                                                 value, defaults)
+            except Exception:
+                e = sys.exc_info()[1]
+                args = list(e.args)
+                args[0] = 'Error in file %s, [%s] %s=%r: %s' % (
+                    parser.filename, section, option, value, e)
+                e.args = tuple(args)
+                e.message = args[0]
+                raise
 
 
 ############################################################
@@ -88,8 +117,8 @@ class _ObjectType(object):
 
     def __init__(self):
         # Normalize these variables:
-        self.egg_protocols = map(_aslist, _aslist(self.egg_protocols))
-        self.config_prefixes = map(_aslist, _aslist(self.config_prefixes))
+        self.egg_protocols = [_aslist(p) for p in _aslist(self.egg_protocols)]
+        self.config_prefixes = [_aslist(p) for p in _aslist(self.config_prefixes)]
 
     def __repr__(self):
         return '<%s protocols=%r prefixes=%r>' % (
@@ -286,7 +315,7 @@ def _loadconfig(object_type, uri, path, name, relative_to,
             path = relative_to + '/' + path
     if path.startswith('///'):
         path = path[2:]
-    path = urllib.unquote(path)
+    path = unquote(path)
     loader = ConfigLoader(path)
     if global_conf:
         loader.update_defaults(global_conf, overwrite=False)
@@ -349,27 +378,17 @@ class ConfigLoader(_Loader):
 
     def __init__(self, filename):
         self.filename = filename = filename.strip()
-        self.parser = NicerConfigParser(self.filename)
-        # Don't lower-case keys:
-        self.parser.optionxform = str
-        # Stupid ConfigParser ignores files that aren't found, so
-        # we have to add an extra check:
-        if not os.path.exists(filename):
-            if filename.strip() != filename:
-                raise IOError(
-                    "File %r not found; trailing whitespace: "
-                    "did you try to use a # on the same line as a filename? "
-                    "(comments must be on their own line)" % filename)
-            raise IOError(
-                "File %r not found" % filename)
-        self.parser.read(filename)
-        self.parser._defaults.setdefault(
-            'here', os.path.dirname(os.path.abspath(filename)))
-        self.parser._defaults.setdefault(
-            '__file__', os.path.abspath(filename))
+        defaults = {
+            'here': os.path.dirname(os.path.abspath(filename)),
+            '__file__': os.path.abspath(filename)
+            }
+        self.parser = NicerConfigParser(filename, defaults=defaults)
+        self.parser.optionxform = str  # Don't lower-case keys
+        with open(filename) as f:
+            self.parser.read_file(f)
 
     def update_defaults(self, new_defaults, overwrite=True):
-        for key, value in new_defaults.items():
+        for key, value in iteritems(new_defaults):
             if not overwrite and key in self.parser._defaults:
                 continue
             self.parser._defaults[key] = value
