@@ -4,8 +4,17 @@ Paste Deployment News
 hg tip
 ------
 
+* Project is now maintained by Alex Grönholm <alex.gronholm@nextday.fi>
+
 * Was printing extraneous data when calling setup.py
+
 * Fixed missing paster template files (fixes "paster create -t paste.deploy")
+
+* Excluded tests from release distributions
+
+* Dropped Python 2.4 support
+
+* Added Python 3.x support
 
 1.3.4
 -----
