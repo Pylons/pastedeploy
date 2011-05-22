@@ -10,3 +10,5 @@ syntax: glob
 .project
 syntax: glob
 .pydevproject
+syntax: regexp
+^tests/fake_packages/FakeApp\.egg$
