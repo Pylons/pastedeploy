@@ -11,4 +11,3 @@ import pkg_resources
 # Make absolutely sure we're testing *this* package, not
 # some other installed package
 pkg_resources.require('PasteDeploy')
-

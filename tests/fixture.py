@@ -12,10 +12,9 @@ if not os.path.exists(egg_info_dir):
         os.symlink(info_dir, egg_info_dir)
     except:
         shutil.copytree(info_dir, egg_info_dir)
-        
+
 sys.path.append(os.path.dirname(egg_info_dir))
 
 from pkg_resources import *
 working_set.add_entry(os.path.dirname(egg_info_dir))
 require('FakeApp')
-

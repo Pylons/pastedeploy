@@ -1,10 +1,12 @@
-import sys, os
-import pkg_resources
-import site
 from pprint import pprint
+import sys
+
+import pkg_resources
+
+from paste.deploy.compat import print_
+
 
 def test_load_package():
-    print 'Path:'
+    print_('Path:')
     pprint(sys.path)
-    print pkg_resources.require('FakeApp')
-    
+    print_(pkg_resources.require('FakeApp'))
