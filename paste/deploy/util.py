@@ -58,3 +58,17 @@ def fix_call(callable, *args, **kw):
         exc_info = fix_type_error(None, callable, args, kw)
         reraise(*exc_info)
     return val
+
+
+def lookup_object(spec):
+    """
+    Looks up a module or object from a some.module:func_name specification.
+    To just look up a module, omit the colon and everything after it.
+    """
+    parts, target = spec.split(':') if ':' in spec else (spec, None)
+    module = __import__(parts)
+
+    for part in parts.split('.')[1:] + ([target] if target else []):
+        module = getattr(module, part)
+
+    return module

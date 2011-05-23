@@ -126,6 +126,7 @@ multiple applications using `paste.urlmap
     use = egg:Paste#urlmap
     / = home
     /blog = blog
+    /wiki = wiki
     /cms = config:cms.ini
 
     [app:home]
@@ -142,6 +143,10 @@ multiple applications using `paste.urlmap
     use = egg:BlogApp
     database = sqlite:/home/me/blog.db
 
+    [app:wiki]
+    use = call:mywiki.main:application
+    database = sqlite:/home/me/wiki.db
+
 I'll explain each section in detail now::
 
     [composite:main]
@@ -155,7 +160,7 @@ to other applications.  ``use = egg:Paste#urlmap`` means to use the
 composite application named ``urlmap`` from the ``Paste`` package.
 ``urlmap`` is a particularly common composite application -- it uses a
 path prefix to map your request to another application.  These are
-the applications like "home", "blog" and "config:cms.ini".  The last
+the applications like "home", "blog", "wiki" and "config:cms.ini".  The last
 one just refers to another file ``cms.ini`` in the same directory.
 
 Next up::
@@ -173,7 +178,7 @@ the directory containing the configuration file; you should use that
 in lieu of relative filenames (which depend on the current directory,
 which can change depending how the server is run).
 
-Lastly::
+Then::
 
     [filter-app:blog]
     use = egg:Authentication#auth
@@ -194,6 +199,19 @@ could imagine it logs people in and checks permissions.
 That last section is just a reference to an application that you
 probably installed with ``easy_install BlogApp``, and one bit of
 configuration you passed to it (``database``).
+
+Lastly::
+
+    [app:wiki]
+    use = call:mywiki.main:application
+    database = sqlite:/home/me/wiki.db
+
+This section is similar to the previous one, with one important difference.
+Instead of an entry point in an egg, it refers directly to the ``application``
+variable in the ``mywiki.main`` module. The reference consist of two parts,
+separated by a colon. The left part is the full name of the module and the
+right part is the path to the variable, as a Python expression relative to the
+containing module.
 
 So, that's most of the features you'll use.
 
@@ -268,6 +286,10 @@ first is to refer to another URI or name::
     # or any URI:
     [app:myotherapp]
     use = egg:MyApp
+
+    # or a callable from a module:
+    [app:mythirdapp]
+    use = call:my.project:myapplication
 
     # or even another section:
     [app:mylastapp]
@@ -603,7 +625,7 @@ An example might look like::
             s.serve_forever()
         return serve
 
-An implementation of ``Server`` is left to the user.
+The implementation of ``Server`` is left to the user.
 
 ``paste.server_runner``
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -613,9 +635,6 @@ first argument, and the server should run immediately.
 
 Outstanding Issues
 ------------------
-
-* Should add a ``python:`` scheme for loading objects out of modules
-  directly.  It has to include the protocol somehow...?
 
 * Should there be a "default" protocol for each type of object?  Since
   there's currently only one protocol, it seems like it makes sense

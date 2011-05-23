@@ -8,7 +8,7 @@ import re
 import pkg_resources
 
 from paste.deploy.compat import ConfigParser, unquote, iteritems
-from paste.deploy.util import fix_call
+from paste.deploy.util import fix_call, lookup_object
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
@@ -332,6 +332,14 @@ def _loadegg(object_type, uri, spec, name, relative_to,
 _loaders['egg'] = _loadegg
 
 
+def _loadfunc(object_type, uri, spec, name, relative_to,
+             global_conf):
+
+    loader = FuncLoader(spec)
+    return loader.get_context(object_type, name, global_conf)
+
+_loaders['call'] = _loadfunc
+
 ############################################################
 ## Loaders
 ############################################################
@@ -475,6 +483,20 @@ class ConfigLoader(_Loader):
             context.global_conf['__file__'] = global_conf['__file__']
         # @@: Should loader be overwritten?
         context.loader = self
+
+        if context.protocol is None:
+            # Determine protocol from section type
+            section_protocol = section.split(':', 1)[0]
+            if section_protocol in ('application', 'app'):
+                context.protocol = 'paste.app_factory'
+            elif section_protocol in ('composit', 'composite'):
+                context.protocol = 'paste.composit_factory'
+            else:
+                # This will work with 'server' and 'filter', otherwise it
+                # could fail but there is an error message already for
+                # bad protocols
+                context.protocol = 'paste.%s_factory' % context_protocol
+
         return context
 
     def _context_from_explicit(self, object_type, local_conf, global_conf,
@@ -642,6 +664,31 @@ class EggLoader(_Loader):
                 "Ambiguous entry points for %r in egg %r (protocols: %s)"
                 % (name, self.spec, ', '.join(_flatten(protocol_options))))
         return possible[0]
+
+
+class FuncLoader(_Loader):
+    """ Loader that supports specifying functions inside modules, without
+    using eggs at all. Configuration should be in the format:
+        use = call:my.module.path:function_name
+        
+    Dot notation is supported in both the module and function name, e.g.:
+        use = call:my.module.path:object.method
+    """
+    def __init__(self, spec):
+        self.spec = spec
+        if not ':' in spec:
+            raise LookupError("Configuration not in format module:function")
+
+    def get_context(self, object_type, name=None, global_conf=None):
+        obj = lookup_object(self.spec)
+        return LoaderContext(
+            obj,
+            object_type,
+            None, # determine protocol from section type
+            global_conf or {},
+            {},
+            self,
+            )
 
 
 class LoaderContext(object):

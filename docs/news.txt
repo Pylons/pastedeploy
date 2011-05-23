@@ -12,9 +12,12 @@ hg tip
 
 * Excluded tests from release distributions
 
-* Dropped Python 2.4 support
+* Added support for the "call:" protocol for loading apps directly as
+  functions (contributed by Jason Stitt)
 
 * Added Python 3.x support
+
+* Dropped Python 2.4 support
 
 1.3.4
 -----
