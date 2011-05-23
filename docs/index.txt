@@ -219,7 +219,7 @@ Basic Usage
 -----------
 
 The basic way you'll use Paste Deployment is to load `WSGI
-<http://www.python.org/peps/pep-0333.html>`_ applications.  Many
+<http://www.python.org/peps/pep-3333.html>`_ applications.  Many
 Python frameworks now support WSGI, so applications written for these
 frameworks should be usable.
 
