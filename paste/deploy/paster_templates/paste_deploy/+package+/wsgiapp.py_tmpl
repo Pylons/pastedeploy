@@ -1,5 +1,7 @@
-import sampleapp
 from paste.deploy.config import ConfigMiddleware
+
+import sampleapp
+
 
 def make_app(
     global_conf,
@@ -20,4 +22,3 @@ def make_app(
     # configuration dictionary we set up:
     app = ConfigMiddleware(app, conf)
     return app
-
