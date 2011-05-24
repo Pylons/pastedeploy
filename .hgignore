@@ -1,14 +1,13 @@
 syntax: glob
 *.egg-info/
+*.egg/
+*.pyc
+*.class
 dist/
 build/
 docs/_build/
-
-syntax: glob
 .tox
-syntax: glob
 .project
-syntax: glob
 .pydevproject
-syntax: regexp
-^tests/fake_packages/FakeApp\.egg$
+.settings
+__pycache__
