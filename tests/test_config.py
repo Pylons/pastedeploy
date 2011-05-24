@@ -168,6 +168,6 @@ def test_interpolate_exception():
     except Exception:
         e = sys.exc_info()[1]
         expected = "Error in file %s" % os.path.join(config_path, 'test_error.ini')
-        eq_(str(e).split(',')[0], expected)
+        eq_(str(e).split(':')[0], expected)
     else:
         assert False, 'Should have raised an exception'
