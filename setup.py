@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="PasteDeploy",
-    version='1.5.0dev',
+    version='1.5.0',
     description="Load, configure, and compose WSGI applications and servers",
     long_description="""\
 This tool provides code to load WSGI applications and servers from
