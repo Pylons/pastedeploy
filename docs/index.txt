@@ -64,13 +64,16 @@ new entry points will be defined.
 Installation
 ------------
 
-First install `setuptools
-<http://peak.telecommunity.com/DevCenter/setuptools>`_.
+First make sure you have either
+`setuptools <http://peak.telecommunity.com/DevCenter/setuptools>`_ or its
+modern replacement
+`distribute <http://pypi.python.org/pypi/distribute>`_ installed.
+For Python 3.x you need distribute as setuptools does not work on it.
 
-You can install Paste Deployment by installing `easy_install
-<http://peak.telecommunity.com/DevCenter/EasyInstall>`_ and running::
+Then you can install Paste Deployment using `pip
+<http://www.pip-installer.org/en/latest/installing.html>`_ by running::
 
-    $ sudo easy_install.py PasteDeploy
+    $ sudo pip install PasteDeploy
 
 If you want to track development, do::
 
@@ -85,7 +88,7 @@ For downloads and other information see the `Cheese Shop PasteDeploy
 page <http://cheeseshop.python.org/pypi/PasteDeploy>`_.
 
 A complimentary package is `Paste Script </script/>`_.  To install
-that use ``easy_install PasteScript`` (or ``easy_install
+that, use ``pip install PasteScript`` (or ``pip install
 PasteScript==dev``).
 
 From the User Perspective
@@ -197,7 +200,7 @@ with ``next`` (which refers to the next section).  The
 could imagine it logs people in and checks permissions.
 
 That last section is just a reference to an application that you
-probably installed with ``easy_install BlogApp``, and one bit of
+probably installed with ``pip install BlogApp``, and one bit of
 configuration you passed to it (``database``).
 
 Lastly::
@@ -447,8 +450,9 @@ other with the attributes ``.local_conf`` and ``.global_conf``.
 
 `Python Eggs <http://peak.telecommunity.com/DevCenter/PythonEggs>`_
 are a distribution and installation format produced by `setuptools
-<http://peak.telecommunity.com/DevCenter/setuptools>`_ that adds
-metadata to a normal Python package (among other things).
+<http://peak.telecommunity.com/DevCenter/setuptools>`_ and
+`distribute <http://packages.python.org/distribute/>`_ that adds metadata to a
+normal Python package (among other things).
 
 You don't need to understand a whole lot about Eggs to use them.  If
 you have a `distutils
