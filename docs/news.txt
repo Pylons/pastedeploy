@@ -19,6 +19,9 @@ hg tip
 
 * Dropped Python 2.4 support
 
+* Removed the ``paste.deploy.epdesc`` and ``paste.deploy.interfaces`` modules
+  -- contact the maintainer if you actually needed them
+
 1.3.4
 -----
 
