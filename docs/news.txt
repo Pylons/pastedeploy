@@ -1,8 +1,8 @@
 Paste Deployment News
 =====================
 
-hg tip
-------
+1.5.0
+-----
 
 * Project is now maintained by Alex Grönholm <alex.gronholm@nextday.fi>
 
