@@ -493,7 +493,7 @@ class ConfigLoader(_Loader):
                 # This will work with 'server' and 'filter', otherwise it
                 # could fail but there is an error message already for
                 # bad protocols
-                context.protocol = 'paste.%s_factory' % context_protocol
+                context.protocol = 'paste.%s_factory' % section_protocol
 
         return context
 
