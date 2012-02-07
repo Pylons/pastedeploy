@@ -1,0 +1,13 @@
+syntax: glob
+*.egg-info/
+*.egg/
+*.pyc
+*.class
+dist/
+build/
+docs/_build/
+.tox
+.project
+.pydevproject
+.settings
+__pycache__
