@@ -1,6 +1,6 @@
 import cgi
 
-from paste.deploy import CONFIG
+from paste.deploy.config import CONFIG
 
 
 def application(environ, start_response):
@@ -21,4 +21,3 @@ def application(environ, start_response):
                         % (key, cgi.escape(repr(value))))
     content.append('</table></body></html>')
     return content
-                      
