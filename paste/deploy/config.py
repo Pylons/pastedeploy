@@ -269,7 +269,7 @@ class PrefixMiddleware(object):
             if 'HTTP_X_FORWARDED_HOST' in environ:
                 environ['HTTP_HOST'] = environ.pop('HTTP_X_FORWARDED_HOST').split(',')[0]
             if 'HTTP_X_FORWARDED_FOR' in environ:
-                environ['REMOTE_ADDR'] = environ.pop('HTTP_X_FORWARDED_FOR')
+                environ['REMOTE_ADDR'] = environ.pop('HTTP_X_FORWARDED_FOR').split(',')[0]
             if 'HTTP_X_FORWARDED_SCHEME' in environ:
                 environ['wsgi.url_scheme'] = environ.pop('HTTP_X_FORWARDED_SCHEME')
             elif 'HTTP_X_FORWARDED_PROTO' in environ:
