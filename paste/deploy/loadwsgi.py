@@ -7,7 +7,7 @@ import re
 
 import pkg_resources
 
-from paste.deploy.compat import ConfigParser, unquote, iteritems
+from paste.deploy.compat import ConfigParser, unquote, iteritems, dictkeys
 from paste.deploy.util import fix_call, lookup_object
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
@@ -655,7 +655,7 @@ class EggLoader(_Loader):
                    dist.location,
                    ', '.join(_flatten(object_type.egg_protocols)),
                    ', '.join(_flatten([
-                (pkg_resources.get_entry_info(self.spec, prot, name) or {}).keys()
+                dictkeys(pkg_resources.get_entry_info(self.spec, prot, name) or {})
                 for prot in protocol_options] or '(no entry points)'))))
         if len(possible) > 1:
             raise LookupError(
