@@ -17,6 +17,7 @@ if sys.version_info < (3, 0):
     from ConfigParser import ConfigParser
     from urllib import unquote
     iteritems = lambda d: d.iteritems()
+    dictkeys = lambda d: d.keys()
 
     def reraise(t, e, tb):
         exec('raise t, e, tb', dict(t=t, e=e, tb=tb))
@@ -25,6 +26,7 @@ else:
     from configparser import ConfigParser
     from urllib.parse import unquote
     iteritems = lambda d: d.items()
+    dictkeys = lambda d: list(d.keys())
 
     def reraise(t, e, tb):
         exec('raise e from tb', dict(e=e, tb=tb))
