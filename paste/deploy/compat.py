@@ -29,4 +29,4 @@ else:
     dictkeys = lambda d: list(d.keys())
 
     def reraise(t, e, tb):
-        exec('raise e from tb', dict(e=e, tb=tb))
+        raise e.with_traceback(tb)
