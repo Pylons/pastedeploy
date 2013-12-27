@@ -1,6 +1,26 @@
 Paste Deployment News
 =====================
 
+1.5.2
+-----
+
+* Fixed Python 3 issue in paste.deploy.util.fix_type_error()
+
+1.5.1
+-----
+
+* Fixed use of the wrong variable when determining the context protocol
+
+* Fixed invalid import of paste.deploy.Config to paste.deploy.config.Config
+
+* Fixed multi proxy IPs bug in X-Forwarded-For header in PrefixMiddleware
+
+* Fixed TypeError when trying to raise LookupError on Python 3
+
+* Fixed exception reraise on Python 3
+
+Thanks to Alexandre Conrad, Atsushi Odagiri, Pior Bastida and Tres Seaver for their contributions.
+
 1.5.0
 -----
 
