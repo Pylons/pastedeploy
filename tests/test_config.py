@@ -98,7 +98,8 @@ def test_foreign_config():
         'bob': 'your uncle'})
     eq_(app.global_conf, {
         'def1': 'a',
-        'def2': 'from include',
+        # Note overwrite of DEFAULT value from foreign config
+        'def2': 'b',
         'def3': 'c',
         'basepath': config_path,
         'glob': 'override',
@@ -150,8 +151,8 @@ def test_global_conf():
                      global_conf={'def2': 'TEST DEF 2', 'inherit': 'bazbar'})
     eq_(conf, {
         'def1': 'a',
-        # Note that this gets overwritten:
-        'def2': 'b',
+        # Note overwrite of DEFAULT value
+        'def2': 'TEST DEF 2',
         'basepath': os.path.join(here, 'sample_configs'),
         'here': config_path,
         'inherit': 'bazbar',
