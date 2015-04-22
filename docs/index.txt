@@ -47,7 +47,7 @@ Paste Deploy is released under the `MIT license
 Status
 ------
 
-Paste Deploy has passed version 1.0.  Paste Script is an actively
+Paste Deploy has passed version 1.0.  Paste Deploy is an actively
 maintained project.  As of 1.0, we'll make a strong effort to maintain
 backward compatibility (this actually started happening long before
 1.0, but now it is explicit).  This will include deprecation warnings
