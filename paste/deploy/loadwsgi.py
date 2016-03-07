@@ -406,12 +406,11 @@ class ConfigLoader(_Loader):
                                global_conf=global_conf)
         section = self.find_config_section(
             object_type, name=name)
-        if global_conf is None:
-            global_conf = {}
-        else:
-            global_conf = global_conf.copy()
         defaults = self.parser.defaults()
-        global_conf.update(defaults)
+        _global_conf = defaults.copy()
+        if global_conf is not None:
+            _global_conf.update(global_conf)
+        global_conf = _global_conf
         local_conf = {}
         global_additions = {}
         get_from_globals = {}
