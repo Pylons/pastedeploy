@@ -10,7 +10,7 @@ class Bug(Exception):
 
 def app_with_exception(environ, start_response):
     def cont():
-        yield "something"
+        yield b"something"
         raise Bug
     start_response('200 OK', [('Content-type', 'text/html')])
     return cont()
