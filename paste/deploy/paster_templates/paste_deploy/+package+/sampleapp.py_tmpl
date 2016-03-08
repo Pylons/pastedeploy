@@ -10,14 +10,14 @@ def application(environ, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
     greeting = CONFIG['greeting']
     content = [
-        '<html><head><title>%s</title></head>\n' % greeting,
-        '<body><h1>%s!</h1>\n' % greeting,
-        '<table border=1>\n',
+        b'<html><head><title>%s</title></head>\n' % greeting.encode('utf-8'),
+        b'<body><h1>%s!</h1>\n' % greeting.encode('utf-8'),
+        b'<table border=1>\n',
         ]
     items = environ.items()
-    items.sort()
+    items = sorted(items)
     for key, value in items:
-        content.append('<tr><td>%s</td><td>%s</td></tr>\n'
-                        % (key, cgi.escape(repr(value))))
-    content.append('</table></body></html>')
+        content.append(b'<tr><td>%s</td><td>%s</td></tr>\n'
+                       % (key.encode('utf-8'), cgi.escape(repr(value)).encode('utf-8')))
+    content.append(b'</table></body></html>')
     return content
