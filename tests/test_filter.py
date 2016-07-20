@@ -51,3 +51,13 @@ def test_filter_with_filter_with():
     assert isinstance(app, fakeapp.apps.CapFilter)
     assert isinstance(app.app, fakeapp.apps.CapFilter)
     assert app.app.app is fakeapp.apps.basic_app
+
+
+def test_bad_pipeline():
+    try:
+        app = loadapp('config:sample_configs/test_filter.ini#piped3',
+                      relative_to=here)
+    except LookupError as err:
+        assert 'has extra (disallowed) settings' in err.args[0]
+    else:
+        assert False, 'should have raised LookupError'

@@ -551,7 +551,7 @@ class ConfigLoader(_Loader):
             raise LookupError(
                 "The [%s] pipeline section in %s has extra "
                 "(disallowed) settings: %s"
-                % (', '.join(local_conf.keys())))
+                % (section, self.filename, ', '.join(local_conf.keys())))
         context = LoaderContext(None, PIPELINE, None, global_conf,
                                 local_conf, self)
         context.app_context = self.get_context(
