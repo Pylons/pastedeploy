@@ -19,7 +19,13 @@ __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
 
 def import_string(s):
-    return pkg_resources.EntryPoint.parse("x=" + s).load(False)
+    ep = pkg_resources.EntryPoint.parse("x=" + s)
+    if hasattr(ep, 'resolve'):
+        # this is available on setuptools >= 10.2
+        return ep.resolve()
+    else:
+        # this causes a DeprecationWarning on setuptools >= 11.3
+        return ep.load(False)
 
 
 def _aslist(obj):
