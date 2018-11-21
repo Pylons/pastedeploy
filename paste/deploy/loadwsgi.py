@@ -19,7 +19,13 @@ __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
 
 def import_string(s):
-    return pkg_resources.EntryPoint.parse("x=" + s).load(False)
+    ep = pkg_resources.EntryPoint.parse("x=" + s)
+    if hasattr(ep, 'resolve'):
+        # this is available on setuptools >= 10.2
+        return ep.resolve()
+    else:
+        # this causes a DeprecationWarning on setuptools >= 11.3
+        return ep.load(False)
 
 
 def _aslist(obj):
@@ -551,7 +557,7 @@ class ConfigLoader(_Loader):
             raise LookupError(
                 "The [%s] pipeline section in %s has extra "
                 "(disallowed) settings: %s"
-                % (', '.join(local_conf.keys())))
+                % (section, self.filename, ', '.join(local_conf.keys())))
         context = LoaderContext(None, PIPELINE, None, global_conf,
                                 local_conf, self)
         context.app_context = self.get_context(
