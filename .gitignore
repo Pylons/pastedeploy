@@ -1,0 +1,6 @@
+.coverage
+.tox
+*.pyc
+PasteDeploy.egg-info
+coverage.xml
+htmlcov
