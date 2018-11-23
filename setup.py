@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.dirname(__file__)
-readme_path = os.path.join(here, 'README.rst.rst')
+readme_path = os.path.join(here, "README.rst")
 readme = open(readme_path).read()
 
 
@@ -36,7 +36,12 @@ setup(
     author_email='ianb@colorstudy.com',
     maintainer='Alex Gronholm',
     maintainer_email='alex.gronholm@nextday.fi',
-    url='http://pythonpaste.org/deploy/',
+    url="https://pylonsproject.org/",
+    project_urls={
+        "Documentation": "https://docs.pylonsproject.org/projects/pastedeploy/en/latest/",
+        "Changelog": "https://docs.pylonsproject.org/projects/pastedeploy/en/latest/news.html",
+        "Issue Tracker": "https://github.com/Pylons/pastedeploy/issues",
+    },
     license='MIT',
     namespace_packages=['paste'],
     packages=find_packages(exclude=['tests']),

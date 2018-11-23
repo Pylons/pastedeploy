@@ -1,11 +1,11 @@
 This tool provides code to load WSGI applications and servers from
-URIs; these URIs can refer to Python Eggs for INI-style configuration
-files.  `Paste Script <http://pythonpaste.org/script>`_ provides
+URIs. These URIs can refer to Python eggs for INI-style configuration
+files.  `Paste Script <https://github.com/Pylons/pastescript>`_ provides
 commands to serve applications based on this configuration file.
 
-The latest version is available in a `Mercurial repository
-<http://bitbucket.org/ianb/pastedeploy>`_ (or a `tarball
-<http://bitbucket.org/ianb/pastedeploy/get/tip.gz#egg=PasteDeploy-dev>`_).
+The latest version is available on `GitHub
+<https://github.com/Pylons/pastedeploy/>`_ (or download a wheel or tarball from
+`PyPI <https://pypi.org/project/PasteDeploy/#files>`_).
 
 For the latest changes see the `news file
-<http://pythonpaste.org/deploy/news.html>`_.
+<https://docs.pylonsproject.org/projects/pastedeploy/en/latest/news.html>`_.
