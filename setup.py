@@ -3,7 +3,7 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.dirname(__file__)
-readme_path = os.path.join(here, 'README')
+readme_path = os.path.join(here, 'README.rst.rst')
 readme = open(readme_path).read()
 
 
