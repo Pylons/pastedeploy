@@ -17,10 +17,10 @@ Run `tox` from within your checkout. This will run the tests across all supporte
 
 To run the tests for Python 3.7 only:
 
-    $ tox -epy3.7
+    $ tox -e py37
 
 To build the docs:
 
-    $ tox -edocs
+    $ tox -e docs
 
 See the `tox.ini` file for details.
