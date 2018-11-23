@@ -14,7 +14,6 @@ Documents:
    modules/loadwsgi
    modules/config
    modules/converters
-   license
 
 .. comment:
    The names used in sections should be more concrete, and it should
