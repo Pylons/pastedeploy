@@ -6,6 +6,10 @@ here = os.path.dirname(__file__)
 readme_path = os.path.join(here, "README.rst")
 readme = open(readme_path).read()
 
+docs_extras = [
+    'Sphinx >= 1.7.5', # Read The Docs minimum version
+    'pylons-sphinx-themes',
+]
 
 setup(
     name='PasteDeploy',
@@ -52,6 +56,7 @@ setup(
     extras_require={
         'Config': [],
         'Paste': ['Paste'],
+        'docs': docs_extras,
     },
     entry_points="""
     [paste.filter_app_factory]
