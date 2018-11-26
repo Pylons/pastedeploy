@@ -14,7 +14,6 @@ Documents:
    modules/loadwsgi
    modules/config
    modules/converters
-   license
 
 .. comment:
    The names used in sections should be more concrete, and it should
@@ -67,7 +66,7 @@ Installation
 First make sure you have either
 `setuptools <http://peak.telecommunity.com/DevCenter/setuptools>`_ or its
 modern replacement
-`distribute <http://pypi.python.org/pypi/distribute>`_ installed.
+`distribute <https://pypi.org/project/distribute/>`_ installed.
 For Python 3.x you need distribute as setuptools does not work on it.
 
 Then you can install Paste Deployment using `pip
@@ -451,7 +450,7 @@ other with the attributes ``.local_conf`` and ``.global_conf``.
 `Python Eggs <http://peak.telecommunity.com/DevCenter/PythonEggs>`_
 are a distribution and installation format produced by `setuptools
 <http://peak.telecommunity.com/DevCenter/setuptools>`_ and
-`distribute <http://packages.python.org/distribute/>`_ that adds metadata to a
+`distribute <https://pypi.org/project/distribute/>`_ that adds metadata to a
 normal Python package (among other things).
 
 You don't need to understand a whole lot about Eggs to use them.  If

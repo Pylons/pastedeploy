@@ -12,6 +12,7 @@
 # serve to show the default value.
 
 import sys
+import pylons_sphinx_themes
 
 # If your extensions are in another directory, add it here.
 #sys.path.append('some/directory')
@@ -71,10 +72,16 @@ pygments_style = 'sphinx'
 # Options for HTML output
 # -----------------------
 
+html_theme = 'pylons'
+html_theme_path = pylons_sphinx_themes.get_html_themes_path()
+html_theme_options = dict(
+    canonical_url='https://docs.pylonsproject.org/projects/pastedeploy/en/latest/'
+)
+
 # The style sheet to use for HTML and HTML Help pages. A file of that name
 # must exist either in Sphinx' static/ path, or in one of the custom paths
 # given in html_static_path.
-html_style = 'default.css'
+# html_style = 'default.css'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -85,15 +92,21 @@ html_static_path = ['_static']
 # using the given strftime format.
 html_last_updated_fmt = '%b %d, %Y'
 
-# If true, SmartyPants will be used to convert quotes and dashes to
-# typographically correct entities.
-#html_use_smartypants = True
+# Do not use smart quotes.
+smartquotes = False
 
 # Content template for the index page.
 #html_index = ''
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+# Control display of sidebars
+html_sidebars = { '**': [
+    'localtoc.html',
+    'ethicalads.html',
+    'relations.html',
+    'sourcelink.html',
+    'searchbox.html',
+] }
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
