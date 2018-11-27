@@ -69,16 +69,19 @@ modern replacement
 `distribute <https://pypi.org/project/distribute/>`_ installed.
 For Python 3.x you need distribute as setuptools does not work on it.
 
-Then you can install Paste Deployment using `pip
-<http://www.pip-installer.org/en/latest/installing.html>`_ by running::
+Then you can install Paste Deployment using `pip <https://pypi.org/project/pip/>`_ by running:
 
-    $ sudo pip install PasteDeploy
+.. code-block:: bash
 
-If you want to track development, do::
+    sudo pip install PasteDeploy
 
-    $ hg clone http://bitbucket.org/ianb/pastedeploy
-    $ cd pastedeploy
-    $ sudo python setup.py develop
+If you want to track development, do:
+
+.. code-block:: bash
+
+    hg clone http://bitbucket.org/ianb/pastedeploy
+    cd pastedeploy
+    sudo python setup.py develop
 
 This will install the package globally, but will load the files in the
 checkout.  You can also simply install ``PasteDeploy==dev``.
@@ -122,7 +125,9 @@ applications (example below).
 
 Here's a typical configuration file that also shows off mounting
 multiple applications using `paste.urlmap
-<http://pythonpaste.org/module-paste.urlmap.html>`_::
+<http://pythonpaste.org/module-paste.urlmap.html>`_:
+
+.. code-block:: ini
 
     [composite:main]
     use = egg:Paste#urlmap
@@ -149,7 +154,9 @@ multiple applications using `paste.urlmap
     use = call:mywiki.main:application
     database = sqlite:/home/me/wiki.db
 
-I'll explain each section in detail now::
+I'll explain each section in detail now:
+
+.. code-block:: ini
 
     [composite:main]
     use = egg:Paste#urlmap
@@ -165,7 +172,9 @@ path prefix to map your request to another application.  These are
 the applications like "home", "blog", "wiki" and "config:cms.ini".  The last
 one just refers to another file ``cms.ini`` in the same directory.
 
-Next up::
+Next up:
+
+.. code-block:: ini
 
     [app:home]
     use = egg:Paste#static
@@ -180,7 +189,9 @@ the directory containing the configuration file; you should use that
 in lieu of relative filenames (which depend on the current directory,
 which can change depending how the server is run).
 
-Then::
+Then:
+
+.. code-block:: ini
 
     [filter-app:blog]
     use = egg:Authentication#auth
@@ -202,7 +213,9 @@ That last section is just a reference to an application that you
 probably installed with ``pip install BlogApp``, and one bit of
 configuration you passed to it (``database``).
 
-Lastly::
+Lastly:
+
+.. code-block:: ini
 
     [app:wiki]
     use = call:mywiki.main:application
@@ -280,7 +293,9 @@ Each section name defining an application should be prefixed with
 would go in ``[app:main]`` or just ``[app]``.
 
 There's two ways to indicate the Python code for the application.  The
-first is to refer to another URI or name::
+first is to refer to another URI or name:
+
+.. code-block:: ini
 
     [app:myapp]
     use = config:another_config_file.ini#app_name
@@ -302,7 +317,9 @@ another location.  However, in addition to loading the application
 from that location, you can also add or change the configuration.
 
 The other way to define an application is to point exactly to some
-Python code::
+Python code:
+
+.. code-block:: ini
 
     [app:myapp]
     paste.app_factory = myapp.modulename:app_factory
@@ -319,14 +336,18 @@ Configuration
 
 Configuration is done through keys besides ``use`` (or the protocol
 names).  Any other keys found in the section will be passed as keyword
-arguments to the factory.  This might look like::
+arguments to the factory.  This might look like:
+
+.. code-block:: ini
 
     [app:blog]
     use = egg:MyBlog
     database = mysql://localhost/blogdb
     blogname = This Is My Blog!
 
-You can override these in other sections, like::
+You can override these in other sections, like:
+
+.. code-block:: ini
 
     [app:otherblog]
     use = blog
@@ -354,7 +375,9 @@ configuration is passed in.
 
 Global configuration to apply to every application defined in a file
 should go in a special section named ``[DEFAULT]``.  You can override
-global configuration locally like::
+global configuration locally like:
+
+.. code-block:: ini
 
     [DEFAULT]
     admin_email = webmaster@example.com
@@ -371,7 +394,9 @@ Composite Applications
 "Composite" applications are things that act like applications, but
 are made up of other applications.  One example would be a URL mapper,
 where you mount applications at different URL paths.  This might look
-like::
+like:
+
+.. code-block:: ini
 
     [composite:main]
     use = egg:Paste#urlmap
@@ -404,7 +429,9 @@ Filter Composition
 There are several ways to apply filters to applications.  It mostly
 depends on how many filters, and in what order you want to apply them.
 
-The first way is to use the ``filter-with`` setting, like::
+The first way is to use the ``filter-with`` setting, like:
+
+.. code-block:: ini
 
     [app:main]
     use = egg:MyEgg
@@ -426,13 +453,15 @@ points to the application to apply the filter to.
 ``pipeline:`` is used when you need apply a number of filters.  It
 takes *one* configuration key ``pipeline`` (plus any global
 configuration overrides you want).  ``pipeline`` is a list of filters
-ended by an application, like::
+ended by an application, like:
+
+.. code-block:: ini
 
     [pipeline:main]
     pipeline = filter1 egg:FilterEgg#filter2 filter3 app
 
     [filter:filter1]
-    ...
+    # ...
 
 Getting Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -456,11 +485,15 @@ normal Python package (among other things).
 You don't need to understand a whole lot about Eggs to use them.  If
 you have a `distutils
 <http://python.org/doc/current/lib/module-distutils.html>`_
-``setup.py`` script, just change::
+``setup.py`` script, just change:
+
+.. code-block:: python
 
     from distutils.core import setup
 
-to::
+to:
+
+.. code-block:: python
 
     from setuptools import setup
 
@@ -481,11 +514,13 @@ more about the protocols later_.
 .. _later: `Defining Factories`_
 
 The important part here is how we define entry points.  You'll add an
-argument to ``setup()`` like::
+argument to ``setup()`` like:
+
+.. code-block:: python
 
     setup(
         name='MyApp',
-        ...
+        # ...
         entry_points={
             'paste.app_factory': [
                 'main=myapp.mymodule:app_factory',
@@ -518,7 +553,9 @@ function, method, or class).
 ``paste.app_factory``
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The application is the most common.  You define one like::
+The application is the most common.  You define one like:
+
+.. code-block:: python
 
     def app_factory(global_config, **local_conf):
         return wsgi_app
@@ -529,7 +566,9 @@ passed as keyword arguments.  The function returns a WSGI application.
 ``paste.composite_factory``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Composites are just slightly more complex::
+Composites are just slightly more complex:
+
+.. code-block:: python
 
     def composite_factory(loader, global_config, **local_conf):
         return wsgi_app
@@ -540,7 +579,9 @@ application with the given name.  ``get_filter`` and ``get_server``
 work the same way.
 
 A more interesting example might be a composite factory that does
-something.  For instance, consider a "pipeline" application::
+something.  For instance, consider a "pipeline" application:
+
+.. code-block:: python
 
     def pipeline_factory(loader, global_config, pipeline):
         # space-separated list of filter and app names:
@@ -552,7 +593,9 @@ something.  For instance, consider a "pipeline" application::
             app = filter(app)
         return app
 
-Then we use it like::
+Then we use it like:
+
+.. code-block:: ini
 
     [composite:main]
     use = <pipeline_factory_uri>
@@ -574,7 +617,9 @@ application as the only argument, and return a "filtered" version of
 that application.
 
 Here's an example of a filter that checks that the ``REMOTE_USER`` CGI
-variable is set, creating a really simple authentication filter::
+variable is set, creating a really simple authentication filter:
+
+.. code-block:: python
 
     def auth_filter_factory(global_conf, req_usernames):
         # space-separated list of usernames:
@@ -600,11 +645,13 @@ variable is set, creating a really simple authentication filter::
 
 This is very similar to ``paste.filter_factory``, except that it also
 takes a ``wsgi_app`` argument, and returns a WSGI application.  So if
-you changed the above example to::
+you changed the above example to:
+
+.. code-block:: python
 
     class AuthFilter(object):
         def __init__(self, app, global_conf, req_usernames):
-            ....
+            # ...
 
 Then ``AuthFilter`` would serve as a filter_app_factory
 (``req_usernames`` is a required local configuration key in this
@@ -619,7 +666,9 @@ a server.
 A server is a callable that takes a single argument, a WSGI
 application.  It then serves the application.
 
-An example might look like::
+An example might look like:
+
+.. code-block:: python
 
     def server_factory(global_conf, host, port):
         port = int(port)
@@ -660,12 +709,14 @@ Outstanding Issues
   translate objects into their proper types.
 
 * Some short-form for a filter/app, where the filter refers to the
-  "next app".  Maybe like::
+  "next app".  Maybe like:
+
+.. code-block:: ini
 
     [app-filter:app_name]
     use = egg:...
     next = next_app
 
     [app:next_app]
-    ...
+    # ...
 
