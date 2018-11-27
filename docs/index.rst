@@ -87,7 +87,7 @@ checkout.  You can also simply install ``PasteDeploy==dev``.
 
 For downloads and other information see the `PyPI PasteDeploy page <https://pypi.org/project/PasteDeploy/>`_.
 
-A complimentary package is `Paste Script <https://pypi.org/project/PasteScript/>`_.
+A complementary package is `Paste Script <https://pypi.org/project/PasteScript/>`_.
 To install that, use ``pip install PasteScript`` (or ``pip install PasteScript==dev``).
 
 From the User Perspective
