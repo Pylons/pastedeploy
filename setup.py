@@ -51,8 +51,8 @@ setup(
     packages=find_packages(exclude=['tests']),
     include_package_data=True,
     zip_safe=False,
-    test_suite='nose.collector',
-    tests_require=['nose>=0.11'],
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     extras_require={
         'Config': [],
         'Paste': ['Paste'],
