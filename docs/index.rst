@@ -37,8 +37,7 @@ its container.
 Paste Deployment currently does not require other parts of `Paste
 <http://pythonpaste.org>`_, and is distributed as a separate package.
 
-To see updates that have been made to Paste Deploy see the `news file
-<news.html>`_.
+To see updates that have been made to Paste Deploy see the :doc:`news file <news>`_.
 
 Paste Deploy is released under the `MIT license
 <http://www.opensource.org/licenses/mit-license.php>`_.
@@ -89,9 +88,8 @@ checkout.  You can also simply install ``PasteDeploy==dev``.
 For downloads and other information see the `Cheese Shop PasteDeploy
 page <http://cheeseshop.python.org/pypi/PasteDeploy>`_.
 
-A complimentary package is `Paste Script </script/>`_.  To install
-that, use ``pip install PasteScript`` (or ``pip install
-PasteScript==dev``).
+A complimentary package is `Paste Script <https://pypi.org/project/PasteScript/>`_.
+To install that, use ``pip install PasteScript`` (or ``pip install PasteScript==dev``).
 
 From the User Perspective
 -------------------------
