@@ -101,7 +101,7 @@ The primary interaction with Paste Deploy is through its configuration
 files.  The primary thing you want to do with a configuration file is
 serve it.  To learn about serving configuration files, see `the
 ``paster serve`` command
-<https://web.archive.org/web/20160305001925/http://pythonpaste.org:80/script#paster-serve>`_.
+<https://pastescript.readthedocs.io/en/latest/#paster-serve>`_.
 
 The Config File
 ~~~~~~~~~~~~~~~
