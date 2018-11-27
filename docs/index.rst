@@ -72,17 +72,17 @@ Then you can install Paste Deployment using `pip <https://pypi.org/project/pip/>
 
 .. code-block:: bash
 
-    sudo pip install PasteDeploy
+    pip install PasteDeploy
 
 If you want to track development, do:
 
 .. code-block:: bash
 
-    hg clone http://bitbucket.org/ianb/pastedeploy
+    git clone https://github.com/Pylons/pastedeploy
     cd pastedeploy
-    sudo python setup.py develop
+    pip install -e .
 
-This will install the package globally, but will load the files in the
+This will install the package locally, and will load the files in the
 checkout.  You can also simply install ``PasteDeploy==dev``.
 
 For downloads and other information see the `Cheese Shop PasteDeploy
