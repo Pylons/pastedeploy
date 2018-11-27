@@ -120,9 +120,7 @@ section (``[app:main]``) and a server section (``[server:main]``).
 ``[composite:...]`` signifies something that dispatches to multiple
 applications (example below).
 
-Here's a typical configuration file that also shows off mounting
-multiple applications using `paste.urlmap
-<https://web.archive.org/web/20160309141618/http://pythonpaste.org/modules/urlmap.html#module-paste.urlmap>`_:
+Here's a typical configuration file that also shows off mounting multiple applications:
 
 .. code-block:: ini
 
