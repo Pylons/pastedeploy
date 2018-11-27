@@ -11,7 +11,8 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
-import sys
+import datetime
+import pkg_resources
 import pylons_sphinx_themes
 
 # If your extensions are in another directory, add it here.
@@ -34,16 +35,18 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
+thisyear = datetime.datetime.now().year
 project = 'Paste Deploy'
-copyright = '2011, Ian Bicking and contributors'
+copyright = '2011-%s, Ian Bicking and contributors' % thisyear
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '1.5'
+version = pkg_resources.get_distribution('pastedeploy').version
+
 # The full version, including alpha/beta/rc tags.
-release = '1.5.2'
+release = version
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
