@@ -35,7 +35,7 @@ without knowing any Python, or the details of the WSGI application or
 its container.
 
 Paste Deployment currently does not require other parts of `Paste
-<https://web.archive.org/web/20181127051629/http://pythonpaste.org/>`_, and is distributed as a separate package.
+<https://pythonpaste.readthedocs.io/en/latest/>`_, and is distributed as a separate package.
 
 To see updates that have been made to Paste Deploy see the :doc:`news file <news>`_.
 
