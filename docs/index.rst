@@ -35,12 +35,12 @@ without knowing any Python, or the details of the WSGI application or
 its container.
 
 Paste Deployment currently does not require other parts of `Paste
-<http://pythonpaste.org>`_, and is distributed as a separate package.
+<https://web.archive.org/web/20181127051629/http://pythonpaste.org/>`_, and is distributed as a separate package.
 
 To see updates that have been made to Paste Deploy see the :doc:`news file <news>`_.
 
 Paste Deploy is released under the `MIT license
-<http://www.opensource.org/licenses/mit-license.php>`_.
+<https://opensource.org/licenses/mit-license.php>`_.
 
 Status
 ------
@@ -85,8 +85,7 @@ If you want to track development, do:
 This will install the package locally, and will load the files in the
 checkout.  You can also simply install ``PasteDeploy==dev``.
 
-For downloads and other information see the `Cheese Shop PasteDeploy
-page <http://cheeseshop.python.org/pypi/PasteDeploy>`_.
+For downloads and other information see the `PyPI PasteDeploy page <https://pypi.org/project/PasteDeploy/>`_.
 
 A complimentary package is `Paste Script <https://pypi.org/project/PasteScript/>`_.
 To install that, use ``pip install PasteScript`` (or ``pip install PasteScript==dev``).
@@ -102,7 +101,7 @@ The primary interaction with Paste Deploy is through its configuration
 files.  The primary thing you want to do with a configuration file is
 serve it.  To learn about serving configuration files, see `the
 ``paster serve`` command
-<http://pythonpaste.org/script/#paster-serve>`_.
+<https://web.archive.org/web/20160305001925/http://pythonpaste.org:80/script#paster-serve>`_.
 
 The Config File
 ~~~~~~~~~~~~~~~
@@ -113,7 +112,7 @@ the part after the ``:`` is the "name" of the section, and the part
 before gives the "type".  Other sections are ignored.  
 
 The format is a simple `INI format
-<http://en.wikipedia.org/wiki/INI_file>`_: ``name = value``.  You can
+<https://en.wikipedia.org/wiki/INI_file>`_: ``name = value``.  You can
 extend the value by indenting subsequent lines.  ``#`` is a comment.
 
 Typically you have one or two sections, named "main": an application
@@ -123,7 +122,7 @@ applications (example below).
 
 Here's a typical configuration file that also shows off mounting
 multiple applications using `paste.urlmap
-<http://pythonpaste.org/module-paste.urlmap.html>`_:
+<https://web.archive.org/web/20160309141618/http://pythonpaste.org/modules/urlmap.html#module-paste.urlmap>`_:
 
 .. code-block:: ini
 
@@ -232,7 +231,7 @@ Basic Usage
 -----------
 
 The basic way you'll use Paste Deployment is to load `WSGI
-<http://www.python.org/peps/pep-3333.html>`_ applications.  Many
+<https://www.python.org/dev/peps/pep-3333/>`_ applications.  Many
 Python frameworks now support WSGI, so applications written for these
 frameworks should be usable.
 
@@ -481,9 +480,7 @@ are a distribution and installation format produced by `setuptools
 normal Python package (among other things).
 
 You don't need to understand a whole lot about Eggs to use them.  If
-you have a `distutils
-<http://python.org/doc/current/lib/module-distutils.html>`_
-``setup.py`` script, just change:
+you have a :mod:`<python:distutils>` ``setup.py`` script, just change:
 
 .. code-block:: python
 
