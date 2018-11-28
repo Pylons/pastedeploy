@@ -37,7 +37,7 @@ its container.
 Paste Deployment currently does not require other parts of `Paste
 <https://pythonpaste.readthedocs.io/en/latest/>`_, and is distributed as a separate package.
 
-To see updates that have been made to Paste Deploy see the :doc:`news file <news>`_.
+To see updates that have been made to Paste Deploy see the :doc:`news file <news>`.
 
 Paste Deploy is released under the `MIT license
 <https://opensource.org/licenses/mit-license.php>`_.
