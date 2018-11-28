@@ -234,7 +234,9 @@ Python frameworks now support WSGI, so applications written for these
 frameworks should be usable.
 
 The primary function is ``paste.deploy.loadapp``.  This loads an
-application given a URI.  You can use it like::
+application given a URI.  You can use it like:
+
+.. code-block:: ini
 
     from paste.deploy import loadapp
     wsgi_app = loadapp('config:/path/to/config.ini')
