@@ -11,7 +11,8 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
-import sys
+import datetime
+import pkg_resources
 import pylons_sphinx_themes
 
 # If your extensions are in another directory, add it here.
@@ -22,28 +23,38 @@ import pylons_sphinx_themes
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx',
+]
+
+# Looks for objects in external projects
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+}
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+# templates_path = ['_templates']
 
 # The suffix of source filenames.
-source_suffix = '.txt'
+source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
 
 # General substitutions.
+thisyear = datetime.datetime.now().year
 project = 'Paste Deploy'
-copyright = '2011, Ian Bicking and contributors'
+copyright = '2011-%s, Ian Bicking and contributors' % thisyear
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '1.5'
+version = pkg_resources.get_distribution('pastedeploy').version
+
 # The full version, including alpha/beta/rc tags.
-release = '1.5.2'
+release = version
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -86,7 +97,7 @@ html_theme_options = dict(
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
