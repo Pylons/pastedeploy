@@ -4,3 +4,6 @@
 PasteDeploy.egg-info
 coverage.xml
 htmlcov
+.eggs
+build
+dist
