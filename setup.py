@@ -38,9 +38,9 @@ setup(
     ],
     keywords="web wsgi application server",
     author="Ian Bicking",
-    author_email="ianb@colorstudy.com",
-    maintainer="Alex Gronholm",
-    maintainer_email="alex.gronholm@nextday.fi",
+    author_email="pylons-discuss@googlegroups.com",
+    maintainer="Chris Dent",
+    maintainer_email="pylons-discuss@googlegroups.com",
     url="https://pylonsproject.org/",
     project_urls={
         "Documentation": "https://docs.pylonsproject.org/projects/pastedeploy/en/latest/",
