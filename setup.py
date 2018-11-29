@@ -7,7 +7,7 @@ readme_path = os.path.join(here, "README.rst")
 readme = open(readme_path).read()
 
 docs_extras = [
-    "Sphinx >= 1.7.5", # Read The Docs minimum version
+    "Sphinx >= 1.7.5",  # Read The Docs minimum version
     "pylons-sphinx-themes",
 ]
 
