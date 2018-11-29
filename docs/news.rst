@@ -1,6 +1,13 @@
 Paste Deployment News
 =====================
 
+2.0.0
+-----
+
+* Python 3 deprecation warning cleanups
+* Moved code to `GitHub <https://github.com/Pylons/pastedeploy>`_
+* Moved documentation of `Pylons Project <https://docs.pylonsproject.org/projects/pastedeploy/>`_
+
 1.5.2
 -----
 
