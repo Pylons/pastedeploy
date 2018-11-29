@@ -160,13 +160,9 @@ Released 26 August 2004
 * Removed the ``1`` from all the protocol names (e.g.,
   ``paste.app_factory1`` is not ``paste.app_factory``).
 
-* Added ``filter-app:`` and ``pipeline:`` sections.  `Docs
-  <paste-deploy.html#filter-composition>`__.
+* Added ``filter-app:`` and ``pipeline:`` sections.
 
-* Added ``paste.filter_app_factory1`` (`doc
-  <paste-deploy.html#paste-filter-app-factory1>`__) and
-  ``paste.server_runner1`` (`doc
-  <paste-deploy.html#paste-server-runner1>`__) protocols.
+* Added ``paste.filter_app_factory1`` and ``paste.server_runner1`` protocols.
 
 * Added ``paste.deploy.converters`` module for handling the
   string values that are common with this system.
