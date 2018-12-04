@@ -253,7 +253,7 @@ argument to ``loadapp()``.
 .. note:: 
    
    Filenames are never considered relative to the current working
-   directory, as that is a unpredictable location.  Generally when
+   directory, as that is an unpredictable location.  Generally when
    a URI has a context it will be seen as relative to that context;
    for example, if you have a ``config:`` URI inside another
    configuration file, the path is considered relative to the
