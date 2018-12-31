@@ -1,3 +1,7 @@
 include docs/*.txt
 include license.txt
-recursive-include paste/deploy/paster_templates *
+graft tests
+graft paste/deploy/paster_templates
+
+global-exclude __pycache__ *.py[cod]
+global-exclude .DS_Store
