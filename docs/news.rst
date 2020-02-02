@@ -1,6 +1,11 @@
 Paste Deployment News
 =====================
 
+2.1.0
+-----
+
+* pytest-runner removed, use tox to run tests.
+
 2.0.0
 -----
 
