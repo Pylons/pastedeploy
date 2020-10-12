@@ -13,7 +13,7 @@ docs_extras = [
 
 setup(
     name="PasteDeploy",
-    version="2.1.0",
+    version="2.1.1",
     description="Load, configure, and compose WSGI applications and servers",
     long_description=readme,
     classifiers=[

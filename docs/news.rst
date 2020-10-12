@@ -1,6 +1,12 @@
 Paste Deployment News
 =====================
 
+2.1.1 (2020-10-12)
+------------------
+
+* Added ``setuptools`` as an explicit dependency.
+  This has always been required but now that more environments are becoming capable of operating without it being installed, we now need to ensure it's available.
+
 2.1.0
 -----
 
