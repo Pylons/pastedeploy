@@ -61,7 +61,10 @@ class NicerConfigParser(ConfigParser):
         if hasattr(self, '_interpolation'):
             self._interpolation = self.InterpolateWrapper(self._interpolation)
 
-    read_file = getattr(ConfigParser, 'read_file', ConfigParser.readfp)
+    try:
+        read_file = ConfigParser.read_file
+    except AttributeError:
+        read_file = ConfigParser.readfp
 
     def defaults(self):
         """Return the defaults, with their values interpolated (with the
