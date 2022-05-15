@@ -82,12 +82,12 @@ class NicerConfigParser(ConfigParser):
         except Exception:
             e = sys.exc_info()[1]
             args = list(e.args)
-            args[0] = 'Error in file %s: %s' % (self.filename, e)
+            args[0] = f'Error in file {self.filename}: {e}'
             e.args = tuple(args)
             e.message = args[0]
             raise
 
-    class InterpolateWrapper(object):
+    class InterpolateWrapper:
         # Python >= 3.2
         def __init__(self, original):
             self._original = original
@@ -102,7 +102,7 @@ class NicerConfigParser(ConfigParser):
             except Exception:
                 e = sys.exc_info()[1]
                 args = list(e.args)
-                args[0] = 'Error in file %s: %s' % (parser.filename, e)
+                args[0] = f'Error in file {parser.filename}: {e}'
                 e.args = tuple(args)
                 e.message = args[0]
                 raise
@@ -113,7 +113,7 @@ class NicerConfigParser(ConfigParser):
 ############################################################
 
 
-class _ObjectType(object):
+class _ObjectType:
 
     name = None
     egg_protocols = None
@@ -125,7 +125,7 @@ class _ObjectType(object):
         self.config_prefixes = [_aslist(p) for p in _aslist(self.config_prefixes)]
 
     def __repr__(self):
-        return '<%s protocols=%r prefixes=%r>' % (
+        return '<{} protocols={!r} prefixes={!r}>'.format(
             self.name, self.egg_protocols, self.config_prefixes)
 
     def invoke(self, context):
@@ -349,7 +349,7 @@ _loaders['call'] = _loadfunc
 ############################################################
 
 
-class _Loader(object):
+class _Loader:
 
     def get_app(self, name=None, global_conf=None):
         return self.app_context(
@@ -694,7 +694,7 @@ class FuncLoader(_Loader):
             )
 
 
-class LoaderContext(object):
+class LoaderContext:
 
     def __init__(self, obj, object_type, protocol,
                  global_conf, local_conf, loader,

@@ -35,7 +35,7 @@ def make_remote_addr(loader, global_conf, **conf):
         dispatcher.map[addrs[name]] = apps[name]
     return dispatcher
 
-class RemoteAddrDispatch(object):
+class RemoteAddrDispatch:
     def __init__(self, map=None):
         self.map = map or {}
 
@@ -53,7 +53,7 @@ def make_cap_filter(global_conf, method_to_call='upper'):
         return CapFilter(app, global_conf, method_to_call)
     return cap_filter
 
-class CapFilter(object):
+class CapFilter:
 
     def __init__(self, app, global_conf, method_to_call='upper'):
         self.app = app

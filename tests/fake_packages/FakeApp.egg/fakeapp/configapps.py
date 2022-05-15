@@ -1,4 +1,4 @@
-class SimpleApp(object):
+class SimpleApp:
     def __init__(self, global_conf, local_conf, name):
         self.global_conf = global_conf
         self.local_conf = local_conf

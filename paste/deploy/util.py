@@ -33,7 +33,7 @@ def fix_type_error(exc_info, callable, varargs, kwargs):
         kwargs = sorted(kwargs.items())
         args += ', '.join(['%s=...' % n for n, v in kwargs])
     gotspec = '(%s)' % args
-    msg = '%s; got %s, wanted %s' % (exc_info[1], gotspec, argspec)
+    msg = f'{exc_info[1]}; got {gotspec}, wanted {argspec}'
     exc_info[1].args = (msg,)
     return exc_info
 
