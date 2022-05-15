@@ -7,3 +7,4 @@ htmlcov
 .eggs
 build
 dist
+env*
