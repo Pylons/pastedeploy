@@ -1,14 +1,11 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
-from paste.deploy.compat import basestring
-
-
 truthy = frozenset(['true', 'yes', 'on', 'y', 't', '1'])
 falsy = frozenset(['false', 'no', 'off', 'n', 'f', '0'])
 
 
 def asbool(obj):
-    if isinstance(obj, basestring):
+    if isinstance(obj, str):
         obj = obj.strip().lower()
         if obj in truthy:
             return True
@@ -27,7 +24,7 @@ def asint(obj):
 
 
 def aslist(obj, sep=None, strip=True):
-    if isinstance(obj, basestring):
+    if isinstance(obj, str):
         lst = obj.split(sep)
         if strip:
             lst = [v.strip() for v in lst]

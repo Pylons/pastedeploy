@@ -7,3 +7,4 @@ htmlcov
 .eggs
 build
 dist
+tests/fake_packages/FakeApp.egg/EGG-INFO
