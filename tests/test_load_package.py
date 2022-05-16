@@ -1,6 +1,7 @@
 from pprint import pprint
-import pkg_resources
 import sys
+
+import pkg_resources
 
 
 def test_load_package():
