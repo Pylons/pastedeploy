@@ -1,7 +1,14 @@
-include docs/*.txt
-include license.txt
+graft .github
 graft tests
 graft paste/deploy/paster_templates
+
+include docs/*.txt
+include license.txt
+include pytest.ini
+include tox.ini
+include rtd.txt
+include pyproject.toml
+include contributing.md
 
 global-exclude __pycache__ *.py[cod]
 global-exclude .DS_Store

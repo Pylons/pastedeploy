@@ -24,7 +24,7 @@ def local_dict():
         return result
 
 
-class DispatchingConfig(object):
+class DispatchingConfig:
 
     """
     This is a configuration object that can be used globally,
@@ -135,7 +135,7 @@ class DispatchingConfig(object):
 CONFIG = DispatchingConfig()
 
 
-class ConfigMiddleware(object):
+class ConfigMiddleware:
 
     """
     A WSGI middleware that adds a ``paste.config`` key to the request
@@ -194,7 +194,7 @@ def make_config_filter(app, global_conf, **local_conf):
 make_config_middleware = ConfigMiddleware.__doc__
 
 
-class PrefixMiddleware(object):
+class PrefixMiddleware:
     """Translate a given prefix into a SCRIPT_NAME for the filtered
     application.
 
@@ -277,7 +277,7 @@ class PrefixMiddleware(object):
         if self.force_port is not None:
             host = environ.get('HTTP_HOST', '').split(':', 1)[0]
             if self.force_port:
-                host = '%s:%s' % (host, self.force_port)
+                host = f'{host}:{self.force_port}'
                 environ['SERVER_PORT'] = str(self.force_port)
             else:
                 if environ['wsgi.url_scheme'] == 'http':
