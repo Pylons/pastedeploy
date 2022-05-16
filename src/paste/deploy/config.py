@@ -83,8 +83,8 @@ class DispatchingConfig:
         popped = lst.pop()
         if conf is not None and popped is not conf:
             raise AssertionError(
-                "The config popped (%s) is not the same as the config "
-                "expected (%s)" % (popped, conf)
+                f"The config popped ({popped}) is not the same as the config "
+                f"expected ({conf})"
             )
 
     def push_process_config(self, conf):
