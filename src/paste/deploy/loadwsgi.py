@@ -6,9 +6,7 @@ import re
 import sys
 from urllib.parse import unquote
 
-import pkg_resources
-
-from paste.deploy.util import fix_call, lookup_object
+from paste.deploy.util import fix_call, importlib_metadata, lookup_object
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 
@@ -18,14 +16,10 @@ __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
 ############################################################
 
 
-def import_string(s):
-    ep = pkg_resources.EntryPoint.parse("x=" + s)
-    if hasattr(ep, 'resolve'):
-        # this is available on setuptools >= 10.2
-        return ep.resolve()
-    else:
-        # this causes a DeprecationWarning on setuptools >= 11.3
-        return ep.load(False)
+def find_entry_point(dist, group, name):
+    for entry in dist.entry_points:
+        if entry.name == name and entry.group == group:
+            return entry
 
 
 def _aslist(obj):
@@ -443,7 +437,7 @@ class ConfigLoader(_Loader):
             filter_with = None
         if 'require' in local_conf:
             for spec in local_conf['require'].split():
-                pkg_resources.require(spec)
+                importlib_metadata.distribution(spec)
             del local_conf['require']
         if section.startswith('filter-app:'):
             context = self._filter_app_context(
@@ -532,7 +526,9 @@ class ConfigLoader(_Loader):
             raise LookupError("No loader given in section %r" % section)
         found_protocol, found_expr = possible[0]
         del local_conf[found_protocol]
-        value = import_string(found_expr)
+        value = importlib_metadata.EntryPoint(
+            name=None, group=None, value=found_expr
+        ).load()
         context = LoaderContext(
             value, object_type, found_protocol, global_conf, local_conf, self
         )
@@ -649,51 +645,37 @@ class EggLoader(_Loader):
             global_conf or {},
             {},
             self,
-            distribution=pkg_resources.get_distribution(self.spec),
+            distribution=importlib_metadata.distribution(self.spec),
             entry_point_name=ep_name,
         )
 
     def find_egg_entry_point(self, object_type, name=None):
         """
-        Returns the (entry_point, protocol) for the with the given
-        ``name``.
+        Returns the (entry_point, protocol) for with the given ``name``.
         """
         if name is None:
             name = 'main'
+        dist = importlib_metadata.distribution(self.spec)
         possible = []
         for protocol_options in object_type.egg_protocols:
             for protocol in protocol_options:
-                pkg_resources.require(self.spec)
-                entry = pkg_resources.get_entry_info(self.spec, protocol, name)
+                entry = find_entry_point(dist, protocol, name)
                 if entry is not None:
                     possible.append((entry.load(), protocol, entry.name))
                     break
         if not possible:
             # Better exception
-            dist = pkg_resources.get_distribution(self.spec)
             raise LookupError(
-                "Entry point %r not found in egg %r (dir: %s; protocols: %s; "
-                "entry_points: %s)"
+                "Entry point %r not found in egg %r (protocols: %s; entry_points: %s)"
                 % (
                     name,
                     self.spec,
-                    dist.location,
                     ', '.join(_flatten(object_type.egg_protocols)),
                     ', '.join(
-                        _flatten(
-                            [
-                                list(
-                                    (
-                                        pkg_resources.get_entry_info(
-                                            self.spec, prot, name
-                                        )
-                                        or {}
-                                    ).keys()
-                                )
-                                for prot in protocol_options
-                            ]
-                            or '(no entry points)'
-                        )
+                        str(entry)
+                        for prot in protocol_options
+                        for entry in [find_entry_point(dist, prot, name)]
+                        if entry
                     ),
                 )
             )

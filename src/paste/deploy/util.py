@@ -10,12 +10,6 @@ except ImportError:
     import importlib_metadata
 
 
-def find_entry_point(dist, group, name):
-    for entry in dist.entry_points:
-        if entry.name == name and entry.group == group:
-            return entry
-
-
 def fix_type_error(exc_info, callable, varargs, kwargs):
     """
     Given an exception, this will test if the exception was due to a
