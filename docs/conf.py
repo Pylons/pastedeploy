@@ -16,7 +16,7 @@ import pkg_resources
 import pylons_sphinx_themes
 
 # If your extensions are in another directory, add it here.
-#sys.path.append('some/directory')
+# sys.path.append('some/directory')
 
 # General configuration
 # ---------------------
@@ -58,23 +58,23 @@ release = version
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
-#today = ''
+# today = ''
 # Else, today_fmt is used as the format for a strftime call.
 today_fmt = '%B %d, %Y'
 
 # List of documents that shouldn't be included in the build.
-#unused_docs = ['include/contact.txt', 'include/reference_header.txt']
+# unused_docs = ['include/contact.txt', 'include/reference_header.txt']
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
+# add_function_parentheses = True
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-#add_module_names = True
+# add_module_names = True
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-#show_authors = False
+# show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -107,27 +107,29 @@ html_last_updated_fmt = '%b %d, %Y'
 smartquotes = False
 
 # Content template for the index page.
-#html_index = ''
+# html_index = ''
 
 # Custom sidebar templates, maps document names to template names.
 # Control display of sidebars
-html_sidebars = { '**': [
-    'localtoc.html',
-    'ethicalads.html',
-    'relations.html',
-    'sourcelink.html',
-    'searchbox.html',
-] }
+html_sidebars = {
+    '**': [
+        'localtoc.html',
+        'ethicalads.html',
+        'relations.html',
+        'sourcelink.html',
+        'searchbox.html',
+    ]
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {}
+# html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_use_modindex = True
+# html_use_modindex = True
 
 # If true, the reST sources are included in the HTML build as _sources/<name>.
-#html_copy_source = True
+# html_copy_source = True
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'PasteDeploydoc'
@@ -137,20 +139,20 @@ htmlhelp_basename = 'PasteDeploydoc'
 # ------------------------
 
 # The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+# latex_paper_size = 'letter'
 
 # The font size ('10pt', '11pt' or '12pt').
-#latex_font_size = '10pt'
+# latex_font_size = '10pt'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
-#latex_documents = []
+# latex_documents = []
 
 # Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
+# latex_preamble = ''
 
 # Documents to append as an appendix to all manuals.
-#latex_appendices = []
+# latex_appendices = []
 
 # If false, no module index is generated.
-#latex_use_modindex = True
+# latex_use_modindex = True

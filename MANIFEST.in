@@ -8,6 +8,7 @@ include README.rst
 include contributing.md
 include license.txt
 include .coveragerc
+include .flake8
 include pytest.ini
 include tox.ini
 include rtd.txt
