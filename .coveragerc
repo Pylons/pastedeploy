@@ -1,0 +1,13 @@
+[run]
+source =
+    paste.deploy
+
+[paths]
+source =
+    paste/deploy
+    */paste/deploy
+    */site-packages/paste/deploy
+
+[report]
+show_missing = true
+precision = 2
