@@ -4,10 +4,10 @@ import inspect
 import sys
 
 try:
-    import importlib.metadata as importlib_metadata
-except ImportError:
+    import importlib.metadata as importlib_metadata  # noqa F401
+except ImportError:  # pragma: no cover
     # bw-compat shim for py37
-    import importlib_metadata
+    import importlib_metadata  # noqa F401
 
 
 def fix_type_error(exc_info, callable, varargs, kwargs):
