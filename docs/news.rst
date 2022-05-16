@@ -1,6 +1,11 @@
 Paste Deployment News
 =====================
 
+unreleased
+----------
+
+* Drop support for Python 2, as well as 3.4, 3.5, and 3.6.
+
 2.1.1 (2020-10-12)
 ------------------
 

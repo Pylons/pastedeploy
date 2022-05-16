@@ -4,8 +4,6 @@ import os
 
 from paste.script.templates import Template
 
-from paste.deploy.compat import print_
-
 
 class PasteDeploy(Template):
 
@@ -30,7 +28,7 @@ class PasteDeploy(Template):
              '      main = %(package)s.wsgiapp:make_app\n') % vars,
             indent=False)
         if command.verbose:
-            print_('*' * 72)
-            print_('* Run "paster serve docs/devel_config.ini" to run the sample application')
-            print_('* on http://localhost:8080')
-            print_('*' * 72)
+            print('*' * 72)
+            print('* Run "paster serve docs/devel_config.ini" to run the sample application')
+            print('* on http://localhost:8080')
+            print('*' * 72)

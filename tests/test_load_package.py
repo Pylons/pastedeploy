@@ -1,12 +1,9 @@
 from pprint import pprint
-import sys
-
 import pkg_resources
-
-from paste.deploy.compat import print_
+import sys
 
 
 def test_load_package():
-    print_('Path:')
+    print('Path:')
     pprint(sys.path)
-    print_(pkg_resources.require('FakeApp'))
+    print(pkg_resources.require('FakeApp'))

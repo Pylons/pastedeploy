@@ -1,13 +1,13 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
-from __future__ import with_statement
+from configparser import ConfigParser
 import os
-import sys
-import re
-
 import pkg_resources
+import re
+import sys
+from urllib.parse import unquote
 
-from paste.deploy.compat import ConfigParser, unquote, iteritems, dictkeys
+
 from paste.deploy.util import fix_call, lookup_object
 
 __all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
@@ -70,7 +70,7 @@ class NicerConfigParser(ConfigParser):
         Mainly to support defaults using values such as %(here)s
         """
         defaults = ConfigParser.defaults(self).copy()
-        for key, val in iteritems(defaults):
+        for key, val in defaults.items():
             defaults[key] = self.get('DEFAULT', key) or val
         return defaults
 
@@ -400,7 +400,7 @@ class ConfigLoader(_Loader):
             self.parser.read_file(f)
 
     def update_defaults(self, new_defaults, overwrite=True):
-        for key, value in iteritems(new_defaults):
+        for key, value in new_defaults.items():
             if not overwrite and key in self.parser._defaults:
                 continue
             self.parser._defaults[key] = value
@@ -660,7 +660,7 @@ class EggLoader(_Loader):
                    dist.location,
                    ', '.join(_flatten(object_type.egg_protocols)),
                    ', '.join(_flatten([
-                dictkeys(pkg_resources.get_entry_info(self.spec, prot, name) or {})
+                list((pkg_resources.get_entry_info(self.spec, prot, name) or {}).keys())
                 for prot in protocol_options] or '(no entry points)'))))
         if len(possible) > 1:
             raise LookupError(
