@@ -101,7 +101,7 @@ class DispatchingConfig:
         conf = self.current_conf()
         if conf is None:
             raise AttributeError(
-                "No configuration has been registered for this process " "or thread"
+                "No configuration has been registered for this process or thread"
             )
         return getattr(conf, attr)
 
@@ -119,7 +119,7 @@ class DispatchingConfig:
         conf = self.current_conf()
         if conf is None:
             raise TypeError(
-                "No configuration has been registered for this process " "or thread"
+                "No configuration has been registered for this process or thread"
             )
         return conf[key]
 

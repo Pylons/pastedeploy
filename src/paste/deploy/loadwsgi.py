@@ -294,7 +294,9 @@ def loadcontext(object_type, uri, name=None, relative_to=None, global_conf=None)
     scheme = scheme.lower()
     if scheme not in _loaders:
         raise LookupError(
-            "URI scheme not known: %r (from %s)" % (scheme, ', '.join(_loaders.keys()))
+            "URI scheme not known: {!r} (from {})".format(
+                scheme, ', '.join(_loaders.keys())
+            )
         )
     return _loaders[scheme](
         object_type,
@@ -524,7 +526,7 @@ class ConfigLoader(_Loader):
                     break
         if len(possible) > 1:
             raise LookupError(
-                "Multiple protocols given in section %r: %s" % (section, possible)
+                f"Multiple protocols given in section {section!r}: {possible}"
             )
         if not possible:
             raise LookupError("No loader given in section %r" % section)
