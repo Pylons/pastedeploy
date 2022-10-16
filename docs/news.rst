@@ -1,8 +1,8 @@
 Paste Deployment News
 =====================
 
-unreleased
-----------
+3.0 (2022-10-16)
+----------------
 
 * Drop support for Python 2, as well as 3.4, 3.5, and 3.6.
 
