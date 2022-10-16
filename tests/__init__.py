@@ -17,12 +17,11 @@ if not os.path.exists(egg_info_dir):
 
 sys.path.append(os.path.dirname(egg_info_dir))
 
-import pkg_resources  # noqa E402
+from paste.deploy.util import importlib_metadata  # noqa E402
 
 # Make absolutely sure we're testing *this* package, not
 # some other installed package
-pkg_resources.require('PasteDeploy')
+importlib_metadata.distribution('PasteDeploy')
 
 # ensure FakeApp is available for use by tests
-pkg_resources.working_set.add_entry(os.path.dirname(egg_info_dir))
-pkg_resources.require('FakeApp')
+importlib_metadata.distribution('FakeApp')

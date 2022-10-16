@@ -9,6 +9,8 @@ unreleased
 * Fix a broken compatibility shim that would cause the ConfigParser to fail
   on Python 3.12 when ``ConfigParser.readfp`` is removed.
 
+* Drop setuptools dependency and start using ``importlib.metadata`` instead.
+
 * Refactor repository into a src folder layout.
 
 2.1.1 (2020-10-12)

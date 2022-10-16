@@ -1,10 +1,10 @@
 from pprint import pprint
 import sys
 
-import pkg_resources
-
 
 def test_load_package():
+    from paste.deploy.util import importlib_metadata
+
     print('Path:')
     pprint(sys.path)
-    print(pkg_resources.require('FakeApp'))
+    importlib_metadata.distribution('FakeApp')

@@ -155,9 +155,6 @@ class ConfigMiddleware:
     def __call__(self, environ, start_response):
         global wsgilib
         if wsgilib is None:
-            import pkg_resources
-
-            pkg_resources.require('Paste')
             from paste import wsgilib
         popped_config = None
         if 'paste.config' in environ:
