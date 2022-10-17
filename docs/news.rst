@@ -1,6 +1,11 @@
 Paste Deployment News
 =====================
 
+3.0.1 (2022-10-17)
+------------------
+
+* Fix ``python_requires`` package metadata to support Python 3.7+.
+
 3.0 (2022-10-16)
 ----------------
 
