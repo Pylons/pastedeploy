@@ -33,7 +33,7 @@ def fix_type_error(exc_info, callable, varargs, kwargs):
     ):
         return exc_info
     exc_info[1]._type_error_fixed = True
-    argspec = inspect.formatargspec(*inspect.getargspec(callable))
+    argspec = inspect.signature(callable)
     args = ', '.join(map(_short_repr, varargs))
     if kwargs and args:
         args += ', '
