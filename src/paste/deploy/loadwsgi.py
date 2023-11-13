@@ -91,7 +91,6 @@ class NicerConfigParser(ConfigParser):
 
 
 class _ObjectType:
-
     name = None
     egg_protocols = None
     config_prefixes = None
@@ -112,7 +111,6 @@ class _ObjectType:
 
 
 class _App(_ObjectType):
-
     name = 'application'
     egg_protocols = [
         'paste.app_factory',
@@ -338,7 +336,6 @@ _loaders['egg'] = _loadegg
 
 
 def _loadfunc(object_type, uri, spec, name, relative_to, global_conf):
-
     loader = FuncLoader(spec)
     return loader.get_context(object_type, name, global_conf)
 
