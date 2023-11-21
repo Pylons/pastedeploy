@@ -1,6 +1,14 @@
 Paste Deployment News
 =====================
 
+3.1.0 (2023-11-20)
+------------------
+
+* Support Python 3.11 and 3.12.
+
+* Remove deprecated usage of ``inspect.getargspec`` that is no longer
+  supported in Python 3.12.
+
 3.0.1 (2022-10-17)
 ------------------
 
