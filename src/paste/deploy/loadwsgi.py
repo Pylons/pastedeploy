@@ -285,6 +285,13 @@ def loadcontext(object_type, uri, name=None, relative_to=None, global_conf=None)
     scheme, path = uri.split(':', 1)
     scheme = scheme.lower()
     if scheme not in _loaders:
+        if scheme.startswith('config+'):
+            entrypoints = importlib_metadata.entry_points(
+                group='paste.config_factory', name=scheme
+            )
+            entrypoint = [ep for ep in entrypoints][0]
+            _loaders[scheme] = entrypoint.load()
+    if scheme not in _loaders:
         raise LookupError(
             "URI scheme not known: {!r} (from {})".format(
                 scheme, ', '.join(_loaders.keys())
