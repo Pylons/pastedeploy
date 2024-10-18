@@ -357,7 +357,8 @@ _loaders['call'] = _loadfunc
 ############################################################
 
 
-class _Loader:
+class AbstractLoader:
+    """Base class for configuration loader."""
     def get_app(self, name=None, global_conf=None):
         return self.app_context(name=name, global_conf=global_conf).create()
 
@@ -387,7 +388,7 @@ class _Loader:
         return self._absolute_re.search(name)
 
 
-class ConfigLoader(_Loader):
+class ConfigLoader(AbstractLoader):
     def __init__(self, filename):
         self.filename = filename = filename.strip()
         defaults = {
@@ -635,7 +636,7 @@ class ConfigLoader(_Loader):
         return found
 
 
-class EggLoader(_Loader):
+class EggLoader(AbstractLoader):
     def __init__(self, spec):
         self.spec = spec
 
@@ -694,7 +695,7 @@ class EggLoader(_Loader):
         return possible[0]
 
 
-class FuncLoader(_Loader):
+class FuncLoader(AbstractLoader):
     """Loader that supports specifying functions inside modules, without
     using eggs at all. Configuration should be in the format:
         use = call:my.module.path:function_name

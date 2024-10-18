@@ -2,14 +2,14 @@ from pathlib import Path
 
 from paste.deploy.loadwsgi import (
     LoaderContext,
-    _Loader,  # type: ignore
+    AbstractLoader,
     loadcontext,
 )
 
 import json
 
 
-class JsonPasteDeployLoader(_Loader):
+class JsonPasteDeployLoader(AbstractLoader):
     def __init__(self, filepath: Path):
         self.filepath = filepath
         self.defaults = {
