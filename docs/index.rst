@@ -14,6 +14,7 @@ Documents:
    modules/loadwsgi
    modules/config
    modules/converters
+   modules/loadwsgi_ext
 
 .. comment:
    The names used in sections should be more concrete, and it should
@@ -109,7 +110,7 @@ The Config File
 A config file has different sections.  The only sections Paste Deploy
 cares about have prefixes, like ``app:main`` or ``filter:errors`` --
 the part after the ``:`` is the "name" of the section, and the part
-before gives the "type".  Other sections are ignored.  
+before gives the "type".  Other sections are ignored.
 
 The format is a simple `INI format
 <https://en.wikipedia.org/wiki/INI_file>`_: ``name = value``.  You can
@@ -137,7 +138,7 @@ Here's a typical configuration file that also shows off mounting multiple applic
 
     [filter-app:blog]
     use = egg:Authentication#auth
-    next = blogapp    
+    next = blogapp
     roles = admin
     htpasswd = /home/me/users.htpasswd
 
@@ -190,7 +191,7 @@ Then:
 
     [filter-app:blog]
     use = egg:Authentication#auth
-    next = blogapp    
+    next = blogapp
     roles = admin
     htpasswd = /home/me/users.htpasswd
 
@@ -248,10 +249,10 @@ There's two URI formats currently supported: ``config:`` and ``egg:``.
 
 URIs that being with ``config:`` refer to configuration files.  These
 filenames can be relative if you pass the ``relative_to`` keyword
-argument to ``loadapp()``.  
+argument to ``loadapp()``.
 
-.. note:: 
-   
+.. note::
+
    Filenames are never considered relative to the current working
    directory, as that is an unpredictable location.  Generally when
    a URI has a context it will be seen as relative to that context;
@@ -714,4 +715,3 @@ Outstanding Issues
 
     [app:next_app]
     # ...
-

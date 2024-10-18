@@ -12,7 +12,7 @@ here = Path(__file__).parent
 
 @pytest.fixture(scope="module", autouse=True)
 def fake_package_path():
-    fake_packages_path = here / "fake_packages" / "FakeJsonLoader"
+    fake_packages_path = here / "fake_packages" / "DummyJsonLoader"
     sys.path.insert(0, str(fake_packages_path))
     yield
     sys.path.pop(0)

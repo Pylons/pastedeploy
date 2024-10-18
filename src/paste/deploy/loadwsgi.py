@@ -1,6 +1,7 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 from configparser import ConfigParser
+import abc
 import os
 import re
 import sys
@@ -261,103 +262,12 @@ def appconfig(uri, name=None, relative_to=None, global_conf=None):
     return context.config()
 
 
-_loaders = {}
-
-
-def loadobj(object_type, uri, name=None, relative_to=None, global_conf=None):
-    context = loadcontext(
-        object_type, uri, name=name, relative_to=relative_to, global_conf=global_conf
-    )
-    return context.create()
-
-
-def loadcontext(object_type, uri, name=None, relative_to=None, global_conf=None):
-    if '#' in uri:
-        if name is None:
-            uri, name = uri.split('#', 1)
-        else:
-            # @@: Ignore fragment or error?
-            uri = uri.split('#', 1)[0]
-    if name is None:
-        name = 'main'
-    if ':' not in uri:
-        raise LookupError("URI has no scheme: %r" % uri)
-    scheme, path = uri.split(':', 1)
-    scheme = scheme.lower()
-    loader = _loaders.get(scheme)
-    if loader is None:
-        if scheme.startswith('config+'):
-            entrypoints = importlib_metadata.entry_points(
-                group='paste.config_factory', name=scheme
-            )
-            entrypoints = [ep for ep in entrypoints]
-            if entrypoints:
-                loader = entrypoints[0].load()
-
-    if loader is None:
-        raise LookupError(
-            "URI scheme not known: {!r} (from {})".format(
-                scheme, ', '.join(_loaders.keys())
-            )
-        )
-    return loader(
-        object_type,
-        uri,
-        path,
-        name=name,
-        relative_to=relative_to,
-        global_conf=global_conf,
-    )
-
-
-def _loadconfig(object_type, uri, path, name, relative_to, global_conf):
-    isabs = os.path.isabs(path)
-    # De-Windowsify the paths:
-    path = path.replace('\\', '/')
-    if not isabs:
-        if not relative_to:
-            raise ValueError(
-                "Cannot resolve relative uri %r; no relative_to keyword "
-                "argument given" % uri
-            )
-        relative_to = relative_to.replace('\\', '/')
-        if relative_to.endswith('/'):
-            path = relative_to + path
-        else:
-            path = relative_to + '/' + path
-    if path.startswith('///'):
-        path = path[2:]
-    path = unquote(path)
-    loader = ConfigLoader(path)
-    if global_conf:
-        loader.update_defaults(global_conf, overwrite=False)
-    return loader.get_context(object_type, name, global_conf)
-
-
-_loaders['config'] = _loadconfig
-
-
-def _loadegg(object_type, uri, spec, name, relative_to, global_conf):
-    loader = EggLoader(spec)
-    return loader.get_context(object_type, name, global_conf)
-
-
-_loaders['egg'] = _loadegg
-
-
-def _loadfunc(object_type, uri, spec, name, relative_to, global_conf):
-    loader = FuncLoader(spec)
-    return loader.get_context(object_type, name, global_conf)
-
-
-_loaders['call'] = _loadfunc
-
 ############################################################
 # Loaders
 ############################################################
 
 
-class AbstractLoader:
+class _Loader:
     """Base class for configuration loader."""
     def get_app(self, name=None, global_conf=None):
         return self.app_context(name=name, global_conf=global_conf).create()
@@ -388,7 +298,25 @@ class AbstractLoader:
         return self._absolute_re.search(name)
 
 
-class ConfigLoader(AbstractLoader):
+class AbstractLoader(abc.ABC, _Loader):
+    """Define a loader from a file."""
+
+    @abc.abstractmethod
+    def update_defaults(self, new_defaults, overwrite=True):
+        """Set default values for values in the templates.
+        """
+
+    @abc.abstractmethod
+    def get_context(self, object_type, name=None, global_conf=None):
+        """Get the context for the object_type with the fiven name.
+        Lookup from the configuration the values.
+
+        :param object_type: an object that hold the type of objects loaded.
+        :param name: the name looked for the context, ``'main'`` if the default.
+        :param global_conf: values that cames be uses to override defaults values.
+        """
+
+class ConfigLoader(_Loader):
     def __init__(self, filename):
         self.filename = filename = filename.strip()
         defaults = {
@@ -636,7 +564,7 @@ class ConfigLoader(AbstractLoader):
         return found
 
 
-class EggLoader(AbstractLoader):
+class EggLoader(_Loader):
     def __init__(self, spec):
         self.spec = spec
 
@@ -695,7 +623,7 @@ class EggLoader(AbstractLoader):
         return possible[0]
 
 
-class FuncLoader(AbstractLoader):
+class FuncLoader(_Loader):
     """Loader that supports specifying functions inside modules, without
     using eggs at all. Configuration should be in the format:
         use = call:my.module.path:function_name
@@ -763,3 +691,107 @@ class AttrDict(dict):
     """
 
     pass
+
+
+_loaders = {}
+
+
+def loadobj(object_type, uri, name=None, relative_to=None, global_conf=None):
+    context = loadcontext(
+        object_type, uri, name=name, relative_to=relative_to, global_conf=global_conf
+    )
+    return context.create()
+
+
+def loadcontext(object_type, uri, name=None, relative_to=None, global_conf=None):
+    if '#' in uri:
+        if name is None:
+            uri, name = uri.split('#', 1)
+        else:
+            # @@: Ignore fragment or error?
+            uri = uri.split('#', 1)[0]
+    if name is None:
+        name = 'main'
+    if ':' not in uri:
+        raise LookupError("URI has no scheme: %r" % uri)
+    scheme, path = uri.split(':', 1)
+    scheme = scheme.lower()
+    loader = _loaders.get(scheme)
+    if loader is None:
+        if scheme.startswith('config+'):
+            entrypoints = importlib_metadata.entry_points(
+                group='paste.config_factory', name=scheme
+            )
+            entrypoints = [ep for ep in entrypoints]
+            if entrypoints:
+                loader = _load_config_factory(entrypoints[0].load())
+
+    if loader is None:
+        raise LookupError(
+            "URI scheme not known: {!r} (from {})".format(
+                scheme, ', '.join(_loaders.keys())
+            )
+        )
+    return loader(
+        object_type,
+        uri,
+        path,
+        name=name,
+        relative_to=relative_to,
+        global_conf=global_conf,
+    )
+
+def _load_config_factory(cls=ConfigLoader):
+    def _loadconfig(object_type, uri, path, name, relative_to, global_conf):
+        isabs = os.path.isabs(path)
+        # De-Windowsify the paths:
+        path = path.replace('\\', '/')
+        if not isabs:
+            if not relative_to:
+                raise ValueError(
+                    "Cannot resolve relative uri %r; no relative_to keyword "
+                    "argument given" % uri
+                )
+            relative_to = relative_to.replace('\\', '/')
+            if relative_to.endswith('/'):
+                path = relative_to + path
+            else:
+                path = relative_to + '/' + path
+        if path.startswith('///'):
+            path = path[2:]
+        path = unquote(path)
+        loader = cls(path)
+        if global_conf:
+            loader.update_defaults(global_conf, overwrite=False)
+        return loader.get_context(object_type, name, global_conf)
+    return _loadconfig
+
+
+_loaders['config'] = _load_config_factory()
+
+
+def _loadegg(object_type, uri, spec, name, relative_to, global_conf):
+    loader = EggLoader(spec)
+    return loader.get_context(object_type, name, global_conf)
+
+
+_loaders['egg'] = _loadegg
+
+
+def _loadfunc(object_type, uri, spec, name, relative_to, global_conf):
+    loader = FuncLoader(spec)
+    return loader.get_context(object_type, name, global_conf)
+
+
+_loaders['call'] = _loadfunc
+
+
+def extended_load(loader_cls):
+    def loader(object_type, uri, path: str, name, relative_to, global_conf):
+        pathobj = Path(relative_to) / path
+
+        if not pathobj.is_file():
+            raise ValueError(f"File expected: {path}")
+        loader = loader_cls(pathobj)
+        return loader.get_context(object_type, name, global_conf)
+    return loader

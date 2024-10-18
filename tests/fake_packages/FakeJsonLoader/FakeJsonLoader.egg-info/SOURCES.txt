@@ -1,6 +1,0 @@
-setup.py
-FakeJsonLoader.egg-info/PKG-INFO
-FakeJsonLoader.egg-info/SOURCES.txt
-FakeJsonLoader.egg-info/dependency_links.txt
-FakeJsonLoader.egg-info/entry_points.txt
-FakeJsonLoader.egg-info/top_level.txt

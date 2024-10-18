@@ -1,0 +1,7 @@
+setup.py
+JsonLoader.egg-info/PKG-INFO
+JsonLoader.egg-info/SOURCES.txt
+JsonLoader.egg-info/dependency_links.txt
+JsonLoader.egg-info/entry_points.txt
+JsonLoader.egg-info/top_level.txt
+dummyjsonloader/__init__.py

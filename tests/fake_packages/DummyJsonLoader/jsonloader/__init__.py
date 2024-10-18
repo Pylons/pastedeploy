@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from paste.deploy.loadwsgi import (
-    LoaderContext,
     AbstractLoader,
     loadcontext,
 )
@@ -10,13 +9,18 @@ import json
 
 
 class JsonPasteDeployLoader(AbstractLoader):
-    def __init__(self, filepath: Path):
-        self.filepath = filepath
+
+    def __init__(self, filepath: str):
+        self.filepath = Path(filepath)
         self.defaults = {
             "here": str(self.filepath.absolute()),
         }
         with self.filepath.open("r") as stream:
             self._conf = json.load(stream)
+
+    def update_defaults(self, new_defaults, overwrite=True):
+        """Set default values for values in the templates.
+        """
 
     def find_config_section(self, object_type, name):
         section = conf = None
@@ -63,12 +67,3 @@ class JsonPasteDeployLoader(AbstractLoader):
             raise ValueError(f"Missing use in {section} of {name}")
         context = self._context_from_use(object_type, local_conf, global_conf, section)
         return context
-
-
-def load_json(object_type, uri, path: str, name, relative_to, global_conf):
-    pathobj = Path(relative_to) / path
-
-    if not pathobj.is_file():
-        raise ValueError(f"File expected: {path}")
-    loader = JsonPasteDeployLoader(pathobj)
-    return loader.get_context(object_type, name, global_conf)
