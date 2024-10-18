@@ -1,0 +1,7 @@
+{
+  "app:main": {
+    "use": "egg:FakeApp#basic_app",
+    "setting1": "foo",
+    "setting2": "bar"
+  }
+}
