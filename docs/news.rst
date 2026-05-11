@@ -1,6 +1,15 @@
 Paste Deployment News
 =====================
 
+unreleased
+----------
+
+* Drop the legacy ``pkg_resources``-style ``paste`` namespace in favour of
+  PEP 420 implicit namespace packages. The setuptools-generated
+  ``PasteDeploy-*-nspkg.pth`` no longer ships, fixing
+  ``KeyError: "local variable ''sitedir'' is not defined"`` emitted on every
+  Python 3.15 interpreter startup (CPython gh-149671, introduced by PEP 829).
+
 3.1.0 (2023-11-20)
 ------------------
 
