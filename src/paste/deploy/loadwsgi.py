@@ -1,14 +1,15 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 from configparser import ConfigParser
+import importlib.metadata
 import os
 import re
 import sys
 from urllib.parse import unquote
 
-from paste.deploy.util import fix_call, importlib_metadata, lookup_object
+from paste.deploy.util import fix_call, lookup_object
 
-__all__ = ['loadapp', 'loadserver', 'loadfilter', 'appconfig']
+__all__ = ['appconfig', 'loadapp', 'loadfilter', 'loadserver']
 
 
 ############################################################
@@ -434,7 +435,7 @@ class ConfigLoader(_Loader):
             filter_with = None
         if 'require' in local_conf:
             for spec in local_conf['require'].split():
-                importlib_metadata.distribution(spec)
+                importlib.metadata.distribution(spec)
             del local_conf['require']
         if section.startswith('filter-app:'):
             context = self._filter_app_context(
@@ -523,7 +524,7 @@ class ConfigLoader(_Loader):
             raise LookupError("No loader given in section %r" % section)
         found_protocol, found_expr = possible[0]
         del local_conf[found_protocol]
-        value = importlib_metadata.EntryPoint(
+        value = importlib.metadata.EntryPoint(
             name=None, group=None, value=found_expr
         ).load()
         context = LoaderContext(
@@ -642,7 +643,7 @@ class EggLoader(_Loader):
             global_conf or {},
             {},
             self,
-            distribution=importlib_metadata.distribution(self.spec),
+            distribution=importlib.metadata.distribution(self.spec),
             entry_point_name=ep_name,
         )
 
@@ -652,7 +653,7 @@ class EggLoader(_Loader):
         """
         if name is None:
             name = 'main'
-        dist = importlib_metadata.distribution(self.spec)
+        dist = importlib.metadata.distribution(self.spec)
         possible = []
         for protocol_options in object_type.egg_protocols:
             for protocol in protocol_options:

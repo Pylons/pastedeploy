@@ -17,12 +17,23 @@ def app_with_exception(environ, start_response):
 
 
 def test_error():
-    # This import is conditional due to Paste not yet working on py3k
-    try:
-        from paste.fixture import TestApp
-    except ImportError:
-        raise pytest.skip('unable to import TestApp')
-
     wrapped = ConfigMiddleware(app_with_exception, {'test': 1})
-    test_app = TestApp(wrapped)
-    pytest.raises(Bug, test_app.get, '/')
+
+    environ = {
+        'REQUEST_METHOD': 'GET',
+        'PATH_INFO': '/',
+        'SERVER_NAME': 'localhost',
+        'SERVER_PORT': '80',
+        'wsgi.input': b'',
+        'wsgi.errors': None,
+        'wsgi.url_scheme': 'http',
+        'HTTP_HOST': 'localhost',
+    }
+    responses = []
+
+    def start_response(status, headers):
+        responses.append(status)
+
+    app_iter = wrapped(environ, start_response)
+    with pytest.raises(Bug):
+        list(app_iter)

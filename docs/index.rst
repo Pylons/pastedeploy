@@ -34,8 +34,13 @@ The result is something a system administrator can install and manage
 without knowing any Python, or the details of the WSGI application or
 its container.
 
-Paste Deployment currently does not require other parts of `Paste
-<https://pythonpaste.readthedocs.io/en/latest/>`_, and is distributed as a separate package.
+Paste Deployment is distributed as a separate package and has no dependency on the
+`Paste <https://pythonpaste.readthedocs.io/en/latest/>`_ package.  The two share a
+common ``paste`` namespace (both install under ``paste.*``) for historical reasons, but
+they are independent: you can use Paste Deploy without installing Paste, and vice versa.
+Note that some Paste Deploy documentation examples reference applications from the
+``Paste`` package (e.g. ``egg:Paste#urlmap``); those require ``Paste`` to be installed
+separately.
 
 To see updates that have been made to Paste Deploy see the :doc:`news file <news>`.
 

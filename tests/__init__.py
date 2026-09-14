@@ -1,3 +1,4 @@
+import importlib.metadata
 import os
 import shutil
 import sys
@@ -17,11 +18,9 @@ if not os.path.exists(egg_info_dir):
 
 sys.path.append(os.path.dirname(egg_info_dir))
 
-from paste.deploy.util import importlib_metadata  # noqa E402
-
 # Make absolutely sure we're testing *this* package, not
 # some other installed package
-importlib_metadata.distribution('PasteDeploy')
+importlib.metadata.distribution('PasteDeploy')
 
 # ensure FakeApp is available for use by tests
-importlib_metadata.distribution('FakeApp')
+importlib.metadata.distribution('FakeApp')

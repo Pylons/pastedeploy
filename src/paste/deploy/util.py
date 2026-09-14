@@ -1,13 +1,8 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
+import importlib.metadata as importlib_metadata  # noqa F401
 import inspect
 import sys
-
-try:
-    import importlib.metadata as importlib_metadata  # noqa F401
-except ImportError:  # pragma: no cover
-    # bw-compat shim for py37
-    import importlib_metadata  # noqa F401
 
 
 def fix_type_error(exc_info, callable, varargs, kwargs):

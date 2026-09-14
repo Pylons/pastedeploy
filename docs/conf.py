@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Paste documentation build configuration file, created by
 # sphinx-quickstart on Tue Apr 22 22:08:49 2008.
 #
@@ -12,11 +10,8 @@
 # serve to show the default value.
 
 import datetime
+import importlib.metadata
 
-try:
-    import importlib.metadata as importlib_metadata
-except ImportError:
-    import importlib_metadata
 import pylons_sphinx_themes
 
 # If your extensions are in another directory, add it here.
@@ -55,7 +50,7 @@ copyright = '2011-%s, Ian Bicking and contributors' % thisyear
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = importlib_metadata.distribution('pastedeploy').version
+version = importlib.metadata.distribution('pastedeploy').version
 
 # The full version, including alpha/beta/rc tags.
 release = version
