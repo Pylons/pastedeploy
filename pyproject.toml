@@ -1,26 +1,90 @@
 [build-system]
-requires = ["setuptools >= 41"]
+requires = ["setuptools >= 77"]
 build-backend = "setuptools.build_meta"
 
-[tool.black]
-target-version = ['py37', 'py38', 'py39', 'py310']
-skip-string-normalization = true
-exclude = '''
-/(
-  \.git
-  | .tox
-)/
-'''
+[project]
+name = "PasteDeploy"
+version = "3.1.0"
+description = "Load, configure, and compose WSGI applications and servers"
+readme = {file = "README.rst", content-type = "text/x-rst"}
+license = "MIT"
+authors = [
+    {name = "Ian Bicking", email = "pylons-discuss@googlegroups.com"},
+]
+maintainers = [
+    {name = "Michael Merickel", email = "pylons-discuss@googlegroups.com"},
+]
+keywords = ["web", "wsgi", "application", "server"]
+classifiers = [
+    "Development Status :: 6 - Mature",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Internet :: WWW/HTTP :: WSGI",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Middleware",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Framework :: Paste",
+]
+requires-python = ">=3.10"
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-src_paths = ["src", "tests"]
-skip_glob = ["docs/*"]
-include_trailing_comma = true
-force_grid_wrap = false
-combine_as_imports = true
-line_length = 88
-force_sort_within_sections = true
-default_section = "THIRDPARTY"
-known_first_party = "paste.deploy"
+[project.urls]
+Documentation = "https://docs.pylonsproject.org/projects/pastedeploy/en/latest/"
+Changelog = "https://docs.pylonsproject.org/projects/pastedeploy/en/latest/news.html"
+"Issue Tracker" = "https://github.com/Pylons/pastedeploy/issues"
+
+[project.optional-dependencies]
+config = []
+paste = ["Paste"]
+docs = [
+    "Sphinx",
+    "pylons-sphinx-themes",
+]
+testing = [
+    "Paste",
+    "pytest",
+    "pytest-cov",
+]
+
+[project.entry-points."paste.filter_app_factory"]
+config = "paste.deploy.config:make_config_filter [Config]"
+prefix = "paste.deploy.config:make_prefix_middleware"
+
+[project.entry-points."paste.paster_create_template"]
+paste_deploy = "paste.deploy.paster_templates:PasteDeploy"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.check-manifest]
+ignore-bad-ideas = [
+    "tests/fake_packages/**",
+]
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py"]
+testpaths = ["tests"]
+addopts = "-W always --cov"
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests"]
+extend-exclude = ["tests/fake_packages"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B"]
+ignore = ["E731"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["paste"]
+
+[tool.ruff.format]
+quote-style = "preserve"

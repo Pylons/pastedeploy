@@ -21,7 +21,7 @@ def test_error():
     try:
         from paste.fixture import TestApp
     except ImportError:
-        raise pytest.skip('unable to import TestApp')
+        pytest.skip('unable to import TestApp')
 
     wrapped = ConfigMiddleware(app_with_exception, {'test': 1})
     test_app = TestApp(wrapped)

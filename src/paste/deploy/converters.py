@@ -20,7 +20,7 @@ def asint(obj):
     try:
         return int(obj)
     except (TypeError, ValueError):
-        raise ValueError("Bad integer value: %r" % obj)
+        raise ValueError("Bad integer value: %r" % obj) from None
 
 
 def aslist(obj, sep=None, strip=True):

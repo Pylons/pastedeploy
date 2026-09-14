@@ -1,6 +1,7 @@
 # (c) 2005 Ian Bicking and contributors; written for Paste (http://pythonpaste.org)
 # Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 """Paste Configuration Middleware and Objects"""
+
 import re
 import threading
 
@@ -25,7 +26,6 @@ def local_dict():
 
 
 class DispatchingConfig:
-
     """
     This is a configuration object that can be used globally,
     imported, have references held onto.  The configuration may differ
@@ -137,7 +137,6 @@ CONFIG = DispatchingConfig()
 
 
 class ConfigMiddleware:
-
     """
     A WSGI middleware that adds a ``paste.config`` key to the request
     environment, as well as registering the configuration temporarily

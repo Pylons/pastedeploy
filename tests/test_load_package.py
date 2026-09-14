@@ -1,10 +1,9 @@
-from pprint import pprint
+import importlib.metadata
 import sys
+from pprint import pprint
 
 
 def test_load_package():
-    from paste.deploy.util import importlib_metadata
-
     print('Path:')
     pprint(sys.path)
-    importlib_metadata.distribution('FakeApp')
+    importlib.metadata.distribution('FakeApp')

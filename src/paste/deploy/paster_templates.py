@@ -24,10 +24,7 @@ class PasteDeploy(Template):
         command.insert_into_file(
             os.path.join(output_dir, 'setup.py'),
             'Entry points',
-            (
-                '      [paste.app_factory]\n'
-                '      main = %(package)s.wsgiapp:make_app\n'
-            )
+            ('      [paste.app_factory]\n      main = %(package)s.wsgiapp:make_app\n')
             % vars,
             indent=False,
         )
